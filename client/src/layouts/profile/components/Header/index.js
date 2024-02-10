@@ -108,9 +108,9 @@ function Header({ children }) {
           px: 2,
         }}
       >
-        <Grid container spacing={3} alignItems="center">
+        <Grid container spacing={4} alignItems="center">
           <Grid item>
-            <MDAvatar src={imageUrl} alt="profile-image" size="xl" shadow="sm" />
+            <MDAvatar src={imageUrl} alt="profile-image" size="xxl" shadow="sm" />
           </Grid>
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
@@ -123,7 +123,7 @@ function Header({ children }) {
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
-            <AppBar position="static">
+            {/* <AppBar position="static">
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
                   label="App"
@@ -150,7 +150,7 @@ function Header({ children }) {
                   }
                 />
               </Tabs>
-            </AppBar>
+            </AppBar> */}
           </Grid>
         </Grid>
         {children}

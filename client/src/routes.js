@@ -204,20 +204,20 @@ const routes = [
     route: "/authentication/wellness-setup",
     component: <WellnessSetup />,
   },
-  {
-    type: "collapse",
-    key: "summary",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/authentication/summary",
-    component: <Summary />,
-  },
-  {
-    type: "collapse",
-    key: "sign-up",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
-  },
+  // {
+  //   type: "collapse",
+  //   key: "summary",
+  //   icon: <Icon fontSize="small"></Icon>,
+  //   route: "/authentication/summary",
+  //   component: <Summary />,
+  // },
+  // {
+  //   type: "collapse",
+  //   key: "sign-up",
+  //   icon: <Icon fontSize="small"></Icon>,
+  //   route: "/authentication/sign-up",
+  //   component: <SignUp />,
+  // },
 ];
 
 export default routes;

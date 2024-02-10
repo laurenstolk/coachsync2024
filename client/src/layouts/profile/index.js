@@ -112,12 +112,12 @@ function Overview() {
               )}
               {/* <Divider orientation="vertical" sx={{ mx: 0 }} /> */}
             </Grid>
-            {/* <Grid item xs={12} xl={4}>
+            <Grid item xs={12} xl={4}>
               <ProfilesList title="conversations" profiles={profilesListData} shadow={false} />
-            </Grid> */}
+            </Grid>
           </Grid>
         </MDBox>
-        {/* <MDBox pt={2} px={2} lineHeight={1.25}>
+        <MDBox pt={2} px={2} lineHeight={1.25}>
           <MDTypography variant="h6" fontWeight="medium">
             Projects
           </MDTypography>
@@ -126,10 +126,10 @@ function Overview() {
               Architects design houses
             </MDTypography>
           </MDBox>
-        </MDBox> */}
-        {/* <MDBox p={2}>
-          <Grid container spacing={6}> */}
-            {/* <Grid item xs={12} md={6} xl={3}>
+        </MDBox>
+        <MDBox p={2}>
+          <Grid container spacing={6}>
+            <Grid item xs={12} md={6} xl={3}>
               <DefaultProjectCard
                 image={homeDecor1}
                 label="project #2"
@@ -188,8 +188,8 @@ function Overview() {
                   { image: team1, name: "Elena Morison" },
                 ]}
               />
-            </Grid> */}
-            {/* <Grid item xs={12} md={6} xl={3}>
+            </Grid>
+            <Grid item xs={12} md={6} xl={3}>
               <DefaultProjectCard
                 image={homeDecor4}
                 label="project #4"
@@ -208,9 +208,9 @@ function Overview() {
                   { image: team1, name: "Elena Morison" },
                 ]}
               />
-            </Grid> */}
-          {/* </Grid>
-        </MDBox> */}
+            </Grid>
+          </Grid>
+        </MDBox>
       </Header>
       <Footer />
     </DashboardLayout>
