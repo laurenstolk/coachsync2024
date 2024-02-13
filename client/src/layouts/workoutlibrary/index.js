@@ -29,6 +29,8 @@ import DataTable from "examples/Tables/DataTable";
 
 // Data
 import workoutsTableData from "layouts/tables/data/workoutsTableData";
+import Button from "@mui/material/Button";
+import { Link } from 'react-router-dom';
 
 function Tables() {
   const { columns, rows } = workoutsTableData();
@@ -54,6 +56,9 @@ function Tables() {
                 <MDTypography variant="h6" color="white">
                   Saved Workouts
                 </MDTypography>
+                  <Button variant="outlined" component={Link} to="/addworkout" color="inherit"  style={{ position: 'absolute', top: -7, right: 20 }}>
+                      Add Workout
+                  </Button>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable

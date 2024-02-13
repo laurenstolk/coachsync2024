@@ -54,6 +54,7 @@ import WellnessSetup from "layouts/authentication/wellness-setup";
 import Summary from "layouts/authentication/summary";
 import WorkoutLibrary from "layouts/workoutlibrary";
 import ViewWorkout from "layouts/viewworkout";
+import AddGroup from "layouts/addgroup"
 import PsychologyAltIcon from "@mui/icons-material/PsychologyAlt";
 
 // @mui icons
@@ -138,6 +139,14 @@ const routes = [
     icon: <Icon fontSize="small">accessibility</Icon>,
     route: "/addteam",
     component: <Addnewteam />,
+  },
+  {
+    type: "collapse",
+    name: "Create Group",
+    key: "addgroup",
+    icon: <Groups2Icon  fontSize="small">book</Groups2Icon >,
+    route: "/addgroup",
+    component: <AddGroup />,
   },
   {
     type: "collapse",
