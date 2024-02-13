@@ -26,7 +26,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import Button from "@mui/material/Button"; // Import Button component
 
 // Data
@@ -57,7 +57,13 @@ function Tables() {
                 <MDTypography variant="h6" color="white">
                   All Excercises
                 </MDTypography>
-                <Button variant="outlined" component={Link} to="/addexercise" color="inherit"  style={{ position: 'absolute', top: -7, right: 20 }}>
+                <Button
+                  variant="outlined"
+                  component={Link}
+                  to="/addexercise"
+                  color="inherit"
+                  style={{ position: "absolute", top: -7, right: 20 }}
+                >
                   Add Exercise
                 </Button>
               </MDBox>
