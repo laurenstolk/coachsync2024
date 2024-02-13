@@ -89,10 +89,16 @@ function Cover() {
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
-            <MDBox mb={2}>
-            </MDBox>
+            <MDBox mb={2}></MDBox>
             <MDBox mt={2} mb={1}>
-              <MDButton component={Link} to="/dashboard" variant="gradient" color="success" fullWidth onClick={handleNextClick}>
+              <MDButton
+                component={Link}
+                to="/dashboard"
+                variant="gradient"
+                color="success"
+                fullWidth
+                onClick={handleNextClick}
+              >
                 Next
               </MDButton>
             </MDBox>

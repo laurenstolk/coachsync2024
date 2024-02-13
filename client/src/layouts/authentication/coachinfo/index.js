@@ -1,12 +1,11 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { useDropzone } from 'react-dropzone';
+import React, { useCallback, useState, useEffect } from "react";
+import { useDropzone } from "react-dropzone";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Checkbox from "@mui/material/Checkbox";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -14,11 +13,6 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 
-// @mui icons
-import Icon from "@mui/material/Icon";
-
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import logo from "assets/images/logo-ct.png";
 
 // Authentication layout components
@@ -26,15 +20,11 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 
 // Images
 import bgImage from "assets/images/grass2.jpg";
-import { FormControl, InputLabel, Select } from "@mui/material";
 import { supabase } from "../../../supabaseClient";
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
-import MenuItem from "@mui/material/MenuItem";
-
 function CoachInfoUpdate() {
   const [profilePic, setProfilePic] = useState("");
-  const [coachRole, setCoachRole] = useState("");
   const [profile, setProfile] = useState(null);
 
   const [formValid, setFormValid] = useState(false);
@@ -42,6 +32,7 @@ function CoachInfoUpdate() {
   const onDrop = useCallback((acceptedFiles) => {
     // Do something with the uploaded file (e.g., store it in state)
     setProfilePic(acceptedFiles[0]);
+    console.log("Profile picture uploaded:", acceptedFiles[0].name);
   }, []);
 
   const deleteProfilePic = () => {
@@ -67,28 +58,52 @@ function CoachInfoUpdate() {
     const birthDate = document.getElementById("birth-date").value;
     const coachRole = document.getElementById("coach-role").value;
 
-    const isValid = firstName !== '' && lastName !== '' && phoneNumber !== '' && birthDate !== '' && coachRole !== '';
+    const isValid =
+      firstName !== "" &&
+      lastName !== "" &&
+      phoneNumber !== "" &&
+      birthDate !== "" &&
+      coachRole !== "";
     setFormValid(isValid);
+    console.log(firstName, lastName, phoneNumber, birthDate, coachRole);
   };
 
   const handleSubmit = async () => {
     // Check if profile and profile.id are available
     if (profile && profile.id) {
+      const firstName = document.getElementById("first-name").value;
+      const lastName = document.getElementById("last-name").value;
       const coachRoleData = {
         coach_role: document.getElementById("coach-role").value,
-        first_name: document.getElementById("first-name").value,
-        last_name: document.getElementById("last-name").value,
+        first_name: firstName,
+        last_name: lastName,
+        profile_picture: `${firstName}_${lastName}`, // Construct the profile picture string
         phone_number: document.getElementById("phone-number").value,
         birth_date: document.getElementById("birth-date").value,
       };
-  
+      console.log(coachRoleData);
+
       try {
+        if (profilePic) {
+          const { data, error } = await supabase.storage
+            .from("images")
+            .upload(`${firstName}_${lastName}`, profilePic, {
+              cacheControl: "3600", // optional
+            });
+
+          if (error) {
+            console.error("Error uploading profile picture:", error);
+            // Handle the error here
+            throw error;
+          }
+        }
+
         // Use supabase client's api.post method to add data
         const { data, error } = await supabase
           .from("profile")
           .update([coachRoleData])
           .eq("id", profile.id);
-  
+
         if (error) {
           console.error("Error updating coach role:", error);
           // Handle the error here
@@ -134,35 +149,67 @@ function CoachInfoUpdate() {
           <MDBox component="form" role="form">
             <MDBox mb={2}>
               <MDBox mb={2}>
-                <MDInput type="text" id="first-name" label="First Name" variant="outlined" fullWidth required onChange={handleInputChange}/>
+                <MDInput
+                  type="text"
+                  id="first-name"
+                  label="First Name"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  onChange={handleInputChange}
+                />
               </MDBox>
               <MDBox mb={2}>
-                <MDInput type="text" id="last-name" label="Last Name" variant="outlined" fullWidth required onChange={handleInputChange}/>
+                <MDInput
+                  type="text"
+                  id="last-name"
+                  label="Last Name"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  onChange={handleInputChange}
+                />
               </MDBox>
               <MDBox mb={3}>
-                <MDInput type="tel" id="phone-number" label="Phone Number" variant="outlined" fullWidth required onChange={handleInputChange}/>
+                <MDInput
+                  type="tel"
+                  id="phone-number"
+                  label="Phone Number"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  onChange={handleInputChange}
+                />
               </MDBox>
               <MDBox mb={3}>
                 <MDTypography display="block" variant="button" color="text" my={1}>
                   Birthdate
                 </MDTypography>
-                <MDInput 
-                  type="date" 
-                  id="birth-date" 
-                  variant="outlined" 
-                  fullWidth 
+                <MDInput
+                  type="date"
+                  id="birth-date"
+                  variant="outlined"
+                  fullWidth
                   required
                   onChange={handleInputChange}
-                />              
+                />
               </MDBox>
               <MDTypography display="block" variant="button" color="text" my={1}>
                 What type of coach are you? (Head, Assistant, etc...)
               </MDTypography>
               <MDBox mb={5}>
-                <MDInput type="text" id="coach-role" label="Coach Role" variant="outlined" fullWidth required onChange={handleInputChange}/>
+                <MDInput
+                  type="text"
+                  id="coach-role"
+                  label="Coach Role"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  onChange={handleInputChange}
+                />
               </MDBox>
             </MDBox>
-            <MDBox mb={2} {...getRootProps()} style={{ cursor: 'pointer' }} >
+            <MDBox mb={2} {...getRootProps()} style={{ cursor: "pointer" }}>
               <input {...getInputProps()} />
               <MDTypography display="block" variant="button" color="text" my={1}>
                 Upload Profile Pic

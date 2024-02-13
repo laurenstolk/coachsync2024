@@ -219,12 +219,13 @@ function AddWorkout() {
           justifyContent: "flex-end",
           cursor: "pointer",
         }}
-        onClick={handleAddExercise}
       >
-        <AddCircleIcon sx={{ fontSize: 50, color: "#1976D2", marginRight: 1 }} />
-        <MDTypography variant="body2" color="textSecondary">
-          Add Exercise
-        </MDTypography>
+        <div onClick={handleAddExercise}>
+          <AddCircleIcon sx={{ fontSize: 50, color: "#1976D2", marginRight: 1 }} />
+          <MDTypography variant="body2" color="textSecondary">
+            Add Exercise
+          </MDTypography>
+        </div>
       </MDBox>
 
       <MDBox
@@ -236,12 +237,13 @@ function AddWorkout() {
           justifyContent: "flex-end",
           cursor: "pointer",
         }}
-        onClick={handleRemoveExercise} // Use a callback function to capture the current value of index
       >
-        <RemoveCircleOutlineIcon sx={{ fontSize: 50, color: "#FF0000", marginRight: 1 }} />
-        <MDTypography variant="body2" color="textSecondary">
-          Remove Exercise
-        </MDTypography>
+        <div onClick={handleRemoveExercise}>
+          <RemoveCircleOutlineIcon sx={{ fontSize: 50, color: "#FF0000", marginRight: 1 }} />
+          <MDTypography variant="body2" color="textSecondary">
+            Remove Exercise
+          </MDTypography>
+        </div>
       </MDBox>
 
       <MDBox px={2} pb={2}>

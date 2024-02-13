@@ -47,7 +47,7 @@ function PlayerorCoach() {
     };
     fetchData();
   }, []);
-  
+
   const handleRoleChange = (event, newRole) => {
     setSelectedRole(newRole);
     setSelectionMade(true); // Set selection made to true when a role is selected
@@ -59,16 +59,16 @@ function PlayerorCoach() {
       // Rest of your handleSubmit logic
       if (profile && profile.id) {
         const roleData = {
-          player: selectedRole === "player" ? true : false
+          player: selectedRole === "player" ? true : false,
         };
-    
+
         try {
           // Use supabase client's api.post method to add data
           const { data, error } = await supabase
             .from("profile")
             .update([roleData])
             .eq("id", profile.id);
-    
+
           if (error) {
             console.error("Error updating profile:", error);
             // Handle the error here
@@ -149,16 +149,16 @@ function PlayerorCoach() {
               </ToggleButtonGroup>
             </MDBox>
             <MDBox mt={4} mb={1}>
-            <MDButton
-              component={Link}
-              to="/authentication/coachinfo"
-              variant="gradient"
-              color={selectionMade ? "info" : "default"} // Change color based on selectionMade
-              fullWidth
-              onClick={handleSubmit}
-              disabled={!selectionMade}
-            > 
-               Next
+              <MDButton
+                component={Link}
+                to="/authentication/coachinfo"
+                variant="gradient"
+                color={selectionMade ? "info" : "default"} // Change color based on selectionMade
+                fullWidth
+                onClick={handleSubmit}
+                disabled={!selectionMade}
+              >
+                Next
               </MDButton>
             </MDBox>
             <MDBox mt={4} mb={1}>

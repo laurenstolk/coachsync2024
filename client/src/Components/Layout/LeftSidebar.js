@@ -9,11 +9,7 @@ function LeftSidebar() {
             <li className="sidebar-user-panel active">
               <div className="user-panel">
                 <div className=" image">
-                  <img
-                    src="assets/images/usrbig.jpg"
-                    className="user-img-style"
-                    alt="User Image"
-                  />
+                  <img src="assets/images/usrbig.jpg" className="user-img-style" alt="User Image" />
                 </div>
               </div>
               <div className="profile-usertitle">
@@ -23,7 +19,7 @@ function LeftSidebar() {
             </li>
             <li className="header">-- Main</li>
             <li className="active">
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="monitor" />
                 <span>Dashboard</span>
               </a>
@@ -37,7 +33,7 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="users" />
                 <span>Employees</span>
               </a>
@@ -54,7 +50,7 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="briefcase" />
                 <span>Projects</span>
               </a>
@@ -71,25 +67,21 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="book-open" />
                 <span>Attendance</span>
               </a>
               <ul className="ml-menu">
                 <li>
-                  <a href="pages/attendance/today-attend.html">
-                    Today Attendance
-                  </a>
+                  <a href="pages/attendance/today-attend.html">Today Attendance</a>
                 </li>
                 <li>
-                  <a href="pages/attendance/emp-attend.html">
-                    Employee Attendance
-                  </a>
+                  <a href="pages/attendance/emp-attend.html">Employee Attendance</a>
                 </li>
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="user" />
                 <span>Clients</span>
               </a>
@@ -106,7 +98,7 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="clipboard" />
                 <span>Leave Management</span>
               </a>
@@ -129,7 +121,7 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="headphones" />
                 <span>Holidays</span>
               </a>
@@ -146,7 +138,7 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="book" />
                 <span>Accounts</span>
               </a>
@@ -163,30 +155,24 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="trello" />
                 <span>Departments</span>
               </a>
               <ul className="ml-menu">
                 <li>
-                  <a href="pages/departments/all-departments.html">
-                    All Departments
-                  </a>
+                  <a href="pages/departments/all-departments.html">All Departments</a>
                 </li>
                 <li>
-                  <a href="pages/departments/add-department.html">
-                    Add Department
-                  </a>
+                  <a href="pages/departments/add-department.html">Add Department</a>
                 </li>
                 <li>
-                  <a href="pages/departments/edit-department.html">
-                    Edit Departments
-                  </a>
+                  <a href="pages/departments/edit-department.html">Edit Departments</a>
                 </li>
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="dollar-sign" />
                 <span>Payroll</span>
               </a>
@@ -195,14 +181,12 @@ function LeftSidebar() {
                   <a href="pages/payroll/payslip.html">Payslip</a>
                 </li>
                 <li>
-                  <a href="pages/payroll/employee-salary.html">
-                    Employee Salary
-                  </a>
+                  <a href="pages/payroll/employee-salary.html">Employee Salary</a>
                 </li>
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="command" />
                 <span>Job</span>
               </a>
@@ -219,30 +203,24 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="package" />
                 <span>Consultancy</span>
               </a>
               <ul className="ml-menu">
                 <li>
-                  <a href="pages/consultancy/all-consultancy.html">
-                    All Consultancy
-                  </a>
+                  <a href="pages/consultancy/all-consultancy.html">All Consultancy</a>
                 </li>
                 <li>
-                  <a href="pages/consultancy/add-consultancy.html">
-                    Add Consultancy
-                  </a>
+                  <a href="pages/consultancy/add-consultancy.html">Add Consultancy</a>
                 </li>
                 <li>
-                  <a href="pages/consultancy/edit-consultancy.html">
-                    Edit Consultancy
-                  </a>
+                  <a href="pages/consultancy/edit-consultancy.html">Edit Consultancy</a>
                 </li>
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="feather" />
                 <span>Widgets</span>
               </a>
@@ -256,7 +234,7 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="copy" />
                 <span>User Interface (UI)</span>
               </a>
@@ -312,7 +290,7 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="triangle" />
                 <span>Icons</span>
               </a>
@@ -324,9 +302,7 @@ function LeftSidebar() {
                   <a href="pages/icons/font-awesome.html">Font Awesome</a>
                 </li>
                 <li>
-                  <a href="pages/icons/simple-line-icons.html">
-                    Simple Line Icons
-                  </a>
+                  <a href="pages/icons/simple-line-icons.html">Simple Line Icons</a>
                 </li>
                 <li>
                   <a href="pages/icons/themify.html">Themify Icons</a>
@@ -334,7 +310,7 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="layout" />
                 <span>Forms</span>
               </a>
@@ -343,9 +319,7 @@ function LeftSidebar() {
                   <a href="pages/forms/basic-form-elements.html">Basic Form</a>
                 </li>
                 <li>
-                  <a href="pages/forms/advanced-form-elements.html">
-                    Advanced Form
-                  </a>
+                  <a href="pages/forms/advanced-form-elements.html">Advanced Form</a>
                 </li>
                 <li>
                   <a href="pages/forms/form-examples.html">Form Examples</a>
@@ -362,7 +336,7 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="grid" />
                 <span>Tables</span>
               </a>
@@ -371,17 +345,13 @@ function LeftSidebar() {
                   <a href="pages/tables/normal-tables.html">Normal Tables</a>
                 </li>
                 <li>
-                  <a href="pages/tables/advance-tables.html">
-                    Advance Datatables
-                  </a>
+                  <a href="pages/tables/advance-tables.html">Advance Datatables</a>
                 </li>
                 <li>
                   <a href="pages/tables/export-table.html">Export Table</a>
                 </li>
                 <li>
-                  <a href="pages/tables/child-row-table.html">
-                    Child Row Table
-                  </a>
+                  <a href="pages/tables/child-row-table.html">Child Row Table</a>
                 </li>
                 <li>
                   <a href="pages/tables/group-table.html">Grouping</a>
@@ -390,7 +360,7 @@ function LeftSidebar() {
             </li>
             <li className="header">-- Apps</li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="mail" />
                 <span>Email</span>
               </a>
@@ -431,7 +401,7 @@ function LeftSidebar() {
               </a>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="server" />
                 <span>Others</span>
               </a>
@@ -451,7 +421,7 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="pie-chart" />
                 <span>Charts</span>
               </a>
@@ -480,7 +450,7 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="map" />
                 <span>Maps</span>
               </a>
@@ -498,15 +468,13 @@ function LeftSidebar() {
             </li>
             <li className="header">-- Extra</li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="sliders" />
                 <span>Timeline</span>
               </a>
               <ul className="ml-menu">
                 <li>
-                  <a href="pages/timeline/horizontal-timeline.html">
-                    Horizontal
-                  </a>
+                  <a href="pages/timeline/horizontal-timeline.html">Horizontal</a>
                 </li>
                 <li>
                   <a href="pages/timeline/vertical-timeline.html">Vertical</a>
@@ -514,7 +482,7 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="image" />
                 <span>Medias</span>
               </a>
@@ -528,15 +496,13 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="user-check" />
                 <span>Authentication</span>
               </a>
               <ul className="ml-menu">
                 <li>
-                  <a href="pages/examples/login-register.html">
-                    Login &amp; Register
-                  </a>
+                  <a href="pages/examples/login-register.html">Login &amp; Register</a>
                 </li>
                 <li>
                   <a href="pages/examples/sign-in.html">Sign In</a>
@@ -545,9 +511,7 @@ function LeftSidebar() {
                   <a href="pages/examples/sign-up.html">Sign Up</a>
                 </li>
                 <li>
-                  <a href="pages/examples/forgot-password.html">
-                    Forgot Password
-                  </a>
+                  <a href="pages/examples/forgot-password.html">Forgot Password</a>
                 </li>
                 <li>
                   <a href="pages/examples/locked.html">Locked</a>
@@ -561,7 +525,7 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="anchor" />
                 <span>Extra Pages</span>
               </a>
@@ -581,42 +545,38 @@ function LeftSidebar() {
               </ul>
             </li>
             <li>
-              <a href="#" onclick="return false;" className="menu-toggle">
+              <a href="#" onClick="return false;" className="menu-toggle">
                 <i data-feather="chevrons-down" />
                 <span>Multi Level Menu</span>
               </a>
               <ul className="ml-menu">
                 <li>
-                  <a href="#" onclick="return false;">
+                  <a href="#" onClick="return false;">
                     <span>Menu Item</span>
                   </a>
                 </li>
                 <li>
-                  <a href="#" onclick="return false;">
+                  <a href="#" onClick="return false;">
                     <span>Menu Item - 2</span>
                   </a>
                 </li>
                 <li>
-                  <a href="#" onclick="return false;" className="menu-toggle">
+                  <a href="#" onClick="return false;" className="menu-toggle">
                     <span>Level - 2</span>
                   </a>
                   <ul className="ml-menu">
                     <li>
-                      <a href="#" onclick="return false;">
+                      <a href="#" onClick="return false;">
                         <span>Menu Item</span>
                       </a>
                     </li>
                     <li>
-                      <a
-                        href="#"
-                        onclick="return false;"
-                        className="menu-toggle"
-                      >
+                      <a href="#" onClick="return false;" className="menu-toggle">
                         <span>Level - 3</span>
                       </a>
                       <ul className="ml-menu">
                         <li>
-                          <a href="#" onclick="return false;">
+                          <a href="#" onClick="return false;">
                             <span>Level - 4</span>
                           </a>
                         </li>

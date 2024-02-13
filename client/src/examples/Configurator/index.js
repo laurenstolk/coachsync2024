@@ -139,7 +139,7 @@ function Configurator() {
       >
         <MDBox>
           <MDTypography variant="h5">Appearance Settings</MDTypography>
-{/*           <MDTypography variant="body2" color="text">
+          {/*           <MDTypography variant="body2" color="text">
             See our dashboard options.
           </MDTypography> */}
         </MDBox>
@@ -210,7 +210,7 @@ function Configurator() {
 
         <MDBox mt={3} lineHeight={1}>
           <MDTypography variant="h6">Navigation Menu Color</MDTypography>
-{/*           <MDTypography variant="button" color="text">
+          {/*           <MDTypography variant="button" color="text">
             Choose between different sidenav types.
           </MDTypography> */}
 
@@ -267,7 +267,7 @@ function Configurator() {
             </MDButton>
           </MDBox>
         </MDBox>
-{/*         <MDBox
+        {/*         <MDBox
           display="flex"
           justifyContent="space-between"
           alignItems="center"

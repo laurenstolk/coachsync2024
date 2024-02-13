@@ -117,7 +117,7 @@ function WellnessSetup() {
       soreness_checkin: sorenessCheckinValue,
       energy_checkin: energyCheckinValue,
     };
-  
+
     try {
       // Fetch profile data to get user's team ID
       const { data: profileData, error: profileError } = await supabase
@@ -125,24 +125,24 @@ function WellnessSetup() {
         .select("team_id")
         .eq("id", profile.id)
         .single();
-  
+
       if (profileError) {
         throw profileError;
       }
-  
+
       if (profileData) {
         const profileTeamID = profileData.team_id;
-  
+
         // Use the team ID fetched from the profile to update team wellness data
         const { data: updateData, error: updateError } = await supabase
           .from("team")
           .update(teamWellnessData)
           .eq("id", profileTeamID);
-  
+
         if (updateError) {
           throw updateError;
         }
-  
+
         console.log("Team added successfully!");
 
         toast.success("Perfect! Headed to your profile...", {
@@ -159,7 +159,6 @@ function WellnessSetup() {
       // Handle the error here
     }
   };
-  
 
   return (
     <CoverLayout image={bgImage}>
@@ -233,7 +232,13 @@ function WellnessSetup() {
               </MDBox>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton component={Link} variant="gradient" color="success" fullWidth onClick={handleSubmit}>
+              <MDButton
+                component={Link}
+                variant="gradient"
+                color="success"
+                fullWidth
+                onClick={handleSubmit}
+              >
                 Submit
               </MDButton>
             </MDBox>

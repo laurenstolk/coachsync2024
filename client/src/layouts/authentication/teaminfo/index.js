@@ -86,7 +86,7 @@ function TeamInfoUpdate() {
     const name = document.getElementById("team-name").value;
     const sport_id = selectedSport;
 
-    const isValid = name !== '';
+    const isValid = name !== "";
     setFormValid(isValid);
   };
 
@@ -95,7 +95,7 @@ function TeamInfoUpdate() {
       name: document.getElementById("team-name").value,
       sport_id: selectedSport, // use the selectedSport state variable
     };
-  
+
     try {
       // Use supabase client's api.post method to add data
       const { data, error } = await supabase.from("team").upsert([teamData]).select();
@@ -107,19 +107,19 @@ function TeamInfoUpdate() {
         console.log("Team added successfully!");
         // Extract the ID of the newly created team
         const teamId = data[0].id;
-  
+
         // Update the profile table with the team ID
         const profileUpdate = await supabase
           .from("profile")
           .update({ team_id: teamId })
           .eq("id", profile.id); // Assuming you have user_id in profile data
-  
+
         if (profileUpdate.error) {
           console.error("Error updating profile:", profileUpdate.error);
           // Handle the error here
           return;
         }
-  
+
         console.log("Profile updated successfully with team ID:", teamId);
       }
     } catch (error) {
@@ -127,7 +127,6 @@ function TeamInfoUpdate() {
       // Handle the error here
     }
   };
-
 
   return (
     <CoverLayout image={bgImage}>
@@ -158,7 +157,15 @@ function TeamInfoUpdate() {
                 What type of coach are you? (Head, Assistant, etc...)
               </MDTypography> */}
               <MDBox mb={2}>
-                <MDInput type="text" id="team-name" label="Team Name" variant="outlined" fullWidth required onChange={handleInputChange}/>
+                <MDInput
+                  type="text"
+                  id="team-name"
+                  label="Team Name"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  onChange={handleInputChange}
+                />
               </MDBox>
             </MDBox>
             <MDBox mb={2}>
@@ -220,8 +227,15 @@ function TeamInfoUpdate() {
               </MDBox>
             )}
             <MDBox mt={4} mb={1}>
-              <MDButton component={Link} to="/authentication/wellness-setup" variant="gradient" color={formValid ? "info" : "default"} fullWidth onClick={handleSubmit} disabled={!formValid}
->
+              <MDButton
+                component={Link}
+                to="/authentication/wellness-setup"
+                variant="gradient"
+                color={formValid ? "info" : "default"}
+                fullWidth
+                onClick={handleSubmit}
+                disabled={!formValid}
+              >
                 Next
               </MDButton>
             </MDBox>
