@@ -13,6 +13,8 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
+import { useEffect, useState } from "react";
+
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -53,11 +55,32 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import workoutsTableData from "layouts/tables/data/workoutsTableData";
 import exerciseTable from "layouts/tables/data/exercisesTableData";
 
+// Add supabase connection
+import { supabase } from "../../supabaseClient";
+
 function Tables() {
   const { columns, rows } = workoutsTableData();
   const { eCols, eRows } = exerciseTable();
+  const [workouts, setWorkouts] = useState([]);
+
   //   const { columns: pColumns, rows: pRows } = projectsTableData();
 
+  useEffect(() => {
+    // Fetch workout data from Supabase
+    const fetchWorkouts = async () => {
+      const { data: workoutsData, error } = await supabase
+        .from("customized_exercise")
+        .select("*")
+        .order("workout_id");
+      if (error) {
+        console.error("Error fetching workouts:", error.message);
+      } else {
+        setWorkouts(workoutsData);
+      }
+    };
+    fetchWorkouts();
+  }, []); 
+  
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Saved Workouts" />
@@ -110,11 +133,11 @@ function Tables() {
                                   <Typography variant="h6">{row.coach}</Typography>
                                   <Typography variant="caption">{row.date}</Typography>
                                 </Stack>
-                                <IconButton aria-label="more options">
+                                {/* <IconButton aria-label="more options">
                                   <Tooltip title="More options">
                                     <MoreVertIcon />
                                   </Tooltip>
-                                </IconButton>
+                                </IconButton> */}
                               </Stack>
                               <MDTypography variant="body2" color="text.secondary">
                                 {row.description}
@@ -130,19 +153,11 @@ function Tables() {
                                   </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                  {eRows.map((exercise, exerciseIndex) => (
+                                  {workouts.map((workout, exerciseIndex) => (
                                     <TableRow key={exerciseIndex}>
-                                      <TableCell>{eRows.name}</TableCell>
-                                      <TableCell>{eRows.sets}</TableCell>
-                                      <TableCell>{eRows.reps}</TableCell>
-                                      <TableCell>{eRows.duration}</TableCell>
-                                      <TableCell>{eRows.notes}</TableCell>
+                                      <TableCell>{workout.reps}</TableCell>
                                     </TableRow>
                                   ))}
-                                  {/*  <TableRow>
-                                    <TableCell style={{ minWidth: "150px" }}>{row.name}</TableCell>
-                                      <TableCell style={{ minWidth: "150px" }}>{row.exercises}</TableCell>
-                                    </TableRow> */}
                                 </TableBody>
                               </Table>
                             </Stack>
