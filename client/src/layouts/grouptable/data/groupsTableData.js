@@ -33,6 +33,7 @@ import { Link } from "react-router-dom"; // Import Link component
 export default function data() {
     const [groups, setGroups] = useState([]);
 
+
     async function getGroups() {
         try {
             const { data: profilesData, error: profilesError } = await supabase.from("profile").select("*");
@@ -71,6 +72,21 @@ export default function data() {
         getGroups();
     }, []);
 
+    const handleDeleteGroup = async (groupId) => {
+        try {
+          // Delete the group with the given ID
+          await supabase.from("team_group").delete().eq("id", groupId);
+    
+          // Delete group memberships associated with the group
+          await supabase.from("team_group_membership").delete().eq("team_group_id", groupId);
+    
+          // Filter out the deleted group from the state
+          setGroups(groups.filter(group => group.id !== groupId));
+        } catch (error) {
+          console.error("Error deleting group:", error.message);
+        }
+    };
+
     return {
         columns: [
             // { Header: "Group Name", accessor: "name", width: "20%", align: "left" },
@@ -94,12 +110,15 @@ export default function data() {
                 </MDTypography>
             ),
             actions: ( 
-                <MDBox>
+                <MDBox display="flex">
                     <Link to={`/editgroup/${group.id}`} onClick={() => console.log("Group ID:", group.id)}> {/* Use Link component to navigate */}
-                        <MDButton variant="text" color="dark">
-                            <Icon>edit</Icon>&nbsp;edit
-                        </MDButton>
+                    <MDButton variant="text" color="dark">
+                        <Icon>edit</Icon>&nbsp;edit
+                    </MDButton>
                     </Link>
+                    <MDButton variant="text" color="error" onClick={() => handleDeleteGroup(group.id)}>
+                        <Icon>delete</Icon>&nbsp;Delete
+                    </MDButton>
                 </MDBox>
             ),
         })),
