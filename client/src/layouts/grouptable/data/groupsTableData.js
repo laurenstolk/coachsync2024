@@ -9,7 +9,7 @@ import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 import MDProgress from "components/MDProgress";
 import MDButton from "components/MDButton";
-import { useHistory } from "react-router-dom";
+
 
 
 
@@ -27,11 +27,12 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { supabase } from "../../../supabaseClient";
 
 // for edit button
-import { Link } from "react-router-dom"; // Import Link component
+import { Link, useNavigate } from "react-router-dom"; // Import Link component
 
 
 export default function data() {
     const [groups, setGroups] = useState([]);
+    const navigate = useNavigate();
 
 
     async function getGroups() {
@@ -111,11 +112,11 @@ export default function data() {
             ),
             actions: ( 
                 <MDBox display="flex">
-                    <Link to={`/editgroup/${group.id}`} onClick={() => console.log("Group ID:", group.id)}> {/* Use Link component to navigate */}
-                    <MDButton variant="text" color="dark">
+                    {/* <Link to={`/editgroup/${group.id}`} onClick={() => console.log("Group ID:", group.id)}>  */}
+                    <MDButton variant="text" color="dark" onClick={() => navigate(`/editgroup/${group.id}`)}>
                         <Icon>edit</Icon>&nbsp;edit
                     </MDButton>
-                    </Link>
+                    
                     <MDButton variant="text" color="error" onClick={() => handleDeleteGroup(group.id)}>
                         <Icon>delete</Icon>&nbsp;Delete
                     </MDButton>
