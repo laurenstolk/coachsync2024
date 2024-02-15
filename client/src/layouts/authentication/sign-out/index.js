@@ -9,7 +9,7 @@ const SignOutButton = () => {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     // Redirect to the specific page after signing out
-    window.location.href = "/tables";
+    window.location.href = "/";
   };
 
   const handleCancel = () => {
