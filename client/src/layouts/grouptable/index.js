@@ -84,7 +84,7 @@ function Tables() {
                                   expandIcon={<ExpandMoreIcon />}
                               >
                                 {/* this is the row text that is showing on the table */}
-                                <TableCell style={{ paddingRight: 700 }} >{row.group}</TableCell>
+                                <TableCell style={{ paddingRight: 700 }} >{row.name}</TableCell>
                                 <TableCell align="right">
                                   <Button color="dark" component={Link} to={`/addgroup/${row.id}`} onClick={() => console.log("ID:", row.groupID)}>
                                     <Icon>edit</Icon>&nbsp;edit
@@ -105,11 +105,7 @@ function Tables() {
                                   </TableRow>
                                 </TableHead>
                                 <TableRow>
-                                  <TableCell style={{ paddingRight: 20 }}>{row.first}</TableCell>
-                                  <TableCell style={{ paddingRight: 20 }}>{row.last}</TableCell>
-                                  <TableCell style={{ paddingRight: 20 }}>{row.position}</TableCell>
-
-
+                                  <TableCell>{row.players}</TableCell>
                                 </TableRow>
                               </AccordionDetails>
                             </Accordion>
