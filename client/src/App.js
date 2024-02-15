@@ -323,6 +323,7 @@ export default function App() {
           {profile && profile.first_name ? (
             <Route path="*" element={<Navigate to="/dashboard" />} />
           ) : (
+            // <Route path="*" element={<Navigate to="/authentication/coachorplayer" />}
             <Route path="*" element={<Navigate to="/dashboard" />} />
           )}
         </Routes>

@@ -103,7 +103,7 @@ function PlayerorCoach() {
           mb={1}
           textAlign="center"
         >
-          {/* {profile && profile.first_name ? (
+          {profile && profile.first_name ? (
             <MDTypography variant="h4" fontWeight="light" color="white" mt={1}>
               First Name: {profile.first_name}
             </MDTypography>
@@ -114,7 +114,7 @@ function PlayerorCoach() {
           )}
           <MDTypography variant="h4" fontWeight="light" color="white" mt={1}>
             User Profile ID: {profile ? profile.id : ""}
-          </MDTypography> */}
+          </MDTypography>
           {/* <MDTypography variant="h4" fontWeight="light" color="white" mt={1}>
             Welcome to <strong style={{ fontWeight: "bold" }}>CoachSync</strong>
           </MDTypography> */}

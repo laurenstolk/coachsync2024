@@ -82,12 +82,13 @@ function Overview() {
               {profile && (
                 <ProfileInfoCard
                   title="profile information"
-                  description="Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
+                  description="WHAT UP!!!  Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
                   info={{
                     fullName: profile.first_name + " " + profile.last_name,
                     mobile: profile.phone_number,
                     email: profile.email,
                     birthdate: profile.birth_date,
+                    
                   }}
                   social={[
                     {
