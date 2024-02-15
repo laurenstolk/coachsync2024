@@ -73,6 +73,7 @@ import AddAssignment from "layouts/addassignment/index";
 
 import Groups2Icon from "@mui/icons-material/Groups2"; //grouptable icon
 import CompleteWorkout from "./layouts/completeworkout";
+import EditGroup from "./layouts/editgroup"
 
 const routes = [
   {
@@ -147,6 +148,14 @@ const routes = [
     icon: <Groups2Icon  fontSize="small">book</Groups2Icon >,
     route: "/addgroup",
     component: <AddGroup />,
+  },
+  {
+    type: "collapse",
+    name: "Edit Group",
+    key: "editgroup",
+    icon: <Groups2Icon  fontSize="small">book</Groups2Icon >,
+    route: "/editgroup",
+    component: <EditGroup />,
   },
   {
     type: "collapse",

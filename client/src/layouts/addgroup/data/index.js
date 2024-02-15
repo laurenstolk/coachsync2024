@@ -68,45 +68,7 @@ function AddGroup() {
     const handleGroupNameChange = (event) => {
         setGroupName(event.target.value);
     };
-
-    // const handleCreateGroup = async () => {
-    //     if (groupName.trim() === '') {
-    //         console.error('Group name cannot be empty');
-    //         return;
-    //     }
-    //     console.log("Data being inserted:", {
-    //         name: groupName,
-    //         team_id: 6, // Update with your dynamic value
-    //         coach_user_id: '7a67e500-aa25-4306-9d53-d204623ec00d' // Update with your dynamic value
-    //     });
     
-    //     if (selectedPlayers.length > 0) {
-    //         try {
-    //             // Insert a new group into the team_group table
-    //             const { data: newGroup, error: groupError } = await supabase
-    //                 .from("team_group")
-    //                 .insert([{ 
-    //                     name: groupName, 
-    //                     // Update these values as needed
-    //                     team_id: '6',
-    //                     coach_user_id: '7a67e500-aa25-4306-9d53-d204623ec00d' 
-    //                 }]);
-    //                 console.log("new group data:", groupName);
-    //             // Check for any errors during insertion
-    //             if (groupError) {
-    //                 console.error('Error inserting data:', groupError.message);
-    //                 return;
-    //             }
-    
-    //             console.log("New Group data:", newGroup);
-    
-    //             // Data insertion was successful
-    //             // You can proceed with any additional logic here
-    //         } catch (error) {
-    //             console.error('Error:', error.message);
-    //         }
-    //     }
-    // };
     const handleCreateGroup = async () => {
         const groupName = document.getElementById("group-name").value;
         const groupData = {

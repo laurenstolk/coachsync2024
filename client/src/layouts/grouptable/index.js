@@ -23,6 +23,7 @@ import MDTypography from "components/MDTypography";
 import Button from "@mui/material/Button"; // Import Button component
 import { useState } from 'react'; // Import useState hook
 
+
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -85,16 +86,15 @@ function Tables() {
                               >
                                 {/* this is the row text that is showing on the table */}
                                 <TableCell style={{ paddingRight: 700 }} >{row.name}</TableCell>
-                                <TableCell align="right">
+
+                                <TableCell>{row.actions}</TableCell>
+
+                                {/* <TableCell align="right">
                                   <Button color="dark" component={Link} to={`/addgroup/${row.id}`} onClick={() => console.log("ID:", row.groupID)}>
                                     <Icon>edit</Icon>&nbsp;edit
                                   </Button>
-                                </TableCell>
-                                <TableCell align="right">
-                                  <Button color="error" onClick={() => handleDelete(row)}>
-                                    <Icon>delete</Icon>&nbsp;delete
-                                  </Button>
-                                </TableCell>
+                                </TableCell> */}
+
                               </AccordionSummary>
                               <AccordionDetails >
                                 <TableHead>

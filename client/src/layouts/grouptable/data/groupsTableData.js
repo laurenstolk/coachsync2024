@@ -9,6 +9,8 @@ import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 import MDProgress from "components/MDProgress";
 import MDButton from "components/MDButton";
+import { useHistory } from "react-router-dom";
+
 
 
 
@@ -24,8 +26,13 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 // Add supabase connection
 import { supabase } from "../../../supabaseClient";
 
+// for edit button
+import { Link } from "react-router-dom"; // Import Link component
+
+
 export default function data() {
     const [groups, setGroups] = useState([]);
+
     async function getGroups() {
         try {
             const { data: profilesData, error: profilesError } = await supabase.from("profile").select("*");
@@ -86,61 +93,15 @@ export default function data() {
                     ))}
                 </MDTypography>
             ),
+            actions: ( 
+                <MDBox>
+                    <Link to={`/editgroup/${group.id}`} onClick={() => console.log("Group ID:", group.id)}> {/* Use Link component to navigate */}
+                        <MDButton variant="text" color="dark">
+                            <Icon>edit</Icon>&nbsp;edit
+                        </MDButton>
+                    </Link>
+                </MDBox>
+            ),
         })),
     };
 }
-//         columns: [
-//             { Header: "First Name", accessor: "first", width: "20%", align: "left" },
-//             { Header: "Last Name", accessor: "last", width: "20%", align: "left" },
-//             { Header: "Position", accessor: "position", width: "40%", align: "left" },
-
-//             // { Header: "Group", accessor: "group", width: "40%", align: "left" }, // New column for group name
-//             // { Header: "Edit", accessor: "edit", width: "10%", align: "right" },
-//             // { Header: "Delete", accessor: "delete", width: "10%", align: "right" },
-//         ],
-
-//         rows: groups
-//             .filter(group => group.team && group.team.name) // Filter out rows with empty first or last name
-//             .map(group => ({
-//                 first: (
-//                     <MDBox display="flex" py={1} pr={2.8} pl={2}>
-//                         {group.first_name}
-//                     </MDBox>
-//                 ),
-//                 last: (
-//                     <MDBox display="flex" py={1} pr={2.8}>
-//                         {group.last_name}
-//                     </MDBox>
-//                 ),
-//                 position: (
-//                     <MDTypography variant="text" pr={4}>
-//                         {group.position}
-//                     </MDTypography>
-//                 ),
-//                 group: (
-//                     <MDTypography variant="primary" fontWeight="medium">
-//                         {group.team ? group.team.name : ''} {/* Display group name if available */}
-//                     </MDTypography>
-//                 ),
-//                 edit: (
-//                     <MDBox>
-//                         <MDButton variant="text" color="dark" pr={4}>
-//                             <Icon>edit</Icon>&nbsp;edit
-//                         </MDButton>
-//                     </MDBox>
-//                 ),
-//                 delete: (
-//                     <MDBox mr={1}>
-//                         <MDButton variant="text" color="error" pr={1}>
-//                             <Icon>delete</Icon>&nbsp;delete
-//                         </MDButton>
-//                     </MDBox>
-//                 ),
-//                 groupID: (
-//                     <MDTypography variant="primary" fontWeight="medium">
-//                         {group.team.id}
-//                     </MDTypography>
-//                 ),
-//             })),
-//     };
-// }

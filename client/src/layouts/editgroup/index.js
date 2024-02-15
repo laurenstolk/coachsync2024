@@ -3,18 +3,18 @@ import DashboardNavbar from "../../examples/Navbars/DashboardNavbar";
 import MDBox from "../../components/MDBox";
 import Grid from "@mui/material/Grid";
 import Footer from "../../examples/Footer";
-import AddGroup from "./data/index";
+import EditGroup from "./components/editGroup"
 
 
-function AddingGroup() {
+function EditingGroup() {
     return (
         <DashboardLayout>
-            <DashboardNavbar pageTitle="Create Group" absolute isMini />
+            <DashboardNavbar pageTitle="Edit Group" absolute isMini />
             <MDBox mt={8}>
                 <MDBox mb={3}>
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={12}>
-                            <AddGroup />
+                            <EditGroup />
                         </Grid>
                     </Grid>
                 </MDBox>
@@ -24,4 +24,4 @@ function AddingGroup() {
     );
 }
 
-export default AddingGroup;
+export default EditingGroup;
