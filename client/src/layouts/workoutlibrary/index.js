@@ -14,178 +14,145 @@ Coded by www.creative-tim.com
 */
 
 import { useEffect, useState } from "react";
-
-// @mui material components
-import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-
-// Material Dashboard 2 React example components
-import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
-import DataTable from "examples/Tables/DataTable";
-
-// STOP UNDO
-
 import {
-  Stack,
-  Avatar,
-  Typography,
-  IconButton,
-  Tooltip,
+  Grid,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Button,
+  Icon,
+  Typography,
+  Card,
+  Box,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Link } from "react-router-dom";
 
-// Data
-import workoutsTableData from "layouts/tables/data/workoutsTableData";
-import exerciseTable from "layouts/tables/data/exercisesTableData";
-
-// Add supabase connection
+import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
+import DashboardNavbar from "examples/Navbars/DashboardNavbar";
+import Footer from "examples/Footer";
 import { supabase } from "../../supabaseClient";
 
 function Tables() {
-  const { columns, rows } = workoutsTableData();
-  const { eCols, eRows } = exerciseTable();
   const [workouts, setWorkouts] = useState([]);
-
-  //   const { columns: pColumns, rows: pRows } = projectsTableData();
+  const [customizedExercises, setCustomizedExercises] = useState([]);
+  const [exercises, setExercises] = useState([]);
 
   useEffect(() => {
-    // Fetch workout data from Supabase
-    const fetchWorkouts = async () => {
-      const { data: workoutsData, error } = await supabase
-        .from("customized_exercise")
-        .select("*")
-        .order("workout_id");
-      if (error) {
-        console.error("Error fetching workouts:", error.message);
-      } else {
-        setWorkouts(workoutsData);
+    const fetchData = async () => {
+      try {
+        const { data: workoutsData, error: workoutsError } = await supabase.from("workout").select("*");
+        const { data: customizedExercisesData, error: customizedExercisesError } = await supabase.from("customized_exercise").select("*");
+        const { data: exercisesData, error: exercisesError } = await supabase.from("exercise").select("*");
+
+        if (workoutsError || customizedExercisesError || exercisesError) {
+          throw new Error("Error fetching data");
+        }
+
+        setWorkouts(workoutsData || []);
+        setCustomizedExercises(customizedExercisesData || []);
+        setExercises(exercisesData || []);
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
       }
     };
-    fetchWorkouts();
-  }, []); 
-  
+
+    fetchData();
+  }, []);
+
+  const handleDelete = (row) => {
+    // Handle delete logic here
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Saved Workouts" />
-      <MDBox pt={3} pb={3}>
-        <Grid container spacing={6}>
-          <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-              >
-                <MDTypography variant="h6" color="white">
-                  Saved Workouts
-                </MDTypography>
-              </MDBox>
-              <MDBox pt={3}>
+      <Box mb={3}>
+        <Card variant="outlined" sx={{ borderRadius: 2, backgroundImage: "linear-gradient(to right, #1976d2, #6ab7ff)", color: "white" }}>
+          <Box p={2} sx={{ borderRadius: 2, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Typography variant="h6" fontWeight="bold" color="#fff">Saved Workouts</Typography>
+            <Button
+              variant="outlined"
+              component={Link}
+              to="/addworkout"
+              color="inherit"
+            >
+              Add Workout
+            </Button>
+          </Box>
+        </Card>
+      </Box>
+      <Grid container spacing={1}>
+        {workouts.map((workout) => (
+          <Grid item xs={12} key={workout.id}>
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography>{workout.workout_name}</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
                 <TableContainer component={Paper}>
-                  {/* <DataTable
-                    table={{ columns, rows }} //these are being drawn from the workoutsTableData
-                    isSorted={false}
-                    entriesPerPage={false}
-                    showTotalEntries={false}
-                    noEndBorder
-                  /> */}
                   <Table>
-                    <TableHead>
+                  <TableHead>
                       <TableRow>
-                        <TableCell style={{ minWidth: "150px" }}>Name</TableCell>
-                        <TableCell style={{ minWidth: "150px" }}>Exercises</TableCell>
+                        {customizedExercises.length > 0 &&
+                          Object.keys(customizedExercises[0]).map((key) => (
+                            <TableCell key={key} align="left">
+                              {key}
+                            </TableCell>
+                          ))}
+                          {exercises.length > 0 &&
+                            Object.keys(exercises[0]).map((key) => (
+                              <TableCell key={key} align="left">
+                                {key}
+                              </TableCell>
+                            ))}
+                        <TableCell align="left">Actions</TableCell> {/* Add Edit/Delete column */}
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {rows.map((row, rowIndex) => (
-                        <Accordion key={rowIndex}>
-                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            <TableCell style={{ minWidth: "150px" }}>{row.name}</TableCell>
-                            <TableCell style={{ minWidth: "150px" }}>{row.exercises}</TableCell>
-                          </AccordionSummary>
-                          <AccordionDetails sx={{ p: 2 }}>
-                            <Stack spacing={2}>
-                              <Stack direction="row" alignItems="center" spacing={2}>
-                                {/* <Avatar sx={{ bgcolor: "info.main" }}>{row.coach[0].toUpperCase()}</Avatar> */}
-                                <Stack>
-                                  <Typography variant="h6">{row.coach}</Typography>
-                                  <Typography variant="caption">{row.date}</Typography>
-                                </Stack>
-                                {/* <IconButton aria-label="more options">
-                                  <Tooltip title="More options">
-                                    <MoreVertIcon />
-                                  </Tooltip>
-                                </IconButton> */}
-                              </Stack>
-                              <MDTypography variant="body2" color="text.secondary">
-                                {row.description}
-                              </MDTypography>
-                              <Table>
-                                <TableHead>
-                                  <TableRow>
-                                    <TableCell>Exercise</TableCell>
-                                    <TableCell>Sets</TableCell>
-                                    <TableCell>Reps</TableCell>
-                                    <TableCell>Duration</TableCell>
-                                    <TableCell>Coach&apos;s Notes</TableCell>
-                                  </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                  {workouts.map((workout, exerciseIndex) => (
-                                    <TableRow key={exerciseIndex}>
-                                      <TableCell>{workout.reps}</TableCell>
-                                    </TableRow>
-                                  ))}
-                                </TableBody>
-                              </Table>
-                            </Stack>
-                            {/* <TableHead>
-                              <TableRow>
-                                {columns.map((column, colIndex) => (
-                                  <TableCell key={colIndex}>{column.Header}</TableCell>
-                                ))}
-                              </TableRow>
-                            </TableHead>
-                            <TableRow>
-                              <TableCell style={{ paddingRight: 20 }}>{row.name}</TableCell>
-                              <TableCell style={{ paddingRight: 20 }}>{row.exercises}</TableCell>
-
-                              <TableCell align="right">{row.edit}</TableCell>
-                              <TableCell align="right">{row.delete}</TableCell>                     
-                            </TableRow> */}
-                          </AccordionDetails>
-                        </Accordion>
-                      ))}
+                      {customizedExercises
+                        .filter((exercise) => exercise.workout_id === workout.id)
+                        .map((exercise) => {
+                          const matchedExercise = exercises.find((ex) => ex.id === exercise.exercise_id);
+                          return (
+                            <TableRow key={exercise.id}>
+                              <TableCell align="left">{matchedExercise ? matchedExercise.name : ""}</TableCell>
+                              <TableCell align="left">{exercise.sets}</TableCell>
+                              <TableCell align="left">{exercise.reps}</TableCell>
+                              <TableCell align="left">{exercise.duration}</TableCell>
+                              <TableCell align="left">{exercise.coach_notes}</TableCell>
+                              <TableCell>
+                                <Button
+                                  color="inherit"
+                                  component={Link}
+                                  to={`/editexercise/${exercise.id}`}
+                                >
+                                  <Icon>edit</Icon>Edit
+                                </Button>
+                                <Button color="error" onClick={() => handleDelete(exercise)}>
+                                  <Icon>delete</Icon>Delete
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      {/* Add some space below the last item in the table */}
+                      <TableRow style={{ height: 50 }}></TableRow>
                     </TableBody>
                   </Table>
                 </TableContainer>
-              </MDBox>
-            </Card>
+              </AccordionDetails>
+            </Accordion>
           </Grid>
-        </Grid>
-      </MDBox>
+        ))}
+      </Grid>
       <Footer />
     </DashboardLayout>
   );
