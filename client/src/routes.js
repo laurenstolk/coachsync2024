@@ -74,6 +74,7 @@ import AddAssignment from "layouts/addassignment/index";
 import Groups2Icon from "@mui/icons-material/Groups2"; //grouptable icon
 import CompleteWorkout from "./layouts/completeworkout";
 import EditGroup from "./layouts/editgroup"
+import ViewAssignment from "./layouts/viewassignment"
 
 const routes = [
   {
@@ -180,6 +181,14 @@ const routes = [
     icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
     route: "/addassignment",
     component: <AddAssignment />,
+  },
+  {
+    type: "collapse",
+    name: "View Assigned Workouts",
+    key: "viewassignment",
+    icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
+    route: "/viewassignment",
+    component: <ViewAssignment />,
   },
   {
     type: "collapse",

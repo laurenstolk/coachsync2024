@@ -39,7 +39,8 @@ export default function data() {
   const [profiles, setProfiles] = useState([]);
   async function getProfiles() {
     try {
-      const { data, error } = await supabase.from("profile").select("*");
+      const { data, error } = await supabase.from("profile").select("*").not("first_name", "is", null) // Filter out entries where first_name is null
+      .not("last_name", "is", null);
       if (error) throw error;
       if (data != null) {
         setProfiles(data);

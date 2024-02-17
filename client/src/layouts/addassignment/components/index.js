@@ -58,7 +58,8 @@ function AddAssignment() {
 
   async function getProfiles() {
     try {
-      const { data, error } = await supabase.from("profile").select("*");
+      const { data, error } = await supabase.from("profile").select("*").not("first_name", "is", null) // Filter out entries where first_name is null
+      .not("last_name", "is", null);
 
       if (error) throw error;
 
@@ -101,7 +102,7 @@ function AddAssignment() {
     toast.success("Workout assigned successfully!", {
       autoClose: 2000,
       onClose: () => {
-        navigate("/workoutlibrary");
+        navigate("/viewassignment");
       },
     });
     } catch (error) {
