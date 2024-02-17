@@ -20,6 +20,8 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import  { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 
 function AddAssignment() {
@@ -95,8 +97,13 @@ function AddAssignment() {
         throw error;
       }
 
-      // Handle success
-      alert("Workout assigned successfully!");
+      // Handle success with a toast notification and redirection
+    toast.success("Workout assigned successfully!", {
+      autoClose: 2000,
+      onClose: () => {
+        navigate("/workoutlibrary");
+      },
+    });
     } catch (error) {
       console.error("Error assigning workout:", error.message);
     }
