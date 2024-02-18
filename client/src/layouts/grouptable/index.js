@@ -85,7 +85,7 @@ function Tables() {
                                   expandIcon={<ExpandMoreIcon />}
                               >
                                 {/* this is the row text that is showing on the table */}
-                                <TableCell style={{ paddingRight: 700 }} >{row.name}</TableCell>
+                                <TableCell style={{ paddingRight: 700, fontWeight: 'bold'}} >{row.name}</TableCell>
 
                                 <TableCell>{row.actions}</TableCell>
 

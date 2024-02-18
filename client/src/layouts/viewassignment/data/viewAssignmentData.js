@@ -5,6 +5,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import MDBox from "components/MDBox";
 import { supabase } from "../../../supabaseClient";
 
+
 export default function ViewAssignedWorkouts() {
   const [assignments, setAssignments] = useState([]);
 
@@ -78,8 +79,8 @@ export default function ViewAssignedWorkouts() {
       console.error("Error fetching assignments:", error.message);
     }
   }
-
   return {
+    
     columns: [
       { Header: "Workout Name", accessor: "workout_name", width: "20%", align: "left" },
       { Header: "Assigned Date", accessor: "date", width: "20%", align: "left" },
@@ -95,7 +96,7 @@ export default function ViewAssignedWorkouts() {
       ),
       date: (
         <MDBox display="flex" py={1}>
-          {assignment.date}
+            {assignment.date}
         </MDBox>
       ),
       player_ids: (
