@@ -34,6 +34,8 @@ function AddAssignment() {
   const [profiles, setProfiles] = useState([]);
   const [workoutNotes, setWorkoutNotes] = useState("");
   const [selectAllPlayers, setSelectAllPlayers] = useState(false); // New state for "All Players" checkbox
+  const [showPastDateError, setShowPastDateError] = useState(false); // State to control error message display
+
 
 
 
@@ -116,9 +118,37 @@ function AddAssignment() {
     console.log("Selected Workout:", selectedWorkout);
   };
   //  Function to handle date selection
+  // const handleDateChange = (newValue) => {
+  //   setSelectedDate(newValue);
+  //   console.log("Selected Date:", newValue);
+  // };
+   //  Function to handle date selection
+  //  const handleDateChange = (newValue) => {
+  //   if (newValue < new Date()) {
+  //     // If selected date is in the past, show error message
+  //     setShowPastDateError(true);
+  //     setSelectedDate(null); // Reset selected date
+  //   } else {
+  //     setShowPastDateError(false); // Hide error message if date is valid
+  //     setSelectedDate(newValue);
+  //     console.log("Selected Date:", newValue);
+  //   }
+  // };
+  
   const handleDateChange = (newValue) => {
-    setSelectedDate(newValue);
-    console.log("Selected Date:", newValue);
+    const currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() - 1); // Set currentDate to today - 1 day
+
+    
+    // If the selected date is before today or null, show error message
+    if (!newValue || newValue >= currentDate) {
+      setShowPastDateError(false);
+      setSelectedDate(newValue);
+      console.log("Selected Date:", newValue);
+    } else {
+      setShowPastDateError(true);
+      setSelectedDate(null); // Reset selected date
+    }
   };
 
 
