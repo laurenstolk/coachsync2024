@@ -23,6 +23,7 @@ import MDTypography from "components/MDTypography";
 import Button from "@mui/material/Button"; // Import Button component
 import { useState } from "react"; // Import useState hook
 
+
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -104,36 +105,39 @@ function Tables() {
                                 to={`/addgroup/${row.id}`}
                                 onClick={() => console.log("ID:", row.groupID)}
                               >
-                                <Icon>edit</Icon>&nbsp;edit
-                              </Button>
-                            </TableCell>
-                            <TableCell align="right">
-                              <Button color="error" onClick={() => handleDelete(row)}>
-                                <Icon>delete</Icon>&nbsp;delete
-                              </Button>
-                            </TableCell>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                            <TableHead>
-                              <TableRow>
-                                {columns.map((column, index) => (
-                                  <TableCell key={index}>{column.Header}</TableCell> // the column header
-                                ))}
-                              </TableRow>
-                            </TableHead>
-                            <TableRow>
-                              <TableCell style={{ paddingRight: 20 }}>{row.first}</TableCell>
-                              <TableCell style={{ paddingRight: 20 }}>{row.last}</TableCell>
-                              <TableCell style={{ paddingRight: 20 }}>{row.position}</TableCell>
-                            </TableRow>
-                          </AccordionDetails>
-                        </Accordion>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </MDBox>
-            </Card>
+                                {/* this is the row text that is showing on the table */}
+                                <TableCell style={{ paddingRight: 700, fontWeight: 'bold'}} >{row.name}</TableCell>
+
+                                <TableCell>{row.actions}</TableCell>
+
+                                {/* <TableCell align="right">
+                                  <Button color="dark" component={Link} to={`/addgroup/${row.id}`} onClick={() => console.log("ID:", row.groupID)}>
+                                    <Icon>edit</Icon>&nbsp;edit
+                                  </Button>
+                                </TableCell> */}
+
+                              </AccordionSummary>
+                              <AccordionDetails >
+                                <TableHead>
+                                  <TableRow>
+                                    {columns.map((column, index) => (
+                                        <TableCell key={index}>{column.Header}</TableCell> // the column header
+                                    ))}
+                                  </TableRow>
+                                </TableHead>
+                                <TableRow>
+                                  <TableCell>{row.players}</TableCell>
+                                </TableRow>
+                              </AccordionDetails>
+                            </Accordion>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </MDBox>
+              </Card>
+            </Grid>
+
           </Grid>
         </Grid>
       </MDBox>
