@@ -37,18 +37,19 @@ function ViewCalendar() {
       const { data: assignmentData, error: assignmentError } = await supabase.from("assignment").select("*");
       if (assignmentError) throw assignmentError;
 
-      // Group assignments by name and date
-      const groupedAssignments = {};
-      assignmentData.forEach(assignment => {
-        const key = `${assignment.name}-${assignment.date}`;
+      // Group assignments by date, notes, and workout_id
+        const groupedAssignments = {};
+        assignmentData.forEach(assignment => {
+        const key = `${assignment.date}-${assignment.notes}-${assignment.workout_id}`;
         if (!groupedAssignments[key]) {
-          groupedAssignments[key] = { ...assignment, player_ids: [assignment.player_id] };
+            groupedAssignments[key] = { ...assignment, player_ids: [assignment.player_id] };
         } else {
-          groupedAssignments[key].player_ids.push(assignment.player_id);
+            groupedAssignments[key].player_ids.push(assignment.player_id);
         }
-      });
-       // Convert grouped assignments back to an array
-       const assignmentsWithGroupedPlayers = Object.values(groupedAssignments);
+        });
+
+    // Convert grouped assignments back to an array
+    const assignmentsWithGroupedPlayers = Object.values(groupedAssignments);
 
        // Fetch data from the workout table
        const { data: workoutData, error: workoutError } = await supabase.from("workout").select("*");
@@ -100,6 +101,8 @@ function ViewCalendar() {
         setSelectedDate(newValue);
         console.log("Selected Date:", newValue);
     };
+
+
  
     return (
         <DashboardLayout>
@@ -136,34 +139,73 @@ function ViewCalendar() {
                           />
                         </div>
                         {selectedDate && (
-                          <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }}>
-                            {/* Display assignment details for the selected date */}
-                            {/* You can map through assignments to find the one with the matching date */}
-                            {assignments.map(assignment => {
-                            // Convert assignment date to a Date object for comparison
-                            const assignmentDate = new Date(assignment.date);
-                            assignmentDate.setDate(assignmentDate.getDate() +1);
-                            console.log("assignment dates:", assignmentDate);
+                            <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }}>
+                                {/* Display assignment details for the selected date */}
+                                {/* Filter assignments for the selected date */}
+                                {assignments
+                                    .filter(assignment => {
+                                        // Convert assignment date to a Date object for comparison
+                                        const assignmentDate = new Date(assignment.date);
+                                        assignmentDate.setDate(assignmentDate.getDate() + 1);
 
-                            // Convert selectedDate to a Date object for comparison
-                             const selectedDateObject = new Date(selectedDate);
-                            console.log("selectedDate:", selectedDate);
-                            if (
-                                assignmentDate.getFullYear() === selectedDateObject.getFullYear() &&
-                                assignmentDate.getMonth() === selectedDateObject.getMonth() &&
-                                assignmentDate.getDate() === selectedDateObject.getDate()
-                            ) {
-                                return (
-                                    <div key={assignment.id}>
-                                        <p>Date: {assignment.date}</p>
-                                        <p>Workout Name: {assignment.workout_name}</p>
-                                        <p>Notes: {assignment.notes}</p>
-                                    </div>
-                                );
-                            } 
-                            return null;
-                            })}
-                          </div>
+                                        // Convert selectedDate to a Date object for comparison
+                                        const selectedDateObject = new Date(selectedDate);
+
+                                        return (
+                                            assignmentDate.getFullYear() === selectedDateObject.getFullYear() &&
+                                            assignmentDate.getMonth() === selectedDateObject.getMonth() &&
+                                            assignmentDate.getDate() === selectedDateObject.getDate()
+                                        );
+                                    })
+                                    .map((assignment, index, array) => {
+                                        // Check if there are multiple assignments with the same date but different notes
+                                        const differentNotes = array.filter(
+                                            item => item.date === assignment.date && item.notes !== assignment.notes
+                                        );
+                                        console.log("diff notes:", differentNotes)
+
+                                        // If there are assignments with different notes, display a new row for each one
+                                        if (differentNotes.length > 0) {
+                                            return (
+                                                <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '5px' }} key={assignment.id}>
+                                                    <p>Date: {assignment.date}</p>
+                                                    <p>Workout Name: {assignment.workout_name}</p>
+                                                    <p>Notes: {assignment.notes}</p>
+                                                    <p>Assigned to: {assignment.player_ids}</p>
+                                                </div>
+                                            );
+                                        }
+
+                                        // Otherwise, display the assignment details
+                                        return (
+                                            <div key={assignment.id}>
+                                                <p>Date: {assignment.date}</p>
+                                                <p>Workout Name: {assignment.workout_name}</p>
+                                                <p>Notes: {assignment.notes}</p>
+                                                <p>Assigned to: {assignment.player_ids}</p>
+                                            </div>
+                                        );
+                                    })}
+                                    {/* If no assignments are found, display a message */}
+                                    {assignments.filter(assignment => {
+                                        // Convert assignment date to a Date object for comparison
+                                        const assignmentDate = new Date(assignment.date);
+                                        assignmentDate.setDate(assignmentDate.getDate() + 1);
+
+                                        // Convert selectedDate to a Date object for comparison
+                                        const selectedDateObject = new Date(selectedDate);
+
+                                        return (
+                                            assignmentDate.getFullYear() === selectedDateObject.getFullYear() &&
+                                            assignmentDate.getMonth() === selectedDateObject.getMonth() &&
+                                            assignmentDate.getDate() === selectedDateObject.getDate()
+                                        );
+                                        }).length === 0 && (
+                                        <div>
+                                            <p>No Assignments</p>
+                                        </div>
+                                        )}
+                            </div>
                         )}
                       </div>
                     </LocalizationProvider>

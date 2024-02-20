@@ -19,10 +19,10 @@ export default function ViewAssignedWorkouts() {
       const { data: assignmentData, error: assignmentError } = await supabase.from("assignment").select("*");
       if (assignmentError) throw assignmentError;
 
-      // Group assignments by name and date
+      // Group assignments by date, notes, and workout_id
       const groupedAssignments = {};
       assignmentData.forEach(assignment => {
-        const key = `${assignment.name}-${assignment.date}`;
+        const key = `${assignment.date}-${assignment.notes}-${assignment.workout_id}`;
         if (!groupedAssignments[key]) {
           groupedAssignments[key] = { ...assignment, player_ids: [assignment.player_id] };
         } else {
@@ -30,8 +30,8 @@ export default function ViewAssignedWorkouts() {
         }
       });
 
-      // Convert grouped assignments back to an array
-      const assignmentsWithGroupedPlayers = Object.values(groupedAssignments);
+    // Convert grouped assignments back to an array
+    const assignmentsWithGroupedPlayers = Object.values(groupedAssignments);
 
       // Fetch data from the workout table
       const { data: workoutData, error: workoutError } = await supabase.from("workout").select("*");
