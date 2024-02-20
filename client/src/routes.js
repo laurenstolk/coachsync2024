@@ -75,6 +75,8 @@ import Groups2Icon from "@mui/icons-material/Groups2"; //grouptable icon
 import CompleteWorkout from "./layouts/completeworkout";
 import EditGroup from "./layouts/editgroup"
 import ViewAssignment from "./layouts/viewassignment"
+import ViewCalendar from "./layouts/viewcalendar"
+
 
 const routes = [
   {
@@ -189,6 +191,14 @@ const routes = [
     icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
     route: "/viewassignment",
     component: <ViewAssignment />,
+  },
+  {
+    type: "collapse",
+    name: "Team Calendar",
+    key: "viewcalendar",
+    icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
+    route: "/viewcalendar",
+    component: <ViewCalendar />,
   },
   {
     type: "collapse",
