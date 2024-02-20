@@ -3,6 +3,7 @@ import Card from "@mui/material/Card";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
+
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
@@ -10,6 +11,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { supabase } from "../../../supabaseClient";
 import DateCalendarValue from "./calendar";
 import IndeterminateCheckbox from "../components/checkboxList";
+
 import MDBox from "../../../components/MDBox";
 import MDTypography from "../../../components/MDTypography";
 
@@ -21,6 +23,7 @@ import  { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 
 
 
@@ -43,6 +46,7 @@ function AddAssignment() {
     getWorkouts();
     getProfiles();
   }, []);
+
 
   async function getWorkouts() {
     try {
@@ -183,6 +187,7 @@ const handleSelectAllPlayersChange = (event) => {
   const checked = event.target.checked;
   setSelectAllPlayers(checked);
 
+
   if (checked) {
     const allPlayerIds = profiles.map((profile) => profile.id);
     setSelectedPlayers(allPlayerIds);
@@ -217,6 +222,7 @@ const handleSelectAllPlayersChange = (event) => {
                 ))}
               </Select>
         </FormControl>
+
         </MDBox>
       </MDBox>
       <Grid container spacing={2}>
@@ -233,14 +239,17 @@ const handleSelectAllPlayersChange = (event) => {
                 onChange={handleDateChange} 
               />
 
+
             </MDBox>
           </MDBox>
           {/* assignment notes: (textfield) */}
           <MDBox pt={1} pb={2} px={2}>
             <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+
               <MDTypography variant="h9">
                 Assignment Notes:
               </MDTypography>
+
               <br></br>
               <TextField
                 id="filled-textarea"
@@ -250,6 +259,7 @@ const handleSelectAllPlayersChange = (event) => {
                 value={workoutNotes} // Set the value of the TextField to workoutNotes
                 onChange={(event) => setWorkoutNotes(event.target.value)} // Update workoutNotes when the user types
               />
+
             </MDBox>
           </MDBox>
         </Grid>
@@ -272,6 +282,7 @@ const handleSelectAllPlayersChange = (event) => {
                   }
                   label="All Players"
                 />
+
               </FormGroup>
             </MDBox>
             <br></br>
@@ -291,6 +302,7 @@ const handleSelectAllPlayersChange = (event) => {
                     label="Search for players here"
                     placeholder="Assign to:"
                   />
+
                 )}
               />
             </MDBox>
@@ -308,11 +320,13 @@ const handleSelectAllPlayersChange = (event) => {
                 }} 
               />
               {/* <IndeterminateCheckbox onSelectPlayers={(players) => setSelectedPlayers(players)} /> */}
+
             </MDBox>
           </MDBox>
         </Grid>
       </Grid>
       <MDBox display="flex" justifyContent="flex-end" px={2} pb={2}>
+
         <Button variant="contained" color="primary" onClick={handleAssignWorkout}>
           <MDTypography variant="caption" color="white" fontWeight="bold" textTransform="uppercase">
             Assign
@@ -322,5 +336,4 @@ const handleSelectAllPlayersChange = (event) => {
     </Card>
   );
 }
-
 export default AddAssignment;

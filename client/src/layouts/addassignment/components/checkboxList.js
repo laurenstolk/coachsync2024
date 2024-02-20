@@ -316,6 +316,7 @@ export default function IndeterminateCheckbox({ onSelectPlayers }) {
             label={group.name}
             control={
               <Checkbox
+
                 checked={group.checked || false}
                 onChange={(event) => handleGroupChange(event, groupIndex)}
               />
@@ -328,10 +329,12 @@ export default function IndeterminateCheckbox({ onSelectPlayers }) {
                 label={`${member.first_name} ${member.last_name}`}
                 control={
                   <Checkbox
+
                     checked={member.checked || false}
                     onChange={(event) =>
                       handleMemberChange(event, groupIndex, memberIndex)
                     }
+
                   />
                 }
               />
@@ -346,3 +349,4 @@ export default function IndeterminateCheckbox({ onSelectPlayers }) {
 IndeterminateCheckbox.propTypes = {
   onSelectPlayers: PropTypes.func.isRequired,
 };
+
