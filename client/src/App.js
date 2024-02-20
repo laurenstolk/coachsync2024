@@ -3,7 +3,8 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { useState, useEffect, useMemo, Component, Suspense } from "react";
 
 // react-router components
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Route, Navigate } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -76,7 +77,6 @@ export default function App() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true); // Introduce a loading state
 
-  // const hasFirstName = true;
   const hasFirstName = profile && profile.first_name !== null;
 
   useEffect(() => {

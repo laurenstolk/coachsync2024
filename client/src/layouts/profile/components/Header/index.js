@@ -39,10 +39,14 @@ import backgroundImage from "assets/images/bg-profile.jpeg";
 import { supabase } from "../../../../supabaseClient";
 import { getProfilePicURL } from "../../../../getProfilePicUrl";
 import { fetchUserProfile } from "../../../../fetchUserProfile";
+import { getTeamLogoURL } from "../../../../getTeamLogoUrl";
+import { fetchTeamInfo } from "../../../../fetchTeamInfo";
 
 function Header({ children }) {
   const [profile, setProfile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const [teamData, setTeamData] = useState(null);
+  const [logoUrl, setLogoUrl] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +58,46 @@ function Header({ children }) {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchTeamInfo();
+      const url = await getTeamLogoURL(data?.logo_picture);
+
+      setTeamData(data);
+      setLogoUrl(url);
+      console.log("team: ", data);
+    };
+    fetchData();
+  }, []);
+
+  const [sportName, setSportName] = useState('');
+
+  useEffect(() => {
+    async function fetchSportName() {
+      if (teamData && teamData.sport_id) {
+        try {
+          const { data, error } = await supabase
+            .from('sport')
+            .select('name')
+            .eq('id', teamData.sport_id)
+            .single();
+
+          if (error) {
+            throw error;
+          }
+
+          if (data) {
+            setSportName(data.name);
+          }
+        } catch (error) {
+          console.error('Error fetching sport name:', error.message);
+        }
+      }
+    }
+
+    fetchSportName();
+  }, [teamData]); // Fetch sport name whenever teamData changes
 
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
@@ -122,7 +166,44 @@ function Header({ children }) {
               </MDTypography>
             </MDBox>
           </Grid>
-          <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
+          <Grid item>
+            <MDAvatar src={logoUrl} alt="logo-image" size="xxl" shadow="sm" />
+          </Grid>
+          <Grid item>
+            <MDBox height="100%" mt={0.5} lineHeight={1}>
+              <MDTypography variant="h5" fontWeight="medium">
+                {teamData ? teamData.name : ""}
+              </MDTypography>
+              <MDTypography variant="button" color="text" fontWeight="regular">
+                {teamData ? sportName : ""}
+              </MDTypography>
+            </MDBox>
+          </Grid>
+        </Grid>
+        {children}
+      </Card>
+    </MDBox>
+  );
+}
+
+// Setting default props for the Header
+Header.defaultProps = {
+  children: "",
+};
+
+// Typechecking props for the Header
+Header.propTypes = {
+  children: PropTypes.node,
+};
+
+export default Header;
+
+
+
+
+
+// setting bar on if we need it
+
             {/* <AppBar position="static">
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
@@ -151,22 +232,4 @@ function Header({ children }) {
                 />
               </Tabs>
             </AppBar> */}
-          </Grid>
-        </Grid>
-        {children}
-      </Card>
-    </MDBox>
-  );
-}
-
-// Setting default props for the Header
-Header.defaultProps = {
-  children: "",
-};
-
-// Typechecking props for the Header
-Header.propTypes = {
-  children: PropTypes.node,
-};
-
-export default Header;
+          {/* </Grid> */}

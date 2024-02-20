@@ -37,6 +37,7 @@ import { supabase } from "../../../supabaseClient";
 
 export default function data() {
   const [profiles, setProfiles] = useState([]);
+  
   async function getProfiles() {
     try {
       const { data, error } = await supabase.from("profile").select("*");
