@@ -9,25 +9,19 @@ import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 import MDProgress from "components/MDProgress";
 import MDButton from "components/MDButton";
+
+
+
+
+
 // Images
 import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 
 //accordian table stuff
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 // Add supabase connection
 import { supabase } from "../../../supabaseClient";
@@ -37,7 +31,6 @@ import { Link, useNavigate } from "react-router-dom"; // Import Link component
 
 
 export default function data() {
-
     const [groups, setGroups] = useState([]);
     const navigate = useNavigate();
 
@@ -47,13 +40,11 @@ export default function data() {
             const { data: profilesData, error: profilesError } = await supabase.from("profile").select("*");
             if (profilesError) throw profilesError;
 
-      const { data: membershipData, error: membershipError } = await supabase
-        .from("team_group_membership")
-        .select("*");
-      if (membershipError) throw membershipError;
+            const { data: membershipData, error: membershipError } = await supabase.from("team_group_membership").select("*");
+            if (membershipError) throw membershipError;
 
-      const { data: teamData, error: teamError } = await supabase.from("team_group").select("*");
-      if (teamError) throw teamError;
+            const { data: teamData, error: teamError } = await supabase.from("team_group").select("*");
+            if (teamError) throw teamError;
 
             // const groupsWithMembership = profilesData.map(profile => {
             //     const membership = membershipData.find(membership => membership.player_user_id === profile.id);
@@ -76,18 +67,11 @@ export default function data() {
             setGroups(groupsWithMembership);
         } catch (error) {
             alert(error.message);
-
         }
-        return profile;
-      });
-      setGroups(groupsWithMembership);
-    } catch (error) {
-      alert(error.message);
     }
-  }
-  useEffect(() => {
-    getGroups();
-  }, []);
+    useEffect(() => {
+        getGroups();
+    }, []);
 
     const handleDeleteGroup = async (groupId) => {
         try {
@@ -141,4 +125,3 @@ export default function data() {
         })),
     };
 }
-
