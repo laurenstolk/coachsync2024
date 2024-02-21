@@ -114,19 +114,24 @@ import PropTypes from 'prop-types';
 // split into three tables: Today, Upcoming, &
 function Tables() {
     const { columns, rows } = Data();
-  
-    // Get today's date
-    const today = new Date().toISOString().split('T')[0];
-    
-   // Filter data into three separate tables
-    const assignedToday = rows.filter(row => row.date === today);
-    const upcomingAssignments = rows.filter(row => row.date > today);
-    const pastAssignments = rows.filter(row => row.date < today);
-    
-    console.log("assigned today:", assignedToday)
-    console.log("assigned upcoming:", upcomingAssignments)
-    console.log("past assigned:", pastAssignments)
+    console.log("Rows data:", rows);
+  // Map over the rows and convert the date to a string if it's a React element
+  const formattedRows = rows.map(row => {
+    // If the date is a React element, extract its content
+    const date = typeof row.date === 'object' ? row.date.props.children : row.date;
+    // If the date is in a different format, convert it to 'YYYY-MM-DD'
+    const formattedDate = new Date(date).toISOString().split('T')[0];
+    // Return the row with the formatted date
+    return { ...row, date: formattedDate };
+  });
 
+  console.log("Formatted rows:", formattedRows);
+  
+  const today = new Date().toISOString().split('T')[0]; // Get today's date in 'YYYY-MM-DD' format
+
+  const assignedToday = formattedRows.filter(row => row.date === today);
+  const upcomingAssignments = formattedRows.filter(row => row.date > today);
+  const pastAssignments = formattedRows.filter(row => row.date < today);
 
     return (
       <DashboardLayout>
@@ -328,6 +333,6 @@ function Tables() {
          <Footer />
        </DashboardLayout>
     );
-  }
+}
   
-  export default Tables;
+export default Tables;
