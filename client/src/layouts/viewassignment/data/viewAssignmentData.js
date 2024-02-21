@@ -4,6 +4,7 @@ import MDButton from "components/MDButton";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import MDBox from "components/MDBox";
 import { supabase } from "../../../supabaseClient";
+import { date } from "yup";
 
 
 export default function ViewAssignedWorkouts() {
@@ -60,6 +61,7 @@ export default function ViewAssignedWorkouts() {
       // Join assignment data with workout data based on workout_id
       const assignmentsWithWorkouts = assignmentsWithGroupedPlayers.map(assignment => ({
         ...assignment,
+        date: new Date(assignment.date).toISOString().split('T')[0], // Standardize date format
         workout_name: workoutMap[assignment.workout_id]?.workout_name || 'Unknown Workout', // Use a default value if workout is not found
         player_ids: assignment.player_ids.map(player_id => {
             const profile = profileMap[player_id];
@@ -68,7 +70,12 @@ export default function ViewAssignedWorkouts() {
             } else {
               return 'Unknown Player';
             }
-          }).join(', ')      }));
+          }).join(', ')      
+        }));
+        // Log each standardized date for debugging
+        assignmentsWithWorkouts.forEach(assignment => {
+          console.log("Standardized date from database:", assignment.date);
+        });
 
       // Sort assignments by date (closest to farthest)
       assignmentsWithWorkouts.sort((a, b) => new Date(a.date) - new Date(b.date));
