@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './../assets/images/logo-ct-dark.png'; // Import your logo image
 
-const LoadingPage = () => {
+const LoadingPageSignUp = () => {
   // Define CSS animation within the component
   const styles = `
     @keyframes spin {
@@ -35,4 +35,4 @@ const LoadingPage = () => {
   );
 }
 
-export default LoadingPage;
+export default LoadingPageSignUp;

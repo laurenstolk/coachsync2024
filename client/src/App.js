@@ -93,14 +93,7 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const userdata = await fetchUserProfile();
-      setProfile(userdata);
-    };
-    fetchData();
-  }, []);
-
+  //THIS IS WHERE THE USER IS NULL ERROR ON SIGN IN IS HAPPENING
   useEffect(() => {
     const fetchData = async () => {
       const userdata = await fetchUserProfile();
@@ -325,7 +318,7 @@ export default function App() {
           {hasFirstName ? (
             <Route path="*" element={<Navigate to="/dashboard" />} />
           ) : (
-            <Route path="*" element={<Navigate to="/authentication/coachorplayer" />} />
+            <Route path="*" element={<Navigate to="/loadingpageSignUp" />} />
           )}
         </Routes>
       </ThemeProvider>
