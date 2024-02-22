@@ -55,6 +55,7 @@ import Summary from "layouts/authentication/summary";
 import WorkoutLibrary from "layouts/workoutlibrary";
 import ViewWorkout from "layouts/viewworkout";
 import AddGroup from "layouts/addgroup";
+import LoadingPageSignUp from "layouts/loadingpageSignUp";
 import PsychologyAltIcon from "@mui/icons-material/PsychologyAlt";
 
 // @mui icons
@@ -295,6 +296,12 @@ const routes = [
     icon: <Icon fontSize="small"></Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,
+  },
+  {
+    type: "collapse",
+    key: "loadingpageSignUp",
+    route: "/loadingpageSignUp",
+    component: <LoadingPageSignUp />,
   },
 ];
 

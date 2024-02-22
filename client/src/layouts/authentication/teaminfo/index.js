@@ -43,6 +43,8 @@ function TeamInfoUpdate() {
   const onLogoDrop = useCallback((acceptedFiles) => {
     // Do something with the uploaded file (e.g., store it in state)
     setTeamLogo(acceptedFiles[0]);
+    console.log("Team logo uploaded:", acceptedFiles[0].name);
+
   }, []);
 
   const deleteTeamLogo = () => {
@@ -91,42 +93,100 @@ function TeamInfoUpdate() {
   };
 
   const handleSubmit = async () => {
+    const currentDate = new Date().toISOString(); 
+    const teamName = document.getElementById("team-name").value;
+
+
     const teamData = {
-      name: document.getElementById("team-name").value,
+      name: teamName,
       sport_id: selectedSport, // use the selectedSport state variable
+      logo_picture: `${teamName}_logo_${currentDate}`, // Construct the profile picture string
     };
 
-    try {
-      // Use supabase client's api.post method to add data
-      const { data, error } = await supabase.from("team").upsert([teamData]).select();
+      try {
+        if (teamLogo) {
+          const { data, error } = await supabase.storage
+            .from("images")
+            .upload(`${teamName}_logo_${currentDate}`, teamLogo, {
+              cacheControl: "3600", // optional
+            });
 
-      if (error) {
-        console.error("Error adding team:", error);
-        // Handle the error here
-      } else {
-        console.log("Team added successfully!");
-        // Extract the ID of the newly created team
-        const teamId = data[0].id;
-
-        // Update the profile table with the team ID
-        const profileUpdate = await supabase
-          .from("profile")
-          .update({ team_id: teamId })
-          .eq("id", profile.id); // Assuming you have user_id in profile data
-
-        if (profileUpdate.error) {
-          console.error("Error updating profile:", profileUpdate.error);
-          // Handle the error here
-          return;
+          if (error) {
+            console.error("Error uploading logo:", error);
+            // Handle the error here
+            throw error;
+          }
         }
 
-        console.log("Profile updated successfully with team ID:", teamId);
+        // Use supabase client's api.post method to add data
+        const { data, error } = await supabase.from("team").upsert([teamData]).select();
+
+        if (error) {
+          console.error("Error adding team:", error);
+          // Handle the error here
+        } else {
+          console.log("Team added successfully!");
+          // Extract the ID of the newly created team
+          const teamId = data[0].id;
+  
+          // Update the profile table with the team ID
+          const profileUpdate = await supabase
+            .from("profile")
+            .update({ team_id: teamId })
+            .eq("id", profile.id); // Assuming you have user_id in profile data
+  
+          if (profileUpdate.error) {
+            console.error("Error updating profile:", profileUpdate.error);
+            // Handle the error here
+            return;
+          }
+          console.log("Team logo updated successfully");
+          console.log("Profile updated successfully with team ID:", teamId);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        // Handle the error here
       }
-    } catch (error) {
-      console.error("Error:", error);
-      // Handle the error here
-    }
   };
+
+  // const handleSubmit = async () => {
+  //   const teamData = {
+  //     name: document.getElementById("team-name").value,
+  //     sport_id: selectedSport, // use the selectedSport state variable
+  //   };
+
+  //   try {
+      
+  //     // Use supabase client's api.post method to add data
+  //     const { data, error } = await supabase.from("team").upsert([teamData]).select();
+
+  //     if (error) {
+  //       console.error("Error adding team:", error);
+  //       // Handle the error here
+  //     } else {
+  //       console.log("Team added successfully!");
+  //       // Extract the ID of the newly created team
+  //       const teamId = data[0].id;
+
+  //       // Update the profile table with the team ID
+  //       const profileUpdate = await supabase
+  //         .from("profile")
+  //         .update({ team_id: teamId })
+  //         .eq("id", profile.id); // Assuming you have user_id in profile data
+
+  //       if (profileUpdate.error) {
+  //         console.error("Error updating profile:", profileUpdate.error);
+  //         // Handle the error here
+  //         return;
+  //       }
+  //       console.log("Team logo updated successfully");
+  //       console.log("Profile updated successfully with team ID:", teamId);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     // Handle the error here
+  //   }
+  // };
 
   return (
     <CoverLayout image={bgImage}>
