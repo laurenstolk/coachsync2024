@@ -5,7 +5,6 @@ import Grid from "@mui/material/Grid";
 import Footer from "../../examples/Footer";
 import AddGroup from "./data/index";
 
-
 function AddingGroup() {
   return (
     <DashboardLayout>

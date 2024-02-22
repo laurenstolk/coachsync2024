@@ -14,7 +14,7 @@ export async function fetchTeamInfo() {
 
     // Extract team_id from user's profile
     const userTeamId = userData.team_id;
-  
+
     // Fetch team data based on the user's team_id
     const { data: teamData, error: teamError } = await supabase
       .from("team")
@@ -23,7 +23,6 @@ export async function fetchTeamInfo() {
       .single();
 
     return teamData;
-
   } catch (error) {
     alert(error.message);
   }

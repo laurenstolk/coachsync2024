@@ -71,16 +71,16 @@ function Header({ children }) {
     fetchData();
   }, []);
 
-  const [sportName, setSportName] = useState('');
+  const [sportName, setSportName] = useState("");
 
   useEffect(() => {
     async function fetchSportName() {
       if (teamData && teamData.sport_id) {
         try {
           const { data, error } = await supabase
-            .from('sport')
-            .select('name')
-            .eq('id', teamData.sport_id)
+            .from("sport")
+            .select("name")
+            .eq("id", teamData.sport_id)
             .single();
 
           if (error) {
@@ -91,7 +91,7 @@ function Header({ children }) {
             setSportName(data.name);
           }
         } catch (error) {
-          console.error('Error fetching sport name:', error.message);
+          console.error("Error fetching sport name:", error.message);
         }
       }
     }
@@ -198,13 +198,10 @@ Header.propTypes = {
 
 export default Header;
 
-
-
-
-
 // setting bar on if we need it
 
-            {/* <AppBar position="static">
+{
+  /* <AppBar position="static">
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
                   label="App"
@@ -231,5 +228,8 @@ export default Header;
                   }
                 />
               </Tabs>
-            </AppBar> */}
-          {/* </Grid> */}
+            </AppBar> */
+}
+{
+  /* </Grid> */
+}

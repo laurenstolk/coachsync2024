@@ -6,7 +6,6 @@ import MDBox from "components/MDBox";
 import { supabase } from "../../../supabaseClient";
 import { date } from "yup";
 
-
 export default function ViewAssignedWorkouts() {
   const [assignments, setAssignments] = useState([]);
 
@@ -17,12 +16,14 @@ export default function ViewAssignedWorkouts() {
   async function fetchAssignments() {
     try {
       // Fetch data from the assignment table
-      const { data: assignmentData, error: assignmentError } = await supabase.from("assignment").select("*");
+      const { data: assignmentData, error: assignmentError } = await supabase
+        .from("assignment")
+        .select("*");
       if (assignmentError) throw assignmentError;
 
       // Group assignments by date, notes, and workout_id
       const groupedAssignments = {};
-      assignmentData.forEach(assignment => {
+      assignmentData.forEach((assignment) => {
         const key = `${assignment.date}-${assignment.notes}-${assignment.workout_id}`;
         if (!groupedAssignments[key]) {
           groupedAssignments[key] = { ...assignment, player_ids: [assignment.player_id] };
@@ -31,8 +32,8 @@ export default function ViewAssignedWorkouts() {
         }
       });
 
-    // Convert grouped assignments back to an array
-    const assignmentsWithGroupedPlayers = Object.values(groupedAssignments);
+      // Convert grouped assignments back to an array
+      const assignmentsWithGroupedPlayers = Object.values(groupedAssignments);
 
       // Fetch data from the workout table
       const { data: workoutData, error: workoutError } = await supabase.from("workout").select("*");
@@ -40,42 +41,46 @@ export default function ViewAssignedWorkouts() {
 
       // Create a map to store workout data by workout id for easy lookup
       const workoutMap = {};
-      workoutData.forEach(workout => {
+      workoutData.forEach((workout) => {
         workoutMap[workout.id] = workout;
       });
 
       // Fetch data from the profile table
-      const { data: profileData, error: profileError } = await supabase.from("profile").select("*") .not("first_name", "is", null) // Filter out entries where first_name is null
-      .not("last_name", "is", null);
+      const { data: profileData, error: profileError } = await supabase
+        .from("profile")
+        .select("*")
+        .not("first_name", "is", null) // Filter out entries where first_name is null
+        .not("last_name", "is", null);
       if (profileError) throw profileError;
       console.log("Profile Data:", profileData);
 
-
       // Create a map to store profile data by profile id for easy lookup
       const profileMap = {};
-      profileData.forEach(profile => {
+      profileData.forEach((profile) => {
         profileMap[profile.id] = profile;
       });
       console.log("Profile Map:", profileMap);
 
       // Join assignment data with workout data based on workout_id
-      const assignmentsWithWorkouts = assignmentsWithGroupedPlayers.map(assignment => ({
+      const assignmentsWithWorkouts = assignmentsWithGroupedPlayers.map((assignment) => ({
         ...assignment,
-        date: new Date(assignment.date).toISOString().split('T')[0], // Standardize date format
-        workout_name: workoutMap[assignment.workout_id]?.workout_name || 'Unknown Workout', // Use a default value if workout is not found
-        player_ids: assignment.player_ids.map(player_id => {
+        date: new Date(assignment.date).toISOString().split("T")[0], // Standardize date format
+        workout_name: workoutMap[assignment.workout_id]?.workout_name || "Unknown Workout", // Use a default value if workout is not found
+        player_ids: assignment.player_ids
+          .map((player_id) => {
             const profile = profileMap[player_id];
             if (profile) {
               return `${profile.first_name} ${profile.last_name}`;
             } else {
-              return 'Unknown Player';
+              return "Unknown Player";
             }
-          }).join(', ')      
-        }));
-        // Log each standardized date for debugging
-        assignmentsWithWorkouts.forEach(assignment => {
-          console.log("Standardized date from database:", assignment.date);
-        });
+          })
+          .join(", "),
+      }));
+      // Log each standardized date for debugging
+      assignmentsWithWorkouts.forEach((assignment) => {
+        console.log("Standardized date from database:", assignment.date);
+      });
 
       // Sort assignments by date (closest to farthest)
       assignmentsWithWorkouts.sort((a, b) => new Date(a.date) - new Date(b.date));
@@ -87,13 +92,11 @@ export default function ViewAssignedWorkouts() {
     }
   }
   return {
-    
     columns: [
       { Header: "Workout Name", accessor: "workout_name", width: "20%", align: "left" },
       { Header: "Assigned Date", accessor: "date", width: "20%", align: "left" },
-      { Header: "Assigned to", accessor: "player_ids", width: "30%", align: "left", wrap: true }, 
-      { Header: "Notes", accessor: "notes", width: "30%", align: "left" }, 
-
+      { Header: "Assigned to", accessor: "player_ids", width: "30%", align: "left", wrap: true },
+      { Header: "Notes", accessor: "notes", width: "30%", align: "left" },
     ],
     rows: assignments.map((assignment, index) => ({
       workout_name: (
@@ -103,7 +106,7 @@ export default function ViewAssignedWorkouts() {
       ),
       date: (
         <MDBox display="flex" py={1}>
-            {assignment.date}
+          {assignment.date}
         </MDBox>
       ),
       player_ids: (

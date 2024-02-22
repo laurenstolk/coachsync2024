@@ -70,8 +70,8 @@ function CoachInfoUpdate() {
 
   const handleSubmit = async () => {
     // Check if profile and profile.id are available
-    const currentDate = new Date().toISOString(); 
-    
+    const currentDate = new Date().toISOString();
+
     if (profile && profile.id) {
       const firstName = document.getElementById("first-name").value;
       const lastName = document.getElementById("last-name").value;

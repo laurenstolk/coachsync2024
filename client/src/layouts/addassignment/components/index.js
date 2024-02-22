@@ -1,13 +1,13 @@
-import * as React from 'react';
+import * as React from "react";
 import Card from "@mui/material/Card";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Autocomplete from '@mui/material/Autocomplete';
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Autocomplete from "@mui/material/Autocomplete";
 import { supabase } from "../../../supabaseClient";
 import DateCalendarValue from "./calendar";
 import IndeterminateCheckbox from "../components/checkboxList";
@@ -19,13 +19,10 @@ import { FormControl, InputLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-
-
 
 function AddAssignment() {
   const navigate = useNavigate();
@@ -39,14 +36,10 @@ function AddAssignment() {
   const [selectAllPlayers, setSelectAllPlayers] = useState(false); // New state for "All Players" checkbox
   const [showPastDateError, setShowPastDateError] = useState(false); // State to control error message display
 
-
-
-
   useEffect(() => {
     getWorkouts();
     getProfiles();
   }, []);
-
 
   async function getWorkouts() {
     try {
@@ -64,8 +57,11 @@ function AddAssignment() {
 
   async function getProfiles() {
     try {
-      const { data, error } = await supabase.from("profile").select("*").not("first_name", "is", null) // Filter out entries where first_name is null
-      .not("last_name", "is", null);
+      const { data, error } = await supabase
+        .from("profile")
+        .select("*")
+        .not("first_name", "is", null) // Filter out entries where first_name is null
+        .not("last_name", "is", null);
 
       if (error) throw error;
 
@@ -94,7 +90,7 @@ function AddAssignment() {
         workout_id: selectedWorkout.id,
         player_id: playerId,
         date: selectedDate,
-        notes:  workoutNotes, // You can set notes here
+        notes: workoutNotes, // You can set notes here
         completed: false, // Initialized as false
       }));
 
@@ -105,19 +101,19 @@ function AddAssignment() {
       }
 
       // Handle success with a toast notification and redirection
-    toast.success("Workout assigned successfully!", {
-      autoClose: 2000,
-      onClose: () => {
-        navigate("/viewassignment");
-      },
-    });
+      toast.success("Workout assigned successfully!", {
+        autoClose: 2000,
+        onClose: () => {
+          navigate("/viewassignment");
+        },
+      });
     } catch (error) {
       console.error("Error assigning workout:", error.message);
     }
   };
   const handleWorkoutChange = (event) => {
     const selectedWorkoutId = event.target.value;
-    const selectedWorkout = workouts.find(workout => workout.id === selectedWorkoutId);
+    const selectedWorkout = workouts.find((workout) => workout.id === selectedWorkoutId);
     setSelectedWorkout(selectedWorkout);
     console.log("Selected Workout:", selectedWorkout);
   };
@@ -126,7 +122,7 @@ function AddAssignment() {
   //   setSelectedDate(newValue);
   //   console.log("Selected Date:", newValue);
   // };
-   //  Function to handle date selection
+  //  Function to handle date selection
   //  const handleDateChange = (newValue) => {
   //   if (newValue < new Date()) {
   //     // If selected date is in the past, show error message
@@ -138,12 +134,11 @@ function AddAssignment() {
   //     console.log("Selected Date:", newValue);
   //   }
   // };
-  
+
   const handleDateChange = (newValue) => {
     const currentDate = new Date();
     currentDate.setDate(currentDate.getDate() - 1); // Set currentDate to today - 1 day
 
-    
     // If the selected date is before today or null, show error message
     if (!newValue || newValue >= currentDate) {
       setShowPastDateError(false);
@@ -155,46 +150,42 @@ function AddAssignment() {
     }
   };
 
+  const handlePlayerSelection = (event, values) => {
+    // Extract the IDs of selected players
+    const selectedPlayerIds = values.map((player) => player.id);
+    setSelectedPlayers(selectedPlayerIds); // Update the selectedPlayers state
+  };
+  const handleMemberChange = (event, groupIndex, memberIndex) => {
+    const newGroups = [...groups];
+    newGroups[groupIndex].members[memberIndex].checked = event.target.checked;
 
-const handlePlayerSelection = (event, values) => {
-  // Extract the IDs of selected players
-  const selectedPlayerIds = values.map((player) => player.id);
-  setSelectedPlayers(selectedPlayerIds); // Update the selectedPlayers state
-};
-const handleMemberChange = (event, groupIndex, memberIndex) => {
-  const newGroups = [...groups];
-  newGroups[groupIndex].members[memberIndex].checked = event.target.checked;
+    // Check if all members of the group are checked
+    const allChecked = newGroups[groupIndex].members.every((member) => member.checked);
 
-  // Check if all members of the group are checked
-  const allChecked = newGroups[groupIndex].members.every(
-    (member) => member.checked
-  );
+    // Update group checkbox state
+    newGroups[groupIndex].checked = allChecked;
 
-  // Update group checkbox state
-  newGroups[groupIndex].checked = allChecked;
+    setGroups(newGroups);
 
-  setGroups(newGroups);
+    // Pass the selected players to the parent component
+    const selectedPlayers = newGroups
+      .flatMap((group) => group.members)
+      .filter((member) => member.checked)
+      .map((member) => member.id);
+    onSelectPlayers(selectedPlayers);
+  };
 
-  // Pass the selected players to the parent component
-  const selectedPlayers = newGroups
-    .flatMap((group) => group.members)
-    .filter((member) => member.checked)
-    .map((member) => member.id);
-  onSelectPlayers(selectedPlayers);
-};
+  const handleSelectAllPlayersChange = (event) => {
+    const checked = event.target.checked;
+    setSelectAllPlayers(checked);
 
-const handleSelectAllPlayersChange = (event) => {
-  const checked = event.target.checked;
-  setSelectAllPlayers(checked);
-
-
-  if (checked) {
-    const allPlayerIds = profiles.map((profile) => profile.id);
-    setSelectedPlayers(allPlayerIds);
-  } else {
-    setSelectedPlayers([]);
-  }
-};
+    if (checked) {
+      const allPlayerIds = profiles.map((profile) => profile.id);
+      setSelectedPlayers(allPlayerIds);
+    } else {
+      setSelectedPlayers([]);
+    }
+  };
 
   return (
     <Card id="workout-form">
@@ -208,21 +199,20 @@ const handleSelectAllPlayersChange = (event) => {
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
           <FormControl fullWidth>
             <InputLabel>Workout Name</InputLabel>
-              <Select
-                sx={{ minHeight: "43px" }}
-                label="Workout"
-                variant="outlined"
-                value={selectedWorkout ? selectedWorkout.id : ""} // Update the value to selectedWorkout.id
-                onChange={handleWorkoutChange} // Update the change handler
-              >
-                {workouts.map((workout) => (
-                  <MenuItem key={workout.id} value={workout.id}>
-                    {workout.workout_name}
-                  </MenuItem>
-                ))}
-              </Select>
-        </FormControl>
-
+            <Select
+              sx={{ minHeight: "43px" }}
+              label="Workout"
+              variant="outlined"
+              value={selectedWorkout ? selectedWorkout.id : ""} // Update the value to selectedWorkout.id
+              onChange={handleWorkoutChange} // Update the change handler
+            >
+              {workouts.map((workout) => (
+                <MenuItem key={workout.id} value={workout.id}>
+                  {workout.workout_name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </MDBox>
       </MDBox>
       <Grid container spacing={2}>
@@ -230,25 +220,15 @@ const handleSelectAllPlayersChange = (event) => {
           {/* assigned on: (calendar) */}
           <MDBox pt={1} pb={2} px={2}>
             <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-              <MDTypography variant="h9">
-                Assign On:
-              </MDTypography>
+              <MDTypography variant="h9">Assign On:</MDTypography>
               {/* <DateCalendarValue onChange={(date) => setSelectedDate(date)} /> */}
-              <DateCalendarValue 
-                value={selectedDate} 
-                onChange={handleDateChange} 
-              />
-
-
+              <DateCalendarValue value={selectedDate} onChange={handleDateChange} />
             </MDBox>
           </MDBox>
           {/* assignment notes: (textfield) */}
           <MDBox pt={1} pb={2} px={2}>
             <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-
-              <MDTypography variant="h9">
-                Assignment Notes:
-              </MDTypography>
+              <MDTypography variant="h9">Assignment Notes:</MDTypography>
 
               <br></br>
               <TextField
@@ -259,7 +239,6 @@ const handleSelectAllPlayersChange = (event) => {
                 value={workoutNotes} // Set the value of the TextField to workoutNotes
                 onChange={(event) => setWorkoutNotes(event.target.value)} // Update workoutNotes when the user types
               />
-
             </MDBox>
           </MDBox>
         </Grid>
@@ -268,21 +247,15 @@ const handleSelectAllPlayersChange = (event) => {
           {/* assigned to: (player list) */}
           <MDBox pt={1} pb={2} px={2}>
             <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-              <MDTypography variant="h9">
-                Assign To:
-              </MDTypography>
+              <MDTypography variant="h9">Assign To:</MDTypography>
               <br></br>
               <FormGroup>
                 <FormControlLabel
                   control={
-                    <Checkbox
-                      checked={selectAllPlayers}
-                      onChange={handleSelectAllPlayersChange}
-                    />
+                    <Checkbox checked={selectAllPlayers} onChange={handleSelectAllPlayersChange} />
                   }
                   label="All Players"
                 />
-
               </FormGroup>
             </MDBox>
             <br></br>
@@ -293,16 +266,14 @@ const handleSelectAllPlayersChange = (event) => {
                 id="workout-id"
                 options={profiles
                   .filter((profile) => profile.first_name && profile.last_name) // Filter out profiles with null first_name or last_name
-                  .map((profile) => ({ id: profile.id, name: `${profile.first_name} ${profile.last_name}` }))}
+                  .map((profile) => ({
+                    id: profile.id,
+                    name: `${profile.first_name} ${profile.last_name}`,
+                  }))}
                 getOptionLabel={(option) => option.name} // Display player names
                 onChange={handlePlayerSelection} // Update selectedPlayers state with IDs
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Search for players here"
-                    placeholder="Assign to:"
-                  />
-
+                  <TextField {...params} label="Search for players here" placeholder="Assign to:" />
                 )}
               />
             </MDBox>
@@ -311,22 +282,20 @@ const handleSelectAllPlayersChange = (event) => {
               <MDTypography variant="body2" color="secondary">
                 Groups:
               </MDTypography>
-              <IndeterminateCheckbox 
+              <IndeterminateCheckbox
                 onSelectPlayers={(players) => {
-                  console.log("Selected Players:", players); 
+                  console.log("Selected Players:", players);
                   const selectedPlayerIds = players; // Assign the players array directly to selectedPlayerIds
                   console.log("Selected Player IDs:", selectedPlayerIds);
                   setSelectedPlayers(selectedPlayerIds);
-                }} 
+                }}
               />
               {/* <IndeterminateCheckbox onSelectPlayers={(players) => setSelectedPlayers(players)} /> */}
-
             </MDBox>
           </MDBox>
         </Grid>
       </Grid>
       <MDBox display="flex" justifyContent="flex-end" px={2} pb={2}>
-
         <Button variant="contained" color="primary" onClick={handleAssignWorkout}>
           <MDTypography variant="caption" color="white" fontWeight="bold" textTransform="uppercase">
             Assign

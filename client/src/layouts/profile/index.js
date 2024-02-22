@@ -87,56 +87,47 @@ function Overview() {
   }, []);
 
   return (
-  <DashboardLayout>
-    <DashboardNavbar pageTitle="Profile" />
-    <MDBox mb={2} />
-    <Header>
-      <MDBox mt={5} mb={3} mx={5}>
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={6} sx={{ display: "flex" }}>
-            {profile && (
-              <ProfileInfoCard
-                info={{
-                  fullName: profile.first_name + " " + profile.last_name,
-                  mobile: profile.phone_number,
-                  email: profile.email,
-                  birthdate: profile.birth_date,
-                }}
-                social={[]}
-                action={{ route: "", tooltip: "Edit Profile" }}
-                shadow={false}
-              />
-            )}
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Grid container spacing={4}>
-              <Grid item xs={12}>
-
+    <DashboardLayout>
+      <DashboardNavbar pageTitle="Profile" />
+      <MDBox mb={2} />
+      <Header>
+        <MDBox mt={5} mb={3} mx={5}>
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={6} sx={{ display: "flex" }}>
+              {profile && (
+                <ProfileInfoCard
+                  info={{
+                    fullName: profile.first_name + " " + profile.last_name,
+                    mobile: profile.phone_number,
+                    email: profile.email,
+                    birthdate: profile.birth_date,
+                  }}
+                  social={[]}
+                  action={{ route: "", tooltip: "Edit Profile" }}
+                  shadow={false}
+                />
+              )}
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Grid container spacing={4}>
+                <Grid item xs={12}></Grid>
+                {/* Add other grid items for your team data here */}
               </Grid>
-              {/* Add other grid items for your team data here */}
             </Grid>
           </Grid>
-        </Grid>
-      </MDBox>
-    </Header>
-    <Footer />
-  </DashboardLayout>
+        </MDBox>
+      </Header>
+      <Footer />
+    </DashboardLayout>
   );
 }
 
 export default Overview;
 
-
-
-
-
-
-
 // project section in case we want it in the future
 
-
-
-        {/* <MDBox pt={2} px={2} lineHeight={1.25}>
+{
+  /* <MDBox pt={2} px={2} lineHeight={1.25}>
           <MDTypography variant="h6" fontWeight="medium">
             Projects
           </MDTypography>
@@ -229,8 +220,5 @@ export default Overview;
               />
             </Grid>
           </Grid>
-        </MDBox> */}
-
-
-
-
+        </MDBox> */
+}

@@ -74,10 +74,9 @@ import AddAssignment from "layouts/addassignment/index";
 
 import Groups2Icon from "@mui/icons-material/Groups2"; //grouptable icon
 import CompleteWorkout from "./layouts/completeworkout";
-import EditGroup from "./layouts/editgroup"
-import ViewAssignment from "./layouts/viewassignment"
-import ViewCalendar from "./layouts/viewcalendar"
-
+import EditGroup from "./layouts/editgroup";
+import ViewAssignment from "./layouts/viewassignment";
+import ViewCalendar from "./layouts/viewcalendar";
 
 const routes = [
   {
@@ -157,7 +156,7 @@ const routes = [
     type: "collapse",
     name: "Edit Group",
     key: "editgroup",
-    icon: <Groups2Icon  fontSize="small">book</Groups2Icon >,
+    icon: <Groups2Icon fontSize="small">book</Groups2Icon>,
     route: "/editgroup",
     component: <EditGroup />,
   },

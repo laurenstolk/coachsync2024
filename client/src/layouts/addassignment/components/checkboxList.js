@@ -110,7 +110,6 @@
 // import { useEffect, useState } from "react";
 // import { supabase } from "../../../supabaseClient";
 
-
 // export default function IndeterminateCheckbox({ onSelectPlayers }) {
 //   const [groups, setGroups] = useState([]);
 
@@ -229,7 +228,7 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { useEffect, useState } from "react";
 import { supabase } from "../../../supabaseClient";
-import PropTypes from 'prop-types'; // Import PropTypes
+import PropTypes from "prop-types"; // Import PropTypes
 
 export default function IndeterminateCheckbox({ onSelectPlayers }) {
   const [groups, setGroups] = useState([]);
@@ -237,9 +236,7 @@ export default function IndeterminateCheckbox({ onSelectPlayers }) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const { data: teamGroups, error } = await supabase
-          .from("team_group")
-          .select("*");
+        const { data: teamGroups, error } = await supabase.from("team_group").select("*");
         if (error) throw error;
 
         const { data: teamMemberships, error: membershipsError } = await supabase
@@ -247,9 +244,7 @@ export default function IndeterminateCheckbox({ onSelectPlayers }) {
           .select("*");
         if (membershipsError) throw membershipsError;
 
-        const { data: profiles, error: profilesError } = await supabase
-          .from("profile")
-          .select("*");
+        const { data: profiles, error: profilesError } = await supabase.from("profile").select("*");
         if (profilesError) throw profilesError;
 
         const formattedGroups = teamGroups.map((teamGroup) => {
@@ -293,9 +288,7 @@ export default function IndeterminateCheckbox({ onSelectPlayers }) {
     const newGroups = [...groups];
     newGroups[groupIndex].members[memberIndex].checked = event.target.checked;
     // Check if all members of the group are checked
-    const allChecked = newGroups[groupIndex].members.every(
-      (member) => member.checked
-    );
+    const allChecked = newGroups[groupIndex].members.every((member) => member.checked);
     // Update group checkbox state
     newGroups[groupIndex].checked = allChecked;
     setGroups(newGroups);
@@ -316,7 +309,6 @@ export default function IndeterminateCheckbox({ onSelectPlayers }) {
             label={group.name}
             control={
               <Checkbox
-
                 checked={group.checked || false}
                 onChange={(event) => handleGroupChange(event, groupIndex)}
               />
@@ -329,12 +321,8 @@ export default function IndeterminateCheckbox({ onSelectPlayers }) {
                 label={`${member.first_name} ${member.last_name}`}
                 control={
                   <Checkbox
-
                     checked={member.checked || false}
-                    onChange={(event) =>
-                      handleMemberChange(event, groupIndex, memberIndex)
-                    }
-
+                    onChange={(event) => handleMemberChange(event, groupIndex, memberIndex)}
                   />
                 }
               />
@@ -349,4 +337,3 @@ export default function IndeterminateCheckbox({ onSelectPlayers }) {
 IndeterminateCheckbox.propTypes = {
   onSelectPlayers: PropTypes.func.isRequired,
 };
-

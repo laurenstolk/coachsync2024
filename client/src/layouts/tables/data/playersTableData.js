@@ -38,7 +38,6 @@ import { fetchUserProfile } from "../../../fetchUserProfile";
 import { supabase } from "../../../supabaseClient";
 
 export default function data() {
-
   const [profiles, setProfiles] = useState([]);
   const [user, setUser] = useState(null);
 
@@ -49,26 +48,26 @@ export default function data() {
     };
     fetchData();
   }, []);
-  
+
   useEffect(() => {
     if (user) {
       getProfiles(); // Call getProfiles when user changes
     }
   }, [user]); // Add user as a dependency
-  
+
   async function getProfiles() {
     try {
       if (!user) {
         return; // Exit early if user is null
       }
-  
+
       const { data, error } = await supabase
         .from("profile")
         .select("*")
-        .eq('team_id', user.team_id)
-        .eq('player', true)
-        .order('first_name', { ascending: true });
-  
+        .eq("team_id", user.team_id)
+        .eq("player", true)
+        .order("first_name", { ascending: true });
+
       if (error) throw error;
       if (data != null) {
         setProfiles(data);
@@ -76,8 +75,6 @@ export default function data() {
     } catch (error) {
       alert(error.message);
     }
-  
-
 
     //   const { data, error } = await supabase.from("profile").select("*");
     //   if (error) throw error;

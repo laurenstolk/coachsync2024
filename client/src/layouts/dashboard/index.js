@@ -39,27 +39,25 @@ import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 
-
-
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
-  const [ exerciseData, setExerciseData ] = useState([]);
-  const [ wellnessData, setWellnessData ] = useState([]);
-  const [ currentDate, setCurrentDate ] = useState('');
+  const [exerciseData, setExerciseData] = useState([]);
+  const [wellnessData, setWellnessData] = useState([]);
+  const [currentDate, setCurrentDate] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const {data: exerciseCompletionData, error: exerciseError } = await supabase
-          .from('exercise_completion')
-          .select('*'); // You can customize the columns you want to select
+        const { data: exerciseCompletionData, error: exerciseError } = await supabase
+          .from("exercise_completion")
+          .select("*"); // You can customize the columns you want to select
 
         if (exerciseError) {
-          console.error('Error fetching exercise completion data:', exerciseError.message);
+          console.error("Error fetching exercise completion data:", exerciseError.message);
         } else {
           // Count occurrences of each date_completed
           const exerciseCountMap = new Map();
-          exerciseCompletionData.forEach(item => {
+          exerciseCompletionData.forEach((item) => {
             const dateCompleted = item.date_completed;
 
             if (exerciseCountMap.has(dateCompleted)) {
@@ -76,48 +74,43 @@ function Dashboard() {
 
           setExerciseData(exerciseChartData);
         }
-      
 
         // Set the current date dynamically
         const today = new Date();
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        const options = { year: "numeric", month: "short", day: "numeric" };
         const formattedDate = today.toLocaleDateString(undefined, options);
         setCurrentDate(formattedDate);
 
+        const { data: wellnessCheckinData, error: wellnessError } = await supabase
+          .from("checkin")
+          .select("*");
 
-      const { data: wellnessCheckinData, error: wellnessError } = await supabase
-        .from('checkin')
-        .select('*');
+        if (wellnessError) {
+          console.error("Error fetching wellness checkin data:", wellnessError.message);
+        } else {
+          // Count occurrences of each date
+          const wellnessCountMap = new Map();
+          wellnessCheckinData.forEach((item) => {
+            const wDateCompleted = item.date;
 
-      if (wellnessError) {
-        console.error('Error fetching wellness checkin data:', wellnessError.message);
-      } else {
-        // Count occurrences of each date
-        const wellnessCountMap = new Map();
-        wellnessCheckinData.forEach(item => {
-          const wDateCompleted = item.date;
+            if (wellnessCountMap.has(wDateCompleted)) {
+              wellnessCountMap.set(wDateCompleted, wellnessCountMap.get(wDateCompleted) + 1);
+            } else {
+              wellnessCountMap.set(wDateCompleted, 1);
+            }
+          });
+          // Convert the map to an array for use in the chart
+          const wellnessChartData = Array.from(wellnessCountMap).map(([wDateCompleted, count]) => ({
+            wDateCompleted,
+            count: count / 5,
+          }));
 
-          if (wellnessCountMap.has(wDateCompleted)) {
-            wellnessCountMap.set(wDateCompleted, wellnessCountMap.get(wDateCompleted) + 1);
-          } else {
-            wellnessCountMap.set(wDateCompleted, 1);
-          }
-        });
-        // Convert the map to an array for use in the chart
-        const wellnessChartData = Array.from(wellnessCountMap).map(([wDateCompleted, count]) => ({
-          wDateCompleted,
-          count: count/5,
-        }));
+          wellnessChartData.sort((a, b) => new Date(a.wDateCompleted) - new Date(b.wDateCompleted));
 
-        wellnessChartData.sort((a,b ) => new Date(a.wDateCompleted) - new Date(b.wDateCompleted));
-
-        setWellnessData(wellnessChartData);
-
-      }
-
-
+          setWellnessData(wellnessChartData);
+        }
       } catch (error) {
-        console.error('Error fetching data:', error.message);
+        console.error("Error fetching data:", error.message);
       }
     };
 
@@ -198,13 +191,13 @@ function Dashboard() {
                   title="Exercise Completion"
                   description="The number of players who completed their assigned workout."
                   date="Updated today"
-                  chart={{ 
-                    labels: exerciseData.map(item => item.dateCompleted), 
-                    datasets: { 
-                      label: "Number of Players", 
-                      data: exerciseData.map(item => item.count),
+                  chart={{
+                    labels: exerciseData.map((item) => item.dateCompleted),
+                    datasets: {
+                      label: "Number of Players",
+                      data: exerciseData.map((item) => item.count),
                     },
-                   }}
+                  }}
                 />
               </MDBox>
             </Grid>
@@ -215,13 +208,13 @@ function Dashboard() {
                   title="Wellness Completion"
                   description="Number of players who completed their wellness per day"
                   date="Updated Today"
-                  chart={{ 
-                    labels: wellnessData.map(item => item.wDateCompleted), 
-                    datasets: { 
-                      label: "Wellnesses Completed", 
-                      data: wellnessData.map(item => item.count),
+                  chart={{
+                    labels: wellnessData.map((item) => item.wDateCompleted),
+                    datasets: {
+                      label: "Wellnesses Completed",
+                      data: wellnessData.map((item) => item.count),
                     },
-                   }}
+                  }}
                 />
               </MDBox>
             </Grid>
