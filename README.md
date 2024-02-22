@@ -44,4 +44,3 @@ function ExampleFunction() {
 export default ExampleFunction
 ```
 **(Don't do this for index.html!**
-
