@@ -40,7 +40,6 @@ function AddAssignment() {
   const [showPastDateError, setShowPastDateError] = useState(false); // State to control error message display
 
   useEffect(() => {
-
     async function fetchData() {
       try {
         const { data: workoutsData, error } = await supabase.from("workout").select("*");
@@ -48,7 +47,7 @@ function AddAssignment() {
           throw error;
         }
         setWorkouts(workoutsData || []);
-
+  
         const { data: profilesData, error: profilesError } = await supabase
           .from("profile")
           .select("*")
@@ -58,24 +57,40 @@ function AddAssignment() {
           throw profilesError;
         }
         setProfiles(profilesData || []);
-
+  
         if (workoutId) {
-          const selected = workoutsData.find(workout => workout.id === parseInt(workoutId));
+          const selected = workoutsData.find((workout) => workout.id === parseInt(workoutId));
           if (selected) {
             setSelectedWorkout(selected);
             setWorkoutName(selected.workout_name);
           }
+        }
+  
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() - 1);
+        if (!selectedDate || selectedDate >= currentDate) {
+          setShowPastDateError(false);
+          console.log("Selected Date:", selectedDate);
+        } else {
+          setShowPastDateError(true);
+          setSelectedDate(null);
         }
       } catch (error) {
         console.error("Error fetching data:", error.message);
       }
     }
     fetchData();
-  }, [workoutId]);
+  }, [workoutId, selectedDate]);
+  
 
   const handleAssignWorkout = async () => {
-    if (!selectedWorkout || !selectedDate) {
-      alert("Please select a workout and a date.");
+    if (!selectedWorkout) {
+      alert("Please select a workout.");
+      return;
+    }
+
+    if(!selectedDate) {
+      alert("Please select a date.");
       return;
     }
 
