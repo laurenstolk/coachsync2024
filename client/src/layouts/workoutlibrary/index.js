@@ -48,9 +48,15 @@ function Tables() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: workoutsData, error: workoutsError } = await supabase.from("workout").select("*");
-        const { data: customizedExercisesData, error: customizedExercisesError } = await supabase.from("customized_exercise").select("*");
-        const { data: exercisesData, error: exercisesError } = await supabase.from("exercise").select("*");
+        const { data: workoutsData, error: workoutsError } = await supabase
+          .from("workout")
+          .select("*");
+        const { data: customizedExercisesData, error: customizedExercisesError } = await supabase
+          .from("customized_exercise")
+          .select("*");
+        const { data: exercisesData, error: exercisesError } = await supabase
+          .from("exercise")
+          .select("*");
 
         if (workoutsError || customizedExercisesError || exercisesError) {
           throw new Error("Error fetching data");
@@ -75,59 +81,89 @@ function Tables() {
     <DashboardLayout>
       <DashboardNavbar pageTitle="Saved Workouts" />
       <Box mb={3}>
-        <Card variant="outlined" sx={{ borderRadius: 2, backgroundImage: "linear-gradient(to right, #1976d2, #6ab7ff)", color: "white" }}>
-          <Box p={2} sx={{ borderRadius: 2, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <Typography variant="h6" fontWeight="bold" color="#fff">Saved Workouts</Typography>
-            <Button
-              variant="outlined"
-              component={Link}
-              to="/addworkout"
-              color="inherit"
-            >
+        <Card
+          variant="outlined"
+          sx={{
+            borderRadius: 2,
+            backgroundImage: "linear-gradient(to right, #1976d2, #6ab7ff)",
+            color: "white",
+          }}
+        >
+          <Box
+            p={2}
+            sx={{
+              borderRadius: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold" color="#fff">
+              Saved Workouts
+            </Typography>
+            <Button variant="outlined" component={Link} to="/addworkout" color="inherit">
               Add Workout
             </Button>
           </Box>
         </Card>
       </Box>
-      <Grid container spacing={1}>
+      <Grid container spacing={1} sx={{ marginBottom: 5 }}>
         {workouts.map((workout) => (
           <Grid item xs={12} key={workout.id}>
             <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>{workout.workout_name}</Typography>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                sx={{ display: "flex", gridTemplateColumns: "center" }}
+              >
+                <Typography sx={{ flexGrow: 1 }}>{workout.workout_name}</Typography>
+                <Button
+                  variant="text"
+                  color="inherit"
+                  endIcon={<Icon>arrow_right_alt</Icon>}
+                  component={Link}
+                  to={`/addassignment/${workout.id}`}
+                >
+                  Assign
+                </Button>
               </AccordionSummary>
-              <AccordionDetails>
+              <AccordionDetails sx={{ marginTop: 2, marginBottom: 2 }}>
                 <TableContainer component={Paper}>
                   <Table>
-                  <TableHead>
+                    <TableBody>
                       <TableRow>
-                        {customizedExercises.length > 0 &&
-                          Object.keys(customizedExercises[0]).map((key) => (
-                            <TableCell key={key} align="left">
-                              {key}
-                            </TableCell>
-                          ))}
-                          {exercises.length > 0 &&
-                            Object.keys(exercises[0]).map((key) => (
-                              <TableCell key={key} align="left">
-                                {key}
-                              </TableCell>
-                            ))}
-                        <TableCell align="left">Actions</TableCell> {/* Add Edit/Delete column */}
+                        <TableCell align="center" style={{ fontWeight: "bold" }}>
+                          Exercise
+                        </TableCell>
+                        <TableCell align="center" style={{ fontWeight: "bold" }}>
+                          Sets
+                        </TableCell>
+                        <TableCell align="center" style={{ fontWeight: "bold" }}>
+                          Reps
+                        </TableCell>
+                        <TableCell align="center" style={{ fontWeight: "bold" }}>
+                          Duration
+                        </TableCell>
+                        <TableCell align="center" style={{ fontWeight: "bold" }}>
+                          Coach&apos;s Notes
+                        </TableCell>
                       </TableRow>
-                    </TableHead>
+                    </TableBody>
                     <TableBody>
                       {customizedExercises
                         .filter((exercise) => exercise.workout_id === workout.id)
                         .map((exercise) => {
-                          const matchedExercise = exercises.find((ex) => ex.id === exercise.exercise_id);
+                          const matchedExercise = exercises.find(
+                            (ex) => ex.id === exercise.exercise_id
+                          );
                           return (
                             <TableRow key={exercise.id}>
-                              <TableCell align="left">{matchedExercise ? matchedExercise.name : ""}</TableCell>
-                              <TableCell align="left">{exercise.sets}</TableCell>
-                              <TableCell align="left">{exercise.reps}</TableCell>
-                              <TableCell align="left">{exercise.duration}</TableCell>
-                              <TableCell align="left">{exercise.coach_notes}</TableCell>
+                              <TableCell align="center">
+                                {matchedExercise ? matchedExercise.name : ""}
+                              </TableCell>
+                              <TableCell align="center">{exercise.sets}</TableCell>
+                              <TableCell align="center">{exercise.reps}</TableCell>
+                              <TableCell align="center">{exercise.duration}</TableCell>
+                              <TableCell align="center">{exercise.coach_notes}</TableCell>
                               <TableCell>
                                 <Button
                                   color="inherit"
@@ -143,8 +179,6 @@ function Tables() {
                             </TableRow>
                           );
                         })}
-                      {/* Add some space below the last item in the table */}
-                      <TableRow style={{ height: 50 }}></TableRow>
                     </TableBody>
                   </Table>
                 </TableContainer>

@@ -170,7 +170,7 @@ const routes = [
     name: "Assign Workout",
     key: "addassignment",
     icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
-    route: "/addassignment",
+    route: "/addassignment/:workoutId?",
     component: <AddAssignment />,
   },
   {
