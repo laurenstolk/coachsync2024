@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useEffect, useState } from "react";
 import {
   Grid,
@@ -44,6 +29,7 @@ function Tables() {
   const [workouts, setWorkouts] = useState([]);
   const [customizedExercises, setCustomizedExercises] = useState([]);
   const [exercises, setExercises] = useState([]);
+  const [editableExerciseId, setEditableExerciseId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,8 +59,43 @@ function Tables() {
     fetchData();
   }, []);
 
-  const handleDelete = (row) => {
-    // Handle delete logic here
+  const handleDelete = async (exerciseId) => {
+    try {
+      // Delete the exercise
+      await supabase.from("customized_exercise").delete().eq("id", exerciseId);
+      // Fetch data again to update UI
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting exercise:", error.message);
+    }
+  };
+
+  const handleUpdate = async (exercise) => {
+    try {
+      // Update the exercise
+      const { data, error } = await supabase
+        .from("customized_exercise")
+        .update({
+          sets: exercise.sets,
+          reps: exercise.reps,
+          duration: exercise.duration,
+          coach_notes: exercise.coach_notes
+        })
+        .eq("id", exercise.id);
+
+      if (error) {
+        throw error;
+      }
+
+      console.log("Exercise updated successfully:", data);
+      setEditableExerciseId(null);
+    } catch (error) {
+      console.error("Error updating exercise:", error.message);
+    }
+  };
+
+  const handleEdit = (exerciseId) => {
+    setEditableExerciseId(exerciseId);
   };
 
   return (
@@ -118,7 +139,7 @@ function Tables() {
                 <Typography sx={{ flexGrow: 1 }}>{workout.workout_name}</Typography>
                 <Button
                   variant="text"
-                  color="inherit"
+                  color="primary" // Change back to primary color
                   endIcon={<Icon>arrow_right_alt</Icon>}
                   component={Link}
                   to={`/addassignment/${workout.id}`}
@@ -146,35 +167,77 @@ function Tables() {
                         <TableCell align="center" style={{ fontWeight: "bold" }}>
                           Coach&apos;s Notes
                         </TableCell>
+                        <TableCell align="center" style={{ fontWeight: "bold" }}>
+                          Actions
+                        </TableCell>
                       </TableRow>
-                    </TableBody>
-                    <TableBody>
                       {customizedExercises
                         .filter((exercise) => exercise.workout_id === workout.id)
                         .map((exercise) => {
-                          const matchedExercise = exercises.find(
-                            (ex) => ex.id === exercise.exercise_id
-                          );
+                          const matchedExercise = exercises.find((ex) => ex.id === exercise.exercise_id);
+                          const isEditable = editableExerciseId === exercise.id;
                           return (
                             <TableRow key={exercise.id}>
+                              <TableCell align="center">{matchedExercise ? matchedExercise.name : ""}</TableCell>
                               <TableCell align="center">
-                                {matchedExercise ? matchedExercise.name : ""}
+                                {isEditable ? (
+                                  <input
+                                    type="number"
+                                    value={exercise.sets}
+                                    onChange={(e) => exercise.sets = e.target.value}
+                                  />
+                                ) : (
+                                  exercise.sets
+                                )}
                               </TableCell>
-                              <TableCell align="center">{exercise.sets}</TableCell>
-                              <TableCell align="center">{exercise.reps}</TableCell>
-                              <TableCell align="center">{exercise.duration}</TableCell>
-                              <TableCell align="center">{exercise.coach_notes}</TableCell>
-                              <TableCell>
-                                <Button
-                                  color="inherit"
-                                  component={Link}
-                                  to={`/editexercise/${exercise.id}`}
-                                >
-                                  <Icon>edit</Icon>Edit
-                                </Button>
-                                <Button color="error" onClick={() => handleDelete(exercise)}>
-                                  <Icon>delete</Icon>Delete
-                                </Button>
+                              <TableCell align="center">
+                                {isEditable ? (
+                                  <input
+                                    type="number"
+                                    value={exercise.reps}
+                                    onChange={(e) => exercise.reps = e.target.value}
+                                  />
+                                ) : (
+                                  exercise.reps
+                                )}
+                              </TableCell>
+                              <TableCell align="center">
+                                {isEditable ? (
+                                  <input
+                                    type="text"
+                                    value={exercise.duration}
+                                    onChange={(e) => exercise.duration = e.target.value}
+                                  />
+                                ) : (
+                                  exercise.duration
+                                )}
+                              </TableCell>
+                              <TableCell align="center">
+                                {isEditable ? (
+                                  <input
+                                    type="text"
+                                    value={exercise.coach_notes}
+                                    onChange={(e) => exercise.coach_notes = e.target.value}
+                                  />
+                                ) : (
+                                  exercise.coach_notes
+                                )}
+                              </TableCell>
+                              <TableCell align="center">
+                                {isEditable ? (
+                                  <Button color="primary" onClick={() => handleUpdate(exercise)}>
+                                    <Icon>save</Icon> Save
+                                  </Button>
+                                ) : (
+                                  <>
+                                    <Button color="inherit" onClick={() => handleEdit(exercise.id)}>
+                                      <Icon>edit</Icon> Edit
+                                    </Button>
+                                    <Button color="error" onClick={() => handleDelete(exercise.id)}>
+                                      <Icon>delete</Icon> Delete
+                                    </Button>
+                                  </>
+                                )}
                               </TableCell>
                             </TableRow>
                           );

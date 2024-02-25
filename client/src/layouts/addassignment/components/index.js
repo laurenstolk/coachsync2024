@@ -47,7 +47,7 @@ function AddAssignment() {
           throw error;
         }
         setWorkouts(workoutsData || []);
-  
+
         const { data: profilesData, error: profilesError } = await supabase
           .from("profile")
           .select("*")
@@ -57,7 +57,7 @@ function AddAssignment() {
           throw profilesError;
         }
         setProfiles(profilesData || []);
-  
+
         if (workoutId) {
           const selected = workoutsData.find((workout) => workout.id === parseInt(workoutId));
           if (selected) {
@@ -65,7 +65,7 @@ function AddAssignment() {
             setWorkoutName(selected.workout_name);
           }
         }
-  
+
         const currentDate = new Date();
         currentDate.setDate(currentDate.getDate() - 1);
         if (!selectedDate || selectedDate >= currentDate) {
@@ -81,7 +81,19 @@ function AddAssignment() {
     }
     fetchData();
   }, [workoutId, selectedDate]);
-  
+
+  const handleDeleteWorkout = async (workoutIdToDelete) => {
+    try {
+      const { error } = await supabase.from("workout").delete().eq("id", workoutIdToDelete);
+      if (error) {
+        throw error;
+      }
+      setWorkouts((prevWorkouts) => prevWorkouts.filter((workout) => workout.id !== workoutIdToDelete));
+      toast.success("Workout deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting workout:", error.message);
+    }
+  }
 
   const handleAssignWorkout = async () => {
     if (!selectedWorkout) {
@@ -89,7 +101,7 @@ function AddAssignment() {
       return;
     }
 
-    if(!selectedDate) {
+    if (!selectedDate) {
       alert("Please select a date.");
       return;
     }
@@ -151,6 +163,7 @@ function AddAssignment() {
   // };
 
   const handleDateChange = (newValue) => {
+    console.log("New value:", newValue);
     const currentDate = new Date();
     currentDate.setDate(currentDate.getDate() - 1); // Set currentDate to today - 1 day
 
@@ -236,8 +249,12 @@ function AddAssignment() {
           <MDBox pt={1} pb={2} px={2}>
             <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
               <MDTypography variant="h9">Assign On:</MDTypography>
-              {/* <DateCalendarValue onChange={(date) => setSelectedDate(date)} /> */}
               <DateCalendarValue value={selectedDate} onChange={handleDateChange} />
+              {showPastDateError && (
+                <MDTypography variant="caption" color="error">
+                  Please select a valid future date.
+                </MDTypography>
+              )}
             </MDBox>
           </MDBox>
           {/* assignment notes: (textfield) */}
