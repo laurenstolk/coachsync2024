@@ -19,7 +19,9 @@ import { FormControl, InputLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
+
 import { useParams } from "react-router-dom";
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -91,7 +93,9 @@ function AddAssignment() {
       setWorkouts((prevWorkouts) => prevWorkouts.filter((workout) => workout.id !== workoutIdToDelete));
       toast.success("Workout deleted successfully!");
     } catch (error) {
+
       console.error("Error deleting workout:", error.message);
+
     }
   }
 
@@ -123,9 +127,7 @@ function AddAssignment() {
 
       const { data, error } = await supabase.from("assignment").insert(assignments);
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       // Handle success with a toast notification and redirection
       toast.success("Workout assigned successfully!", {
@@ -136,6 +138,7 @@ function AddAssignment() {
       });
     } catch (error) {
       console.error("Error assigning workout:", error.message);
+
     }
   };
   const handleWorkoutChange = (event) => {
@@ -255,6 +258,7 @@ function AddAssignment() {
                   Please select a valid future date.
                 </MDTypography>
               )}
+
             </MDBox>
           </MDBox>
           {/* assignment notes: (textfield) */}

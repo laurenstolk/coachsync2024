@@ -56,6 +56,7 @@ import WorkoutLibrary from "layouts/workoutlibrary";
 // import WorkoutLibraryTest from "layouts/workoutlibrarytest";
 import ViewWorkout from "layouts/viewworkout";
 import AddGroup from "layouts/addgroup";
+import LoadingPageSignUp from "layouts/loadingpageSignUp";
 import PsychologyAltIcon from "@mui/icons-material/PsychologyAlt";
 
 // @mui icons
@@ -74,6 +75,9 @@ import AddAssignment from "layouts/addassignment/index";
 
 import Groups2Icon from "@mui/icons-material/Groups2"; //grouptable icon
 import CompleteWorkout from "./layouts/completeworkout";
+import EditGroup from "./layouts/editgroup";
+import ViewAssignment from "./layouts/viewassignment";
+import ViewCalendar from "./layouts/viewcalendar";
 
 const routes = [
   {
@@ -151,6 +155,14 @@ const routes = [
   },
   {
     type: "collapse",
+    name: "Edit Group",
+    key: "editgroup",
+    icon: <Groups2Icon fontSize="small">book</Groups2Icon>,
+    route: "/editgroup",
+    component: <EditGroup />,
+  },
+  {
+    type: "collapse",
     name: "Wellness Checkin",
     key: "addwellness",
     icon: <PsychologyAltIcon fontSize="small">Wellness</PsychologyAltIcon>,
@@ -172,6 +184,22 @@ const routes = [
     icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
     route: "/addassignment/:workoutId?",
     component: <AddAssignment />,
+  },
+  {
+    type: "collapse",
+    name: "View Assigned Workouts",
+    key: "viewassignment",
+    icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
+    route: "/viewassignment",
+    component: <ViewAssignment />,
+  },
+  {
+    type: "collapse",
+    name: "Team Calendar",
+    key: "viewcalendar",
+    icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
+    route: "/viewcalendar",
+    component: <ViewCalendar />,
   },
   {
     type: "collapse",
@@ -268,6 +296,12 @@ const routes = [
     icon: <Icon fontSize="small"></Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,
+  },
+  {
+    type: "collapse",
+    key: "loadingpageSignUp",
+    route: "/loadingpageSignUp",
+    component: <LoadingPageSignUp />,
   },
 ];
 

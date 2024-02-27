@@ -32,14 +32,42 @@ import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 
+import { fetchUserProfile } from "../../../fetchUserProfile";
+
 // Add supabase connection
 import { supabase } from "../../../supabaseClient";
 
 export default function data() {
   const [profiles, setProfiles] = useState([]);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchUserProfile();
+      setUser(data);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      getProfiles(); // Call getProfiles when user changes
+    }
+  }, [user]); // Add user as a dependency
+
   async function getProfiles() {
     try {
-      const { data, error } = await supabase.from("profile").select("*");
+      if (!user) {
+        return; // Exit early if user is null
+      }
+
+      const { data, error } = await supabase
+        .from("profile")
+        .select("*")
+        .eq("team_id", user.team_id)
+        .eq("player", true)
+        .order("first_name", { ascending: true });
+
       if (error) throw error;
       if (data != null) {
         setProfiles(data);
@@ -47,6 +75,15 @@ export default function data() {
     } catch (error) {
       alert(error.message);
     }
+
+    //   const { data, error } = await supabase.from("profile").select("*");
+    //   if (error) throw error;
+    //   if (data != null) {
+    //     setProfiles(data);
+    //   }
+    // } catch (error) {
+    //   alert(error.message);
+    // }
   }
   useEffect(() => {
     getProfiles();

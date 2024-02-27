@@ -96,22 +96,17 @@ function Tables() {
                         <Accordion key={index}>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             {/* this is the row text that is showing on the table */}
-                            <TableCell style={{ paddingRight: 700 }}>{row.group}</TableCell>
-                            <TableCell align="right">
-                              <Button
-                                color="dark"
-                                component={Link}
-                                to={`/addgroup/${row.id}`}
-                                onClick={() => console.log("ID:", row.groupID)}
-                              >
-                                <Icon>edit</Icon>&nbsp;edit
-                              </Button>
+                            <TableCell style={{ paddingRight: 700, fontWeight: "bold" }}>
+                              {row.name}
                             </TableCell>
-                            <TableCell align="right">
-                              <Button color="error" onClick={() => handleDelete(row)}>
-                                <Icon>delete</Icon>&nbsp;delete
-                              </Button>
-                            </TableCell>
+
+                            <TableCell>{row.actions}</TableCell>
+
+                            {/* <TableCell align="right">
+                                  <Button color="dark" component={Link} to={`/addgroup/${row.id}`} onClick={() => console.log("ID:", row.groupID)}>
+                                    <Icon>edit</Icon>&nbsp;edit
+                                  </Button>
+                                </TableCell> */}
                           </AccordionSummary>
                           <AccordionDetails>
                             <TableHead>
@@ -122,9 +117,7 @@ function Tables() {
                               </TableRow>
                             </TableHead>
                             <TableRow>
-                              <TableCell style={{ paddingRight: 20 }}>{row.first}</TableCell>
-                              <TableCell style={{ paddingRight: 20 }}>{row.last}</TableCell>
-                              <TableCell style={{ paddingRight: 20 }}>{row.position}</TableCell>
+                              <TableCell>{row.players}</TableCell>
                             </TableRow>
                           </AccordionDetails>
                         </Accordion>

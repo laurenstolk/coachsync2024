@@ -17,13 +17,13 @@ import { supabase } from "../../../../supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-const exerciseChoices = ["Exercise 1", "Exercise 2", "Exercise 3", "Exercise 4", "Exercise 5"];
+import { fetchUserProfile } from "../../../../fetchUserProfile";
 
 function AddWorkout() {
   const navigate = useNavigate();
   const [exerciseCount, setExerciseCount] = useState(3);
   const [exercises, setExercises] = useState([]);
+  const [exercisesByCategory, setExercisesByCategory] = useState({});
   const [selectedExercises, setSelectedExercises] = useState(
     Array.from({ length: exerciseCount }, () => ({
       exerciseId: "",
@@ -43,15 +43,53 @@ function AddWorkout() {
 
   async function getExercises() {
     try {
-      let { data, error } = await supabase.from("exercise").select("*");
+      const profileData = await fetchUserProfile();
 
-      if (error) throw error;
+      let { data: teamData, error } = await supabase
+        .from("team")
+        .select("*")
+        .eq("id", profileData.team_id)
+        .single();
 
-      if (data != null) {
-        setExercises(data);
+      let { data: trainingExercisesData, error: trainingExercisesError } = await supabase
+        .from("exercise")
+        .select("*")
+        .eq("category", "14")
+        .eq("sport", teamData.sport_id);
+      if (trainingExercisesError) throw error;
+
+      let { data: otherExercisesData, error: otherExercisesError } = await supabase
+        .from("exercise")
+        .select("*")
+        .not("category", "eq", "14");
+
+      // Assuming trainingExercisesData and otherExercisesData are arrays
+      let exerciseData = [...trainingExercisesData, ...otherExercisesData];
+
+      let { data: categoryData, error: categoryError } = await supabase
+        .from("category")
+        .select("*");
+      if (categoryError) throw categoryError;
+
+      if (categoryData != null) {
+        const categoryMap = {};
+        categoryData.forEach((category) => {
+          categoryMap[category.category_id] = category.category_name;
+        });
+
+        const exercisesGroupedByCategory = {};
+        exerciseData.forEach((exercise) => {
+          const categoryName = categoryMap[exercise.category];
+          if (!exercisesGroupedByCategory[categoryName]) {
+            exercisesGroupedByCategory[categoryName] = [];
+          }
+          exercisesGroupedByCategory[categoryName].push(exercise);
+        });
+        setExercises(exerciseData);
+        setExercisesByCategory(exercisesGroupedByCategory);
       }
     } catch (error) {
-      alert(error.message);
+      alert(error);
     }
   }
   useEffect(() => {
@@ -147,21 +185,31 @@ function AddWorkout() {
                 <InputLabel>Exercise</InputLabel>
                 <Select
                   sx={{ minHeight: "43px" }}
-                  id="exercise-id"
                   label="Exercise"
                   variant="outlined"
-                  // value={selectedExercises}
-                  value={exercise.id}
-                  //onChange={handleExerciseChange}
+                  value={exercise.exerciseId} // Set value to exerciseId
                   onChange={(event) =>
                     handleExerciseChange(index, "exerciseId", event.target.value)
                   }
                 >
-                  {exercises.map((exercise, index) => (
-                    <MenuItem key={index} value={exercise.id}>
-                      {exercise.name}
-                    </MenuItem>
-                  ))}
+                  {Object.entries(exercisesByCategory).map(([category, exercises]) => [
+                    <MenuItem
+                      key={category}
+                      disabled
+                      style={{
+                        color: "blueviolet",
+                        fontWeight: "bold",
+                        backgroundColor: "lightgray",
+                      }}
+                    >
+                      {category}
+                    </MenuItem>,
+                    exercises.map((exercise) => (
+                      <MenuItem key={exercise.id} value={exercise.id}>
+                        {exercise.name}
+                      </MenuItem>
+                    )),
+                  ])}
                 </Select>
               </FormControl>
             </MDBox>

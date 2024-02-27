@@ -1,8 +1,8 @@
 import { supabase } from "./supabaseClient";
 
-export async function getProfilePicURL(file_path) {
+export async function getTeamLogoURL(file_path) {
   const { data, error } = await supabase.storage
-    .from("images/profile_pics")
+    .from("images/team_logos")
     .createSignedUrl(`${file_path}`, 60);
 
   return data.signedUrl;
