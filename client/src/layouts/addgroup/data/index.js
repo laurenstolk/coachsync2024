@@ -60,7 +60,7 @@ function AddGroup() {
         .from("profile")
         .select("*")
         .eq("team_id", user.team_id)
-        // .eq("player", true)
+        .eq("player", true)
       if (profilesError) throw profilesError;
       if (profilesData != null) {
         setProfiles(profilesData);
@@ -104,19 +104,17 @@ function AddGroup() {
 
 
   const handleGroupNameChange = (event) => {
-    setGroupName(event.target.value);
+    setGroupName(event.target.value.toLowerCase()); // Convert to lowercase
   };
 
   const handleCreateGroup = async () => {
-    const groupName = document.getElementById("group-name").value;
+    const groupName = document.getElementById("group-name").value.toLowerCase(); // Convert to lowercase
     try {
       // Check if the group name already exists
       const { data: existingGroups, error: existingGroupsError } = await supabase
         .from("team_group")
         .select("name")
         .eq("team_id", user.team_id)
-        .ilike("name", `%${groupName}%`); // Using ilike for case-insensitive comparison
-
         
       if (existingGroupsError) {
         console.error("Error checking existing groups:", existingGroupsError);
@@ -124,7 +122,9 @@ function AddGroup() {
         return;
       }
   
-      if (existingGroups.length > 0) {
+      // Check if the entered groupName already exists
+      const groupNames = existingGroups.map((group) => group.name.toLowerCase());
+      if (groupNames.includes(groupName)) {
         alert("Group name already exists.");
         // Handle the error here (e.g., display a message to the user)
         return;
