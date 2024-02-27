@@ -31,11 +31,10 @@ import Button from "@mui/material/Button"; // Import Button component
 
 // Data
 import exercisesTableData from "layouts/tables/data/exercisesTableData";
-import projectsTableData from "layouts/tables/data/projectsTableData";
 
 function Tables() {
-  const { columns, rows } = exercisesTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+  const { columns, rows, handleCategoryFilter, filterButton } = exercisesTableData();
+  // const { columns, rows, handleCategoryFilter } = exercisesTableData();
 
   return (
     <DashboardLayout>
@@ -66,6 +65,7 @@ function Tables() {
                 >
                   Add Exercise
                 </Button>
+                {filterButton}
               </MDBox>
               <MDBox pt={3}>
                 <DataTable

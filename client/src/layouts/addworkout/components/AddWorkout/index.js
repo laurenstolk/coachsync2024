@@ -17,7 +17,7 @@ import { supabase } from "../../../../supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {fetchUserProfile} from "../../../../fetchUserProfile";
+import { fetchUserProfile } from "../../../../fetchUserProfile";
 
 function AddWorkout() {
   const navigate = useNavigate();
@@ -46,33 +46,32 @@ function AddWorkout() {
       const profileData = await fetchUserProfile();
 
       let { data: teamData, error } = await supabase
-          .from('team')
-          .select('*')
-          .eq('id', profileData.team_id)
-          .single();
+        .from("team")
+        .select("*")
+        .eq("id", profileData.team_id)
+        .single();
 
       let { data: trainingExercisesData, error: trainingExercisesError } = await supabase
-          .from("exercise")
-          .select("*")
-          .eq('category', '14')
-          .eq('sport', teamData.sport_id)
+        .from("exercise")
+        .select("*")
+        .eq("category", "14")
+        .eq("sport", teamData.sport_id);
       if (trainingExercisesError) throw error;
 
       let { data: otherExercisesData, error: otherExercisesError } = await supabase
-          .from("exercise")
-          .select("*")
-          .not('category', 'eq', '14')
+        .from("exercise")
+        .select("*")
+        .not("category", "eq", "14");
 
       // Assuming trainingExercisesData and otherExercisesData are arrays
       let exerciseData = [...trainingExercisesData, ...otherExercisesData];
 
-
       let { data: categoryData, error: categoryError } = await supabase
-          .from("category")
-          .select("*");
+        .from("category")
+        .select("*");
       if (categoryError) throw categoryError;
 
-      if (exerciseData != null && categoryData != null) {
+      if (categoryData != null) {
         const categoryMap = {};
         categoryData.forEach((category) => {
           categoryMap[category.category_id] = category.category_name;
@@ -185,26 +184,32 @@ function AddWorkout() {
               <FormControl fullWidth>
                 <InputLabel>Exercise</InputLabel>
                 <Select
-                    sx={{ minHeight: "43px" }}
-                    label="Exercise"
-                    variant="outlined"
-                    value={exercise.exerciseId} // Set value to exerciseId
-                    onChange={(event) =>
-                        handleExerciseChange(index, "exerciseId", event.target.value)
-                    }
+                  sx={{ minHeight: "43px" }}
+                  label="Exercise"
+                  variant="outlined"
+                  value={exercise.exerciseId} // Set value to exerciseId
+                  onChange={(event) =>
+                    handleExerciseChange(index, "exerciseId", event.target.value)
+                  }
                 >
-                  {Object.entries(exercisesByCategory).map(([category, exercises]) => (
-                      [
-                        <MenuItem key={category} disabled style={{ color: 'blueviolet', fontWeight: 'bold', backgroundColor: 'lightgray' }}>
-                          {category}
-                        </MenuItem>,
-                        exercises.map((exercise) => (
-                            <MenuItem key={exercise.id} value={exercise.id}>
-                              {exercise.name}
-                            </MenuItem>
-                        ))
-                      ]
-                  ))}
+                  {Object.entries(exercisesByCategory).map(([category, exercises]) => [
+                    <MenuItem
+                      key={category}
+                      disabled
+                      style={{
+                        color: "blueviolet",
+                        fontWeight: "bold",
+                        backgroundColor: "lightgray",
+                      }}
+                    >
+                      {category}
+                    </MenuItem>,
+                    exercises.map((exercise) => (
+                      <MenuItem key={exercise.id} value={exercise.id}>
+                        {exercise.name}
+                      </MenuItem>
+                    )),
+                  ])}
                 </Select>
               </FormControl>
             </MDBox>
