@@ -35,35 +35,60 @@ import { supabase } from "../../../supabaseClient";
 
 // for edit button
 import { Link, useNavigate } from "react-router-dom"; // Import Link component
+import { fetchUserProfile } from "../../../fetchUserProfile";
+
 
 export default function data() {
   const [groups, setGroups] = useState([]);
   const navigate = useNavigate();
+  const [profiles, setProfiles] = useState([]);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchUserProfile();
+      setUser(data);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      getGroups(); // Call getProfiles when user changes
+      console.log("user info: ", user)
+    }
+  }, [user]); // Add user as a dependency
+
+
 
   async function getGroups() {
     try {
+      if (!user) {
+        return; // Exit early if user is null
+      }
       const { data: profilesData, error: profilesError } = await supabase
         .from("profile")
-        .select("*");
+        .select("*")
+        // .eq("team_id", user.team_id)
+        // .eq("player", true)
       if (profilesError) throw profilesError;
+      if (data != null) {
+        setProfiles(profilesData);
+      }
+      // const { data: profilesData, error: profilesError } = await supabase
+      //   .from("profile")
+      //   .select("*");
+      // if (profilesError) throw profilesError;
 
       const { data: membershipData, error: membershipError } = await supabase
         .from("team_group_membership")
         .select("*");
       if (membershipError) throw membershipError;
 
-      const { data: teamData, error: teamError } = await supabase.from("team_group").select("*");
+      const { data: teamData, error: teamError } = await supabase.from("team_group").select("*").eq("team_id", user.team_id)
+      ;
       if (teamError) throw teamError;
 
-      // const groupsWithMembership = profilesData.map(profile => {
-      //     const membership = membershipData.find(membership => membership.player_user_id === profile.id);
-      //     if (membership) {
-      //         const team = teamData.find(team => team.id === membership.team_group_id);
-      //         return { ...profile, membership, team };
-      //     }
-      //     return profile;
-      // });
-      // setGroups(groupsWithMembership);
       const groupsWithMembership = teamData
         .map((team) => {
           const groupMembers = membershipData.filter(
@@ -71,6 +96,7 @@ export default function data() {
           );
           const players = groupMembers.map((membership) => {
             const player = profilesData.find((profile) => profile.id === membership.player_user_id);
+
             return player;
           });
           return { ...team, players };

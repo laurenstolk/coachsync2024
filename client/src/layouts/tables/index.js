@@ -26,18 +26,41 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
+import Button from "@mui/material/Button"; // Import Button component
+
+
+//for group component
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { Link } from "react-router-dom";
+import Icon from "@mui/material/Icon";
+
 
 // Data
 import playersTableData from "layouts/tables/data/playersTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
+import groupsTableData from "layouts/grouptable/data/groupsTableData";
+
 
 function Tables() {
   const { columns, rows } = playersTableData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
+  const { columns: gColumns, rows: gRows} = groupsTableData();
 
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle="Players" />
+      <DashboardNavbar pageTitle="Team" />
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
@@ -53,7 +76,7 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Team
+                  Players
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
@@ -64,6 +87,70 @@ function Tables() {
                   showTotalEntries={false}
                   noEndBorder
                 />
+              </MDBox>
+            </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <Card>
+              <MDBox
+                mx={2}
+                mt={-3}
+                py={3}
+                px={2}
+                variant="gradient"
+                bgColor="info"
+                borderRadius="lg"
+                coloredShadow="info"
+              >
+                <MDTypography variant="h6" color="white">
+                  Groups
+                </MDTypography>
+                {/* Add Create Group button */}
+                <Button
+                  variant="outlined"
+                  component={Link}
+                  to="/addgroup"
+                  color="inherit"
+                  style={{ position: "absolute", top: -7, right: 20 }}
+                >
+                  Add Group
+                </Button>
+              </MDBox>
+              <MDBox pt={1}>
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableBody>
+                      {gRows.map((row, index) => (
+                        <Accordion key={index}>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            {/* this is the row text that is showing on the table */}
+                            <TableCell style={{ paddingRight: 700, fontWeight: "bold" }}>
+                              {row.name}
+                            </TableCell>
+
+                            <TableCell>{row.actions}</TableCell>
+
+                            {/* <TableCell align="right">
+                                  <Button color="dark" component={Link} to={`/addgroup/${row.id}`} onClick={() => console.log("ID:", row.groupID)}>
+                                    <Icon>edit</Icon>&nbsp;edit
+                                  </Button>
+                                </TableCell> */}
+                          </AccordionSummary>
+                          <AccordionDetails>
+                              {/* <TableRow>
+                                {gColumns.map((column, index) => (
+                                  <TableCell style={{ fontWeight: "bold" }} key={index}>{column.Header}</TableCell>
+                                ))}
+                              </TableRow> */}
+                            <TableRow>
+                              <TableCell style={{fontWeight:"lighter"}}>{row.players}</TableCell>
+                            </TableRow>
+                          </AccordionDetails>
+                        </Accordion>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
               </MDBox>
             </Card>
           </Grid>
