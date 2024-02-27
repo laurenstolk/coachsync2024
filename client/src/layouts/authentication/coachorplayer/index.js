@@ -38,6 +38,7 @@ function PlayerorCoach() {
   const [selectedRole, setSelectedRole] = useState("");
   const [profile, setProfile] = useState(null);
   const [selectionMade, setSelectionMade] = useState(false); // Track if selection is made
+  const redirectTo = selectedRole === 'player' ? '/authentication/playerinfo' : '/authentication/coachinfo';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +75,7 @@ function PlayerorCoach() {
             // Handle the error here
           } else {
             console.log("Profile updated successfully!");
+
           }
         } catch (error) {
           console.error("Error:", error);
@@ -151,7 +153,7 @@ function PlayerorCoach() {
             <MDBox mt={4} mb={1}>
               <MDButton
                 component={Link}
-                to="/authentication/coachinfo"
+                to= {redirectTo}
                 variant="gradient"
                 color={selectionMade ? "info" : "default"} // Change color based on selectionMade
                 fullWidth

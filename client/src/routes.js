@@ -49,7 +49,9 @@ import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
 import CoachOrPlayer from "layouts/authentication/coachorplayer";
 import CoachInfo from "layouts/authentication/coachinfo";
+import PlayerInfo from "layouts/authentication/playerinfo";
 import TeamInfo from "layouts/authentication/teaminfo";
+import PlayerTeam from "layouts/authentication/playerteam";
 import WellnessSetup from "layouts/authentication/wellness-setup";
 import Summary from "layouts/authentication/summary";
 import WorkoutLibrary from "layouts/workoutlibrary";
@@ -266,11 +268,27 @@ const routes = [
   },
   {
     type: "collapse",
+    name: "Player Info",
+    key: "playerinfo",
+    icon: <Icon fontSize="small"></Icon>,
+    route: "/authentication/playerinfo",
+    component: <PlayerInfo />,
+  },
+  {
+    type: "collapse",
     name: "Team Info",
     key: "teaminfo",
     icon: <Icon fontSize="small"></Icon>,
     route: "/authentication/teaminfo",
     component: <TeamInfo />,
+  },
+  {
+    type: "collapse",
+    name: "Player Team",
+    key: "playerteam",
+    icon: <Icon fontSize="small"></Icon>,
+    route: "/authentication/playerteam",
+    component: <PlayerTeam />,
   },
   {
     type: "collapse",
