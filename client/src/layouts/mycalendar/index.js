@@ -67,11 +67,15 @@ function ViewCalendar() {
         .from("assignment")
         .select("*")
         .in("player_id", profileData.map(profile => profile.id)); // Filter assignments by player IDs belonging to the user's team
-      if (assignmentError) throw assignmentError;
-
+     
+        if (assignmentError) throw assignmentError;
+        // Filter assignments by player IDs belonging to the current user
+        const assignmentsForCurrentUser = assignmentData.filter(assignment =>
+            assignment.player_id === user.id
+        );
       // Group assignments by date, notes, and workout_id
       const groupedAssignments = {};
-      assignmentData.forEach((assignment) => {
+      assignmentsForCurrentUser.forEach((assignment) => {
         const key = `${assignment.date}-${assignment.notes}-${assignment.workout_id}`;
         if (!groupedAssignments[key]) {
           groupedAssignments[key] = { ...assignment, player_ids: [assignment.player_id] };
@@ -134,7 +138,7 @@ function ViewCalendar() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle="Team Calendar" />
+      <DashboardNavbar pageTitle="My Calendar" />
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
