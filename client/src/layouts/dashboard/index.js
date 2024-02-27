@@ -38,6 +38,7 @@ import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
+import AssignmentCompletion from "./components/AssignmentCompletion";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
@@ -237,7 +238,7 @@ function Dashboard() {
               <Projects />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <OrdersOverview />
+              <AssignmentCompletion />
             </Grid>
           </Grid>
         </MDBox>
