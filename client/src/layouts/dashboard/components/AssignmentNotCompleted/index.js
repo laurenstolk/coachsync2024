@@ -8,14 +8,14 @@ import { supabase } from "../../../../supabaseClient";
 import { fetchUserProfile } from "../../../../fetchUserProfile";
 import Transaction from "../../../billing/components/Transaction";
 
-async function getPlayersThatCompleted() {
+async function getPlayersThatHaveNotCompleted() {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const { data: completedAssignmentData, error: completedAssignmentError } = await supabase
       .from("assignment")
       .select("player_id, date")
-      .eq("completed", true)
+      .eq("completed", false)
       .eq("date", today.toISOString().split("T")[0]);
 
     return completedAssignmentData;
@@ -25,15 +25,14 @@ async function getPlayersThatCompleted() {
   }
 }
 
-function AssignmentCompletion() {
+function AssignmentNotCompleted() {
   const [players, setPlayers] = useState([]);
-  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const profileData = await fetchUserProfile();
 
-      const playersThatCompleted = await getPlayersThatCompleted();
+      const playersThatCompleted = await getPlayersThatHaveNotCompleted();
 
       const { data: profilesData, error: profilesError } = await supabase
         .from("profile")
@@ -58,12 +57,12 @@ function AssignmentCompletion() {
     <Card sx={{ height: "100%" }}>
       <MDBox pt={3} px={3}>
         <MDTypography variant="h6" fontWeight="medium">
-          Players - Completed Today's Workout
+          Players - Have NOT Completed Today&apos;s Workout
         </MDTypography>
         <MDBox mt={0} mb={2}>
           <MDTypography variant="button" color="text" fontWeight="regular">
             <MDTypography display="inline" variant="body2" verticalAlign="middle">
-              <Icon sx={{ color: ({ palette: { success } }) => success.main }}>arrow_upward</Icon>
+              <Icon sx={{ color: "success" }}>arrow_upward</Icon>
             </MDTypography>
             &nbsp;
             <MDTypography variant="button" color="text" fontWeight="medium">
@@ -77,11 +76,15 @@ function AssignmentCompletion() {
         {players.map((player) => (
           <Transaction
             key={player.id}
-            color="success"
-            icon="check_circle_outline"
+            color="secondary" // Use grey color for not completed
+            icon={player.completed ? "check_circle_outline" : "cancel"} // Change icon based on completion status
             name={`${player.first_name} ${player.last_name}`}
-            description={`completed the workout on ${player.date}`}
-            value="Completed"
+            description={
+              player.completed
+                ? `completed the workout on ${player.date}`
+                : "hasn't completed the workout yet"
+            }
+            value={player.completed ? "Completed" : "Not Completed"} // Change value text based on completion status
           />
         ))}
       </MDBox>
@@ -89,4 +92,4 @@ function AssignmentCompletion() {
   );
 }
 
-export default AssignmentCompletion;
+export default AssignmentNotCompleted;

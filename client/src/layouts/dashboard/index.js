@@ -29,16 +29,12 @@ import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 
 // Data
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
-
-// Dashboard components
-import Projects from "layouts/dashboard/components/Projects";
-import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
-import AssignmentCompletion from "./components/AssignmentCompletion";
+import AssignmentCompleted from "./components/AssignmentCompleted";
+import AssignmentNotCompleted from "./components/AssignmentNotCompleted";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
@@ -234,11 +230,11 @@ function Dashboard() {
         </MDBox>
         <MDBox>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
+            <Grid item xs={12} md={6} lg={4}>
+              <AssignmentNotCompleted />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <AssignmentCompletion />
+              <AssignmentCompleted />
             </Grid>
           </Grid>
         </MDBox>
