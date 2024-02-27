@@ -34,7 +34,6 @@ import exercisesTableData from "layouts/tables/data/exercisesTableData";
 
 function Tables() {
   const { columns, rows, handleCategoryFilter, filterButton } = exercisesTableData();
-  // const { columns, rows, handleCategoryFilter } = exercisesTableData();
 
   return (
     <DashboardLayout>

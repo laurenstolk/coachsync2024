@@ -72,13 +72,13 @@ export default function data() {
         // Map category data to an object for easy lookup
         const categoryMap = {};
         categoryData.forEach((category) => {
-          categoryMap[category.category_id] = category.category_name; // Adjusted to match the structure of your category data
+          categoryMap[category.category_id] = category.category_name;
         });
 
         // Map exercise data and replace category foreign keys with category names
         const exercisesWithCategories = exerciseData.map((exercise) => ({
           ...exercise,
-          category: categoryMap[exercise.category], // Use 'exercise.category' if it corresponds to the category ID
+          category: categoryMap[exercise.category],
         }));
 
         setExercises(exercisesWithCategories);
@@ -162,5 +162,4 @@ export default function data() {
   );
 
   return { columns, rows, handleCategoryFilter, filterButton };
-  // return { columns, rows, handleCategoryFilter };
 }
