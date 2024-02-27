@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   Grid,
   Paper,
@@ -59,27 +61,70 @@ function Tables() {
     fetchData();
   }, []);
 
-  const handleDelete = async (exerciseId) => {
-    try {
-      // Delete the exercise
-      await supabase.from("customized_exercise").delete().eq("id", exerciseId);
-      // Fetch data again to update UI
-      fetchData();
-    } catch (error) {
-      console.error("Error deleting exercise:", error.message);
+  const handleDeleteWorkout = async (workoutId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this workout?");
+    if (confirmDelete) {
+      try {
+        const { error } = await supabase.from("workout").delete().eq("id", workoutId);
+        if (error) {
+          throw error;
+        }
+        // Update the workouts state after deletion
+        setWorkouts((prevWorkouts) => prevWorkouts.filter((workout) => workout.id !== workoutId));
+        toast.success("Workout deleted successfully!");
+        console.log("Workout deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting workout:", error.message);
+        toast.error("Error deleting workout");
+      }
     }
+  };
+
+  const handleDeleteCustomExercise = async (exerciseId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this custom exercise?");
+    if (confirmDelete) {
+      try {
+        const { error } = await supabase.from("customized_exercise").delete().eq("id", exerciseId);
+        if (error) {
+          throw error;
+        }
+        // Update the customizedExercises state after deletion
+        setCustomizedExercises((prevExercises) => prevExercises.filter((exercise) => exercise.id !== exerciseId));
+        toast.success("Custom exercise deleted successfully!");
+        console.log("Custom exercise deleted successfully!");
+      } catch (error) {
+        console.error("Error deleting custom exercise:", error.message);
+        toast.error("Error deleting custom exercise");
+      }
+    }
+  };
+
+  const handleEdit = (exerciseId) => {
+    setEditableExerciseId(exerciseId);
+  };
+
+  const handleInputChange = (e, id, field) => {
+    const value = e.target.value;
+    setCustomizedExercises(prevState => {
+      const updatedExercises = prevState.map(exercise => {
+        if (exercise.id === id) {
+          return { ...exercise, [field]: value };
+        }
+        return exercise;
+      });
+      return updatedExercises;
+    });
   };
 
   const handleUpdate = async (exercise) => {
     try {
-      // Update the exercise
       const { data, error } = await supabase
         .from("customized_exercise")
         .update({
           sets: exercise.sets,
           reps: exercise.reps,
           duration: exercise.duration,
-          coach_notes: exercise.coach_notes
+          coach_notes: exercise.coach_notes,
         })
         .eq("id", exercise.id);
 
@@ -89,14 +134,19 @@ function Tables() {
 
       console.log("Exercise updated successfully:", data);
       setEditableExerciseId(null);
+
+      setCustomizedExercises(prevState =>
+        prevState.map(item => (item.id === exercise.id ? { ...item, ...exercise } : item))
+      );
+
+      toast.success("Exercise updated successfully!");
     } catch (error) {
       console.error("Error updating exercise:", error.message);
+      toast.error("Error updating exercise");
     }
   };
 
-  const handleEdit = (exerciseId) => {
-    setEditableExerciseId(exerciseId);
-  };
+  // Rest of your component code...
 
   return (
     <DashboardLayout>
@@ -146,6 +196,9 @@ function Tables() {
                 >
                   Assign
                 </Button>
+                <Button color="error" onClick={() => handleDeleteWorkout(workout.id)}>
+                  <Icon>delete</Icon>
+                </Button>
               </AccordionSummary>
               <AccordionDetails sx={{ marginTop: 2, marginBottom: 2 }}>
                 <TableContainer component={Paper}>
@@ -184,7 +237,7 @@ function Tables() {
                                   <input
                                     type="number"
                                     value={exercise.sets}
-                                    onChange={(e) => exercise.sets = e.target.value}
+                                    onChange={(e) => handleInputChange(e, exercise.id, 'sets')}
                                   />
                                 ) : (
                                   exercise.sets
@@ -195,7 +248,7 @@ function Tables() {
                                   <input
                                     type="number"
                                     value={exercise.reps}
-                                    onChange={(e) => exercise.reps = e.target.value}
+                                    onChange={(e) => handleInputChange(e, exercise.id, 'reps')}
                                   />
                                 ) : (
                                   exercise.reps
@@ -206,7 +259,7 @@ function Tables() {
                                   <input
                                     type="text"
                                     value={exercise.duration}
-                                    onChange={(e) => exercise.duration = e.target.value}
+                                    onChange={(e) => handleInputChange(e, exercise.id, 'duration')}
                                   />
                                 ) : (
                                   exercise.duration
@@ -217,7 +270,7 @@ function Tables() {
                                   <input
                                     type="text"
                                     value={exercise.coach_notes}
-                                    onChange={(e) => exercise.coach_notes = e.target.value}
+                                    onChange={(e) => handleInputChange(e, exercise.id, 'coach_notes')}
                                   />
                                 ) : (
                                   exercise.coach_notes
@@ -233,7 +286,7 @@ function Tables() {
                                     <Button color="inherit" onClick={() => handleEdit(exercise.id)}>
                                       <Icon>edit</Icon> Edit
                                     </Button>
-                                    <Button color="error" onClick={() => handleDelete(exercise.id)}>
+                                    <Button color="error" onClick={() => handleDeleteCustomExercise(exercise.id)}>
                                       <Icon>delete</Icon> Delete
                                     </Button>
                                   </>
@@ -251,6 +304,7 @@ function Tables() {
         ))}
       </Grid>
       <Footer />
+      <ToastContainer /> {/* Add this line for toast notifications */}
     </DashboardLayout>
   );
 }
