@@ -89,7 +89,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Players",
+    name: "Team",
     key: "tables",
     icon: <PeopleIcon fontSize="small">table_view</PeopleIcon>,
     route: "/tables",
@@ -103,14 +103,7 @@ const routes = [
     route: "/exerciselibrary",
     component: <ExerciseLibrary />,
   },
-  {
-    type: "collapse",
-    name: "Team Groups",
-    key: "grouptable",
-    icon: <Groups2Icon fontSize="small">book</Groups2Icon>,
-    route: "/grouptable",
-    component: <GroupTable />,
-  },
+ 
 
   {
     type: "collapse",
@@ -136,14 +129,7 @@ const routes = [
     route: "/addworkout",
     component: <AddWorkout />,
   },
-  {
-    type: "collapse",
-    name: "Add New Team",
-    key: "addteam",
-    icon: <Icon fontSize="small">accessibility</Icon>,
-    route: "/addteam",
-    component: <Addnewteam />,
-  },
+
   {
     type: "collapse",
     name: "Create Group",
@@ -157,7 +143,7 @@ const routes = [
     name: "Edit Group",
     key: "editgroup",
     icon: <Groups2Icon fontSize="small">book</Groups2Icon>,
-    route: "/editgroup",
+    route: "/editgroup/:id?",
     component: <EditGroup />,
   },
   {
