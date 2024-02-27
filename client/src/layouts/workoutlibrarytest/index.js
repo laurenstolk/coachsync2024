@@ -45,14 +45,14 @@ import { Link } from "react-router-dom";
 import Icon from "@mui/material/Icon";
 
 // Data
-import groupsTableData from "layouts/grouptable/data/groupsTableData";
+import workoutDetailsData from "layouts/workoutlibrarytest/workoutDetails/workoutDetailsData";
 
 function Tables() {
-  const { columns, rows } = groupsTableData();
+  const { columns, rows } = workoutDetailsData();
 
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle="Team Groups" />
+      <DashboardNavbar pageTitle="Saved Workouts" />
       <MDBox pt={3} pb={3}>
         <Grid container spacing={4}>
           <Grid item xs={12}>
@@ -68,45 +68,43 @@ function Tables() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Groups
+                  Saved Workouts
                 </MDTypography>
-                {/* Add Create Group button */}
+                {/* Add Workout button */}
                 <Button
                   variant="outlined"
                   component={Link}
-                  to="/addgroup"
+                  to="/addworkout"
                   color="inherit"
                   style={{ position: "absolute", top: -7, right: 20 }}
                 >
-                  Add Group
+                  Add Workout
                 </Button>
               </MDBox>
               <MDBox pt={1}>
                 <TableContainer component={Paper}>
                   <Table>
-                    {/* <TableHead>
-                        <TableRow>
-                        {columns.map((column, index) => (
-                            <TableCell key={index}>{column.Header}</TableCell> // the column header
-                        ))}
-                        </TableRow>
-                    </TableHead> */}
                     <TableBody>
                       {rows.map((row, index) => (
                         <Accordion key={index}>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             {/* this is the row text that is showing on the table */}
-                            <TableCell style={{ paddingRight: 700, fontWeight: "bold" }}>
-                              {row.name}
+                            <TableCell style={{ paddingRight: 700 }}>{row.workout}</TableCell>
+                            <TableCell align="right">
+                              {/* <Button
+                                color="dark"
+                                component={Link}
+                                to={`/addworkout/${row.id}`}
+                                onClick={() => console.log("ID:", row.groupID)}
+                              >
+                                <Icon>edit</Icon>&nbsp;edit
+                              </Button> */}
                             </TableCell>
-
-                            <TableCell>{row.actions}</TableCell>
-
-                            {/* <TableCell align="right">
-                                  <Button color="dark" component={Link} to={`/addgroup/${row.id}`} onClick={() => console.log("ID:", row.groupID)}>
-                                    <Icon>edit</Icon>&nbsp;edit
-                                  </Button>
-                                </TableCell> */}
+                            <TableCell align="right">
+                              <Button color="error" onClick={() => handleDelete(row)}>
+                                <Icon>delete</Icon>&nbsp;delete
+                              </Button>
+                            </TableCell>
                           </AccordionSummary>
                           <AccordionDetails>
                             <TableHead>
@@ -117,7 +115,9 @@ function Tables() {
                               </TableRow>
                             </TableHead>
                             <TableRow>
-                              <TableCell>{row.players}</TableCell>
+                              <TableCell style={{ paddingRight: 20 }}>{row.first}</TableCell>
+                              <TableCell style={{ paddingRight: 20 }}>{row.last}</TableCell>
+                              <TableCell style={{ paddingRight: 20 }}>{row.position}</TableCell>
                             </TableRow>
                           </AccordionDetails>
                         </Accordion>

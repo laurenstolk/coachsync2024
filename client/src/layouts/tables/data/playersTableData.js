@@ -26,20 +26,78 @@ import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 import MDProgress from "components/MDProgress";
 import MDButton from "components/MDButton";
+import LogoAsana from "assets/images/small-logos/logo-asana.svg";
+
 
 // Images
 import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 
+import { fetchUserProfile } from "../../../fetchUserProfile";
+
 // Add supabase connection
 import { supabase } from "../../../supabaseClient";
 
 export default function data() {
   const [profiles, setProfiles] = useState([]);
+  const [user, setUser] = useState(null);
+  // const [imageUrl, setImageUrl] = useState(null);
+
+
+  // async function getProfilePicURL(file_path) {
+  //   const { data, error } = await supabase.storage.from("images/profile_pics").createSignedUrl(`${file_path}`, 60);
+  //   console.log("Profile picture URL:", data.signedUrl); 
+  //   return data.signedUrl;
+  // }
+
+
+  // const Project = ({ image, name }) => (
+  //   <MDBox display="flex" alignItems="center" lineHeight={1}>
+  //     <MDAvatar src={image} name={name} size="sm" variant="rounded" />
+  //     <MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>
+  //     </MDTypography>
+  //   </MDBox>
+  // );
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const userProfile = await fetchUserProfile();
+      console.log(userProfile)
+      setUser(userProfile);
+  
+      // const profilesWithURLs = await Promise.all(profiles.map(async (profile) => {
+      //   const url = await getProfilePicURL(profile.profile_picture);
+      //   console.log("url stuff: ", url)
+      //   console.log("Profile with URL:", { ...profile, imageUrl: url });
+      //   return { ...profile, imageUrl: url };
+      // }));
+      // // console.log(profilesWithURLs)
+      // setProfiles(profilesWithURLs);
+    };
+    fetchData();
+  }, []);
+  
+
+  useEffect(() => {
+    if (user) {
+      getProfiles(); // Call getProfiles when user changes
+    }
+  }, [user]); // Add user as a dependency
+
   async function getProfiles() {
     try {
-      const { data, error } = await supabase.from("profile").select("*");
+      if (!user) {
+        return; // Exit early if user is null
+      }
+
+      const { data, error } = await supabase
+        .from("profile")
+        .select("*")
+        .eq("team_id", user.team_id)
+        .eq("player", true)
+        .order("first_name", { ascending: true });
+
       if (error) throw error;
       if (data != null) {
         setProfiles(data);
@@ -47,6 +105,15 @@ export default function data() {
     } catch (error) {
       alert(error.message);
     }
+
+    //   const { data, error } = await supabase.from("profile").select("*");
+    //   if (error) throw error;
+    //   if (data != null) {
+    //     setProfiles(data);
+    //   }
+    // } catch (error) {
+    //   alert(error.message);
+    // }
   }
   useEffect(() => {
     getProfiles();
@@ -54,6 +121,7 @@ export default function data() {
 
   return {
     columns: [
+      // { Header: "image", accessor: "image", width: "30%", align: "left" },
       { Header: "First Name", accessor: "first", width: "20%", align: "left" },
       { Header: "Last Name", accessor: "last", width: "20%", align: "left" },
       { Header: "Position", accessor: "position", width: "40%", align: "left" },
@@ -65,6 +133,9 @@ export default function data() {
     ],
 
     rows: profiles.map((profile, index) => ({
+      // image: profile.profile_picture ? (
+      //   <Project image={profile.imageUrl} name={`${profile.first_name} ${profile.last_name}`} />
+      // ) : null,
       first: (
         <MDBox display="flex" py={1}>
           {profile.first_name} {/* Display the name of the current exercise */}

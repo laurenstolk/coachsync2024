@@ -70,6 +70,8 @@ function CoachInfoUpdate() {
 
   const handleSubmit = async () => {
     // Check if profile and profile.id are available
+    const currentDate = new Date().toISOString();
+
     if (profile && profile.id) {
       const firstName = document.getElementById("first-name").value;
       const lastName = document.getElementById("last-name").value;
@@ -77,7 +79,7 @@ function CoachInfoUpdate() {
         coach_role: document.getElementById("coach-role").value,
         first_name: firstName,
         last_name: lastName,
-        profile_picture: `${firstName}_${lastName}`, // Construct the profile picture string
+        profile_picture: `${firstName}_${lastName}_${currentDate}`, // Construct the profile picture string
         phone_number: document.getElementById("phone-number").value,
         birth_date: document.getElementById("birth-date").value,
       };
@@ -86,8 +88,8 @@ function CoachInfoUpdate() {
       try {
         if (profilePic) {
           const { data, error } = await supabase.storage
-            .from("images")
-            .upload(`${firstName}_${lastName}`, profilePic, {
+            .from("images/profile_pics")
+            .upload(`${firstName}_${lastName}_${currentDate}`, profilePic, {
               cacheControl: "3600", // optional
             });
 

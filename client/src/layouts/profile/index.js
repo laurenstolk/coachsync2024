@@ -53,10 +53,14 @@ import team4 from "assets/images/team-4.jpg";
 import { useEffect, useState } from "react";
 import { fetchUserProfile } from "../../fetchUserProfile";
 import { getProfilePicURL } from "../../getProfilePicUrl";
+import { getTeamLogoURL } from "../../getTeamLogoUrl";
+import { fetchTeamInfo } from "../../fetchTeamInfo";
 
 function Overview() {
   const [profile, setProfile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const [teamData, setTeamData] = useState(null);
+  const [logoUrl, setLogoUrl] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,54 +74,60 @@ function Overview() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchTeamInfo();
+      const url = await getTeamLogoURL(data?.logo_picture);
+
+      setTeamData(data);
+      setLogoUrl(url);
+      console.log("team: ", data);
+    };
+    fetchData();
+  }, []);
+
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Profile" />
       <MDBox mb={2} />
       <Header>
-        <MDBox mt={5} mb={3}>
-          <Grid container spacing={1}>
-            <Grid item xs={12} md={6} xl={4} sx={{ display: "flex" }}>
-              <Divider orientation="vertical" sx={{ ml: -2, mr: 1 }} />
+        <MDBox mt={5} mb={3} mx={5}>
+          <Grid container spacing={4}>
+            <Grid item xs={12} md={6} sx={{ display: "flex" }}>
               {profile && (
                 <ProfileInfoCard
-                  title="profile information"
-                  description="Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
                   info={{
                     fullName: profile.first_name + " " + profile.last_name,
                     mobile: profile.phone_number,
                     email: profile.email,
                     birthdate: profile.birth_date,
                   }}
-                  social={[
-                    {
-                      link: "https://www.facebook.com/CreativeTim/",
-                      icon: <FacebookIcon />,
-                      color: "facebook",
-                    },
-                    {
-                      link: "https://twitter.com/creativetim",
-                      icon: <TwitterIcon />,
-                      color: "twitter",
-                    },
-                    {
-                      link: "https://www.instagram.com/creativetimofficial/",
-                      icon: <InstagramIcon />,
-                      color: "instagram",
-                    },
-                  ]}
+                  social={[]}
                   action={{ route: "", tooltip: "Edit Profile" }}
                   shadow={false}
                 />
               )}
-              {/* <Divider orientation="vertical" sx={{ mx: 0 }} /> */}
             </Grid>
-            <Grid item xs={12} xl={4}>
-              <ProfilesList title="conversations" profiles={profilesListData} shadow={false} />
+            <Grid item xs={12} md={6}>
+              <Grid container spacing={4}>
+                <Grid item xs={12}></Grid>
+                {/* Add other grid items for your team data here */}
+              </Grid>
             </Grid>
           </Grid>
         </MDBox>
-        <MDBox pt={2} px={2} lineHeight={1.25}>
+      </Header>
+      <Footer />
+    </DashboardLayout>
+  );
+}
+
+export default Overview;
+
+// project section in case we want it in the future
+
+{
+  /* <MDBox pt={2} px={2} lineHeight={1.25}>
           <MDTypography variant="h6" fontWeight="medium">
             Projects
           </MDTypography>
@@ -210,11 +220,5 @@ function Overview() {
               />
             </Grid>
           </Grid>
-        </MDBox>
-      </Header>
-      <Footer />
-    </DashboardLayout>
-  );
+        </MDBox> */
 }
-
-export default Overview;

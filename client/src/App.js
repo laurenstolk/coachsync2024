@@ -1,24 +1,10 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
 import { useState, useEffect, useMemo, Component, Suspense } from "react";
 
 // react-router components
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Route, Navigate } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -50,6 +36,8 @@ import routes from "routes";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
+
+import LoadingPage from "layouts/loadingpage.js";
 
 // Images
 import brandWhite from "assets/images/logo-ct.png";
@@ -89,6 +77,8 @@ export default function App() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true); // Introduce a loading state
 
+  const hasFirstName = profile && profile.first_name !== null;
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -103,10 +93,12 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
+  //THIS IS WHERE THE USER IS NULL ERROR ON SIGN IN IS HAPPENING
   useEffect(() => {
     const fetchData = async () => {
       const userdata = await fetchUserProfile();
       setProfile(userdata);
+      setLoading(false); // Set loading to false after fetching profile data
     };
     fetchData();
   }, []);
@@ -205,7 +197,10 @@ export default function App() {
     </MDBox>
   );
 
-  if (!session) {
+  if (loading) {
+    // Render loading UI
+    return <LoadingPage />;
+  } else if (!session) {
     return (
       <div>
         <div
@@ -320,10 +315,10 @@ export default function App() {
         {layout === "vr" && <Configurator />}
         <Routes>
           {getRoutes(routes)}
-          {profile && profile.first_name ? (
+          {hasFirstName ? (
             <Route path="*" element={<Navigate to="/dashboard" />} />
           ) : (
-            <Route path="*" element={<Navigate to="/dashboard" />} />
+            <Route path="*" element={<Navigate to="/loadingpageSignUp" />} />
           )}
         </Routes>
       </ThemeProvider>

@@ -1,17 +1,17 @@
-// @mui material components
+import * as React from "react";
 import Card from "@mui/material/Card";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Grid from "@mui/material/Grid";
+
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Chip from "@mui/material/Chip";
 import Autocomplete from "@mui/material/Autocomplete";
-import Stack from "@mui/material/Stack";
+import { supabase } from "../../../supabaseClient";
+import DateCalendarValue from "./calendar";
+import IndeterminateCheckbox from "../components/checkboxList";
 
-// Material Dashboard 2 React components
 import MDBox from "../../../components/MDBox";
 import MDTypography from "../../../components/MDTypography";
 
@@ -19,118 +19,204 @@ import { FormControl, InputLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
-import React, { useState, useEffect } from "react";
-import { supabase } from "../../../supabaseClient";
+
+import { useParams } from "react-router-dom";
+
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import DateCalendarValue from "./calendar";
-import IndeterminateCheckbox from "../components/checkboxList";
-
-const exerciseChoices = ["Exercise 1", "Exercise 2", "Exercise 3", "Exercise 4", "Exercise 5"];
 
 function AddAssignment() {
   const navigate = useNavigate();
+  const { workoutId } = useParams();
   const [workoutCount, setWorkoutCount] = useState(3);
   const [workouts, setWorkouts] = useState([]);
-  const [selectedWorkouts, setSelectedWorkouts] = useState(
-    Array.from({ length: workoutCount }, () => ({
-      id: "",
-      workout_name: "",
-    }))
-  );
-  const handleWorkoutChange = (index, field, value) => {
-    setSelectedWorkouts(() => {
-      const newSelectedWorkouts = [...prevSelectedWorkouts];
-      newSelectedWorkouts[index][field] = value;
-      return newSelectedWorkouts;
-    });
-  };
+  const [workoutName, setWorkoutName] = useState("");
+  const [selectedWorkout, setSelectedWorkout] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedPlayers, setSelectedPlayers] = useState([]);
+  const [profiles, setProfiles] = useState([]);
+  const [workoutNotes, setWorkoutNotes] = useState("");
+  const [selectAllPlayers, setSelectAllPlayers] = useState(false); // New state for "All Players" checkbox
+  const [showPastDateError, setShowPastDateError] = useState(false); // State to control error message display
 
-  async function getWorkouts() {
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const { data: workoutsData, error } = await supabase.from("workout").select("*");
+        if (error) {
+          throw error;
+        }
+        setWorkouts(workoutsData || []);
+
+        const { data: profilesData, error: profilesError } = await supabase
+          .from("profile")
+          .select("*")
+          .not("first_name", "is", null)
+          .not("last_name", "is", null);
+        if (profilesError) {
+          throw profilesError;
+        }
+        setProfiles(profilesData || []);
+
+        if (workoutId) {
+          const selected = workoutsData.find((workout) => workout.id === parseInt(workoutId));
+          if (selected) {
+            setSelectedWorkout(selected);
+            setWorkoutName(selected.workout_name);
+          }
+        }
+
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() - 1);
+        if (!selectedDate || selectedDate >= currentDate) {
+          setShowPastDateError(false);
+          console.log("Selected Date:", selectedDate);
+        } else {
+          setShowPastDateError(true);
+          setSelectedDate(null);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
+      }
+    }
+    fetchData();
+  }, [workoutId, selectedDate]);
+
+  const handleDeleteWorkout = async (workoutIdToDelete) => {
     try {
-      let { data, error } = await supabase.from("workout").select("*");
+      const { error } = await supabase.from("workout").delete().eq("id", workoutIdToDelete);
+      if (error) {
+        throw error;
+      }
+      setWorkouts((prevWorkouts) => prevWorkouts.filter((workout) => workout.id !== workoutIdToDelete));
+      toast.success("Workout deleted successfully!");
+    } catch (error) {
+
+      console.error("Error deleting workout:", error.message);
+
+    }
+  }
+
+  const handleAssignWorkout = async () => {
+    if (!selectedWorkout) {
+      alert("Please select a workout.");
+      return;
+    }
+
+    if (!selectedDate) {
+      alert("Please select a date.");
+      return;
+    }
+
+    if (selectedPlayers.length === 0) {
+      alert("Please select at least one player.");
+      return;
+    }
+
+    try {
+      // Insert assignment records for selected players
+      const assignments = selectedPlayers.map((playerId) => ({
+        workout_id: selectedWorkout.id,
+        player_id: playerId,
+        date: selectedDate,
+        notes: workoutNotes, // You can set notes here
+        completed: false, // Initialized as false
+      }));
+
+      const { data, error } = await supabase.from("assignment").insert(assignments);
 
       if (error) throw error;
 
-      if (data != null) {
-        setWorkouts(data);
-      }
+      // Handle success with a toast notification and redirection
+      toast.success("Workout assigned successfully!", {
+        autoClose: 2000,
+        onClose: () => {
+          navigate("/viewassignment");
+        },
+      });
     } catch (error) {
-      alert(error.message);
+      console.error("Error assigning workout:", error.message);
+
     }
-  }
-  useEffect(() => {
-    getWorkouts();
-  }, []);
+  };
+  const handleWorkoutChange = (event) => {
+    const selectedWorkoutId = event.target.value;
+    const selectedWorkout = workouts.find((workout) => workout.id === selectedWorkoutId);
+    setSelectedWorkout(selectedWorkout);
+    console.log("Selected Workout:", selectedWorkout);
+  };
+  //  Function to handle date selection
+  // const handleDateChange = (newValue) => {
+  //   setSelectedDate(newValue);
+  //   console.log("Selected Date:", newValue);
+  // };
+  //  Function to handle date selection
+  //  const handleDateChange = (newValue) => {
+  //   if (newValue < new Date()) {
+  //     // If selected date is in the past, show error message
+  //     setShowPastDateError(true);
+  //     setSelectedDate(null); // Reset selected date
+  //   } else {
+  //     setShowPastDateError(false); // Hide error message if date is valid
+  //     setSelectedDate(newValue);
+  //     console.log("Selected Date:", newValue);
+  //   }
+  // };
 
-  //   const handleAddExercise = () => {
-  //     setExerciseCount((prevCount) => prevCount + 1);
-  //     setSelectedExercises((prevSelectedExercises) => [
-  //       ...prevSelectedExercises,
-  //       { reps: "", sets: "", duration: "", notes: "" },
-  //     ]);
-  //   };
+  const handleDateChange = (newValue) => {
+    console.log("New value:", newValue);
+    const currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() - 1); // Set currentDate to today - 1 day
 
-  //   const handleRemoveExercise = () => {
-  //     setExerciseCount((prevCount) => Math.max(1, prevCount - 1)); // Ensure exercise count doesn't go below 1
-  //     setSelectedExercises((prevSelectedExercises) => {
-  //       const newSelectedExercises = [...prevSelectedExercises];
-  //       newSelectedExercises.pop(); // Remove the last exercise
-  //       return newSelectedExercises;
-  //     });
-  //   };
+    // If the selected date is before today or null, show error message
+    if (!newValue || newValue >= currentDate) {
+      setShowPastDateError(false);
+      setSelectedDate(newValue);
+      console.log("Selected Date:", newValue);
+    } else {
+      setShowPastDateError(true);
+      setSelectedDate(null); // Reset selected date
+    }
+  };
 
-  //   const handleSubmit = async () => {
-  //     const workoutData = {
-  //       workout_name: document.getElementById("workout-name").value,
-  //     };
-  //     try {
-  //       // Insert the workout record
-  //       const { data: workoutResult, error: workoutError } = await supabase
-  //         .from("workout")
-  //         .upsert([workoutData])
-  //         .select();
-  //       if (workoutError) {
-  //         console.error("Error adding workout:", workoutError);
-  //         // Handle the error here
-  //       } else {
-  //         console.log("Workout added successfully!");
-  //         toast.success("Workout successfully created!", {
-  //           autoClose: 2000,
-  //           onClose: () => {
-  //             navigate("/dashboard");
-  //           },
-  //         });
-  //       }
+  const handlePlayerSelection = (event, values) => {
+    // Extract the IDs of selected players
+    const selectedPlayerIds = values.map((player) => player.id);
+    setSelectedPlayers(selectedPlayerIds); // Update the selectedPlayers state
+  };
+  const handleMemberChange = (event, groupIndex, memberIndex) => {
+    const newGroups = [...groups];
+    newGroups[groupIndex].members[memberIndex].checked = event.target.checked;
 
-  //       // Insert customized_exercise records
-  //       const exerciseRecords = selectedExercises.map((exercise) => ({
-  //         sets: exercise.sets === "" ? null : parseInt(exercise.sets, 10),
-  //         reps: exercise.reps === "" ? null : parseInt(exercise.reps, 10),
-  //         coach_notes: exercise.notes,
-  //         workout_id: workoutResult[0].id, // Use the workout id from the result
-  //         exercise_id: exercise.exerciseId,
-  //         duration: exercise.duration === "" ? null : parseInt(exercise.duration, 10),
-  //       }));
+    // Check if all members of the group are checked
+    const allChecked = newGroups[groupIndex].members.every((member) => member.checked);
 
-  //       const { data: exerciseResult, error: exerciseError } = await supabase
-  //         .from("customized_exercise")
-  //         .upsert(exerciseRecords)
-  //         .select();
-  //       if (exerciseError) {
-  //         console.error("Error adding exercise records:", exerciseError);
-  //         // Handle the error here
-  //       } else {
-  //         console.log("Exercise records added successfully!");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error:", error);
-  //     }
-  //     // Your form submission logic here
-  //     console.log("Workout Name:", workoutData);
-  //     console.log("Selected Exercises:", selectedExercises);
-  //   };
+    // Update group checkbox state
+    newGroups[groupIndex].checked = allChecked;
+
+    setGroups(newGroups);
+
+    // Pass the selected players to the parent component
+    const selectedPlayers = newGroups
+      .flatMap((group) => group.members)
+      .filter((member) => member.checked)
+      .map((member) => member.id);
+    onSelectPlayers(selectedPlayers);
+  };
+
+  const handleSelectAllPlayersChange = (event) => {
+    const checked = event.target.checked;
+    setSelectAllPlayers(checked);
+
+    if (checked) {
+      const allPlayerIds = profiles.map((profile) => profile.id);
+      setSelectedPlayers(allPlayerIds);
+    } else {
+      setSelectedPlayers([]);
+    }
+  };
 
   return (
     <Card id="workout-form">
@@ -148,8 +234,8 @@ function AddAssignment() {
               sx={{ minHeight: "43px" }}
               label="Workout"
               variant="outlined"
-              value={selectedWorkouts}
-              onChange={(event) => setSelectedWorkouts([{ id: event.target.value }])}
+              value={selectedWorkout ? selectedWorkout.id : ""} // Update the value to selectedWorkout.id
+              onChange={handleWorkoutChange} // Update the change handler
             >
               {workouts.map((workout) => (
                 <MenuItem key={workout.id} value={workout.id}>
@@ -166,22 +252,29 @@ function AddAssignment() {
           <MDBox pt={1} pb={2} px={2}>
             <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
               <MDTypography variant="h9">Assign On:</MDTypography>
-              <DateCalendarValue />
+              <DateCalendarValue value={selectedDate} onChange={handleDateChange} />
+              {showPastDateError && (
+                <MDTypography variant="caption" color="error">
+                  Please select a valid future date.
+                </MDTypography>
+              )}
+
             </MDBox>
           </MDBox>
           {/* assignment notes: (textfield) */}
           <MDBox pt={1} pb={2} px={2}>
             <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
               <MDTypography variant="h9">Assignment Notes:</MDTypography>
+
               <br></br>
               <TextField
                 id="filled-textarea"
                 label="Assigned Workout Notes"
                 multiline
                 variant="filled"
-              >
-                {/* the notes will go here */}
-              </TextField>
+                value={workoutNotes} // Set the value of the TextField to workoutNotes
+                onChange={(event) => setWorkoutNotes(event.target.value)} // Update workoutNotes when the user types
+              />
             </MDBox>
           </MDBox>
         </Grid>
@@ -193,7 +286,12 @@ function AddAssignment() {
               <MDTypography variant="h9">Assign To:</MDTypography>
               <br></br>
               <FormGroup>
-                <FormControlLabel control={<Checkbox defaultUnChecked />} label="All Players" />
+                <FormControlLabel
+                  control={
+                    <Checkbox checked={selectAllPlayers} onChange={handleSelectAllPlayersChange} />
+                  }
+                  label="All Players"
+                />
               </FormGroup>
             </MDBox>
             <br></br>
@@ -202,7 +300,14 @@ function AddAssignment() {
               <Autocomplete
                 multiple
                 id="workout-id"
-                options={workouts.map((workout) => workout.workout_name)} // Assuming workout.workout_name is an array
+                options={profiles
+                  .filter((profile) => profile.first_name && profile.last_name) // Filter out profiles with null first_name or last_name
+                  .map((profile) => ({
+                    id: profile.id,
+                    name: `${profile.first_name} ${profile.last_name}`,
+                  }))}
+                getOptionLabel={(option) => option.name} // Display player names
+                onChange={handlePlayerSelection} // Update selectedPlayers state with IDs
                 renderInput={(params) => (
                   <TextField {...params} label="Search for players here" placeholder="Assign to:" />
                 )}
@@ -213,13 +318,21 @@ function AddAssignment() {
               <MDTypography variant="body2" color="secondary">
                 Groups:
               </MDTypography>
-              <IndeterminateCheckbox></IndeterminateCheckbox>
+              <IndeterminateCheckbox
+                onSelectPlayers={(players) => {
+                  console.log("Selected Players:", players);
+                  const selectedPlayerIds = players; // Assign the players array directly to selectedPlayerIds
+                  console.log("Selected Player IDs:", selectedPlayerIds);
+                  setSelectedPlayers(selectedPlayerIds);
+                }}
+              />
+              {/* <IndeterminateCheckbox onSelectPlayers={(players) => setSelectedPlayers(players)} /> */}
             </MDBox>
           </MDBox>
         </Grid>
       </Grid>
       <MDBox display="flex" justifyContent="flex-end" px={2} pb={2}>
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary" onClick={handleAssignWorkout}>
           <MDTypography variant="caption" color="white" fontWeight="bold" textTransform="uppercase">
             Assign
           </MDTypography>
@@ -228,67 +341,4 @@ function AddAssignment() {
     </Card>
   );
 }
-
-//     <Card id="workout-form">
-//       <MDBox pt={3} px={2}>
-//         <MDTypography variant="h4" fontWeight="medium">
-//           Assign Workout
-//         </MDTypography>
-//       </MDBox>
-//       {/* <MDBox pt={1} pb={2} px={2}>
-//         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-//           <TextField id="workout_name" label="Workout Name" variant="outlined" />
-//         </MDBox>
-//       </MDBox> */}
-
-//       {selectedWorkouts.map((workout, index) => (
-//         <MDBox key={index} pt={1} pb={2} px={2}>
-//           <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-//             <MDBox mb={2}>
-//               <FormControl fullWidth>
-//                 <InputLabel>Workout Name</InputLabel>
-//                 <Select
-//                   sx={{ minHeight: "43px" }}
-//                   id="id"
-//                   label="Workout"
-//                   variant="outlined"
-//                   // value={selectedExercises}
-//                   value={workout.id}
-//                   //onChange={handleExerciseChange}
-//                   onChange={(event) =>
-//                     handleWorkoutChange(index, "workoutId", event.target.value)
-//                   }
-//                 >
-//                   {workouts.map((workout, index) => (
-//                     <MenuItem key={index} value={workout.id}>
-//                       {workout.workout_name}
-//                     </MenuItem>
-//                   ))}
-//                 </Select>
-//               </FormControl>
-//             </MDBox>
-//           </MDBox>
-//           <MDBox
-//             component="ul"
-//             display="flex"
-//             flexDirection="row"
-//             justifyContent="right"
-//             p={0}
-//             m={0}
-//           >
-//           </MDBox>
-//         </MDBox>
-//       ))}
-
-//       {/* <MDBox px={2} pb={2}>
-//         <Button variant="contained" color="primary" onClick={handleSubmit}>
-//           <MDTypography variant="caption" color="white" fontWeight="bold" textTransform="uppercase">
-//             Submit
-//           </MDTypography>
-//         </Button>
-//       </MDBox> */}
-//     </Card>
-//   );
-// }
-
 export default AddAssignment;
