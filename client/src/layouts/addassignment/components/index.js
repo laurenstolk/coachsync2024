@@ -19,6 +19,9 @@ import { FormControl, InputLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
+
+import { useParams } from "react-router-dom";
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -26,8 +29,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 function AddAssignment() {
   const navigate = useNavigate();
+  const { workoutId } = useParams();
   const [workoutCount, setWorkoutCount] = useState(3);
   const [workouts, setWorkouts] = useState([]);
+  const [workoutName, setWorkoutName] = useState("");
   const [selectedWorkout, setSelectedWorkout] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedPlayers, setSelectedPlayers] = useState([]);
@@ -37,45 +42,71 @@ function AddAssignment() {
   const [showPastDateError, setShowPastDateError] = useState(false); // State to control error message display
 
   useEffect(() => {
-    getWorkouts();
-    getProfiles();
-  }, []);
+    async function fetchData() {
+      try {
+        const { data: workoutsData, error } = await supabase.from("workout").select("*");
+        if (error) {
+          throw error;
+        }
+        setWorkouts(workoutsData || []);
 
-  async function getWorkouts() {
-    try {
-      let { data, error } = await supabase.from("workout").select("*");
+        const { data: profilesData, error: profilesError } = await supabase
+          .from("profile")
+          .select("*")
+          .not("first_name", "is", null)
+          .not("last_name", "is", null);
+        if (profilesError) {
+          throw profilesError;
+        }
+        setProfiles(profilesData || []);
 
-      if (error) throw error;
+        if (workoutId) {
+          const selected = workoutsData.find((workout) => workout.id === parseInt(workoutId));
+          if (selected) {
+            setSelectedWorkout(selected);
+            setWorkoutName(selected.workout_name);
+          }
+        }
 
-      if (data != null) {
-        setWorkouts(data);
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() - 1);
+        if (!selectedDate || selectedDate >= currentDate) {
+          setShowPastDateError(false);
+          console.log("Selected Date:", selectedDate);
+        } else {
+          setShowPastDateError(true);
+          setSelectedDate(null);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
       }
-    } catch (error) {
-      console.error("Error fetching workouts:", error.message);
     }
-  }
+    fetchData();
+  }, [workoutId, selectedDate]);
 
-  async function getProfiles() {
+  const handleDeleteWorkout = async (workoutIdToDelete) => {
     try {
-      const { data, error } = await supabase
-        .from("profile")
-        .select("*")
-        .not("first_name", "is", null) // Filter out entries where first_name is null
-        .not("last_name", "is", null);
-
-      if (error) throw error;
-
-      if (data != null) {
-        setProfiles(data);
+      const { error } = await supabase.from("workout").delete().eq("id", workoutIdToDelete);
+      if (error) {
+        throw error;
       }
+      setWorkouts((prevWorkouts) => prevWorkouts.filter((workout) => workout.id !== workoutIdToDelete));
+      toast.success("Workout deleted successfully!");
     } catch (error) {
-      console.error("Error fetching profiles:", error.message);
+
+      console.error("Error deleting workout:", error.message);
+
     }
   }
 
   const handleAssignWorkout = async () => {
-    if (!selectedWorkout || !selectedDate) {
-      alert("Please select a workout and a date.");
+    if (!selectedWorkout) {
+      alert("Please select a workout.");
+      return;
+    }
+
+    if (!selectedDate) {
+      alert("Please select a date.");
       return;
     }
 
@@ -96,9 +127,7 @@ function AddAssignment() {
 
       const { data, error } = await supabase.from("assignment").insert(assignments);
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       // Handle success with a toast notification and redirection
       toast.success("Workout assigned successfully!", {
@@ -109,6 +138,7 @@ function AddAssignment() {
       });
     } catch (error) {
       console.error("Error assigning workout:", error.message);
+
     }
   };
   const handleWorkoutChange = (event) => {
@@ -136,6 +166,7 @@ function AddAssignment() {
   // };
 
   const handleDateChange = (newValue) => {
+    console.log("New value:", newValue);
     const currentDate = new Date();
     currentDate.setDate(currentDate.getDate() - 1); // Set currentDate to today - 1 day
 
@@ -221,8 +252,13 @@ function AddAssignment() {
           <MDBox pt={1} pb={2} px={2}>
             <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
               <MDTypography variant="h9">Assign On:</MDTypography>
-              {/* <DateCalendarValue onChange={(date) => setSelectedDate(date)} /> */}
               <DateCalendarValue value={selectedDate} onChange={handleDateChange} />
+              {showPastDateError && (
+                <MDTypography variant="caption" color="error">
+                  Please select a valid future date.
+                </MDTypography>
+              )}
+
             </MDBox>
           </MDBox>
           {/* assignment notes: (textfield) */}

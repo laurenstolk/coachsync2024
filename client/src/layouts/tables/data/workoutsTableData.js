@@ -53,6 +53,7 @@ export default function data() {
     columns: [
       { Header: "name", accessor: "name", width: "20%", align: "left" },
       { Header: "exercises", accessor: "exercises", width: "40%", align: "left" },
+      { Header: "id", accessor: "id", width: "20%", align: "left" },
       { Header: "", accessor: "view", width: "10%", align: "left" },
     ],
     rows: workouts.map((workout, index) => {
@@ -76,6 +77,12 @@ export default function data() {
         name: (
           <MDBox display="flex" py={1}>
             {workout.workout_name}
+          </MDBox>
+        ),
+
+        id: (
+          <MDBox display="flex" py={1}>
+            {workout.id}
           </MDBox>
         ),
 
