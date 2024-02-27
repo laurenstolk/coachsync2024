@@ -98,14 +98,15 @@ function TeamInfoUpdate() {
     const teamData = {
       name: teamName,
       sport_id: selectedSport, // use the selectedSport state variable
-      logo_picture: `${teamName}_logo_${currentDate}`, // Construct the profile picture string
+      logo_picture: `${teamName}_logo_${selectedSport}`, // Construct the profile picture string
     };
+    console.log(teamData);
 
     try {
       if (teamLogo) {
         const { data, error } = await supabase.storage
-          .from("images")
-          .upload(`${teamName}_logo_${currentDate}`, teamLogo, {
+          .from("images/team_logos")
+          .upload(`${teamName}_logo_${selectedSport}`, teamLogo, {
             cacheControl: "3600", // optional
           });
 

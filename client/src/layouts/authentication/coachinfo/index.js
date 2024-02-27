@@ -88,7 +88,7 @@ function CoachInfoUpdate() {
       try {
         if (profilePic) {
           const { data, error } = await supabase.storage
-            .from("images")
+            .from("images/profile_pics")
             .upload(`${firstName}_${lastName}_${currentDate}`, profilePic, {
               cacheControl: "3600", // optional
             });
