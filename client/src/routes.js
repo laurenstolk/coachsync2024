@@ -158,14 +158,14 @@ const routes = [
     route: "/addwellness",
     component: <Addnewwellness />,
   },
-  {
-    type: "collapse",
-    name: "View Workout",
-    key: "viewworkout",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/viewworkout",
-    component: <ViewWorkout />,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "View Workout",
+  //   key: "viewworkout",
+  //   icon: <Icon fontSize="small">receipt_long</Icon>,
+  //   route: "/viewworkout",
+  //   component: <ViewWorkout />,
+  // },
   {
     type: "collapse",
     name: "Assign Workout",
