@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -18,8 +18,17 @@ import {
   Typography,
   Card,
   Box,
+  MenuItem,
+  Select,
+  TextField, // Import TextField component
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 import { Link } from "react-router-dom";
 
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -32,6 +41,12 @@ function Tables() {
   const [customizedExercises, setCustomizedExercises] = useState([]);
   const [exercises, setExercises] = useState([]);
   const [editableExerciseId, setEditableExerciseId] = useState(null);
+  const [expandedWorkoutId, setExpandedWorkoutId] = useState(null);
+  const [originalExerciseData, setOriginalExerciseData] = useState(null);
+  const [exercisesByCategory, setExercisesByCategory] = useState({});
+  const [openCoachNotesDialog, setOpenCoachNotesDialog] = useState(false);
+  const [currentExerciseId, setCurrentExerciseId] = useState(null);
+  const [editedCoachNotes, setEditedCoachNotes] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,6 +68,20 @@ function Tables() {
         setWorkouts(workoutsData || []);
         setCustomizedExercises(customizedExercisesData || []);
         setExercises(exercisesData || []);
+
+        // Categorize and sort exercises
+        const sortedExercisesByCategory = {};
+        exercisesData.forEach((exercise) => {
+          if (!sortedExercisesByCategory[exercise.category]) {
+            sortedExercisesByCategory[exercise.category] = [];
+          }
+          sortedExercisesByCategory[exercise.category].push(exercise);
+        });
+        // Sort exercises within each category alphabetically
+        Object.keys(sortedExercisesByCategory).forEach((category) => {
+          sortedExercisesByCategory[category].sort((a, b) => a.name.localeCompare(b.name));
+        });
+        setExercisesByCategory(sortedExercisesByCategory);
       } catch (error) {
         console.error("Error fetching data:", error.message);
       }
@@ -100,13 +129,19 @@ function Tables() {
   };
 
   const handleEdit = (exerciseId) => {
-    setEditableExerciseId(exerciseId);
+    // Find the exercise by ID
+    const exerciseToEdit = customizedExercises.find((exercise) => exercise.id === exerciseId);
+    if (exerciseToEdit) {
+      // Save the original exercise data before editing
+      setOriginalExerciseData({ ...exerciseToEdit });
+      setEditableExerciseId(exerciseId);
+    }
   };
 
   const handleInputChange = (e, id, field) => {
     const value = e.target.value;
-    setCustomizedExercises(prevState => {
-      const updatedExercises = prevState.map(exercise => {
+    setCustomizedExercises((prevState) => {
+      const updatedExercises = prevState.map((exercise) => {
         if (exercise.id === id) {
           return { ...exercise, [field]: value };
         }
@@ -114,6 +149,10 @@ function Tables() {
       });
       return updatedExercises;
     });
+  };
+
+  const handleSummaryClick = (workoutId) => {
+    setExpandedWorkoutId(workoutId === expandedWorkoutId ? null : workoutId);
   };
 
   const handleUpdate = async (exercise) => {
@@ -135,8 +174,8 @@ function Tables() {
       console.log("Exercise updated successfully:", data);
       setEditableExerciseId(null);
 
-      setCustomizedExercises(prevState =>
-        prevState.map(item => (item.id === exercise.id ? { ...item, ...exercise } : item))
+      setCustomizedExercises((prevState) =>
+        prevState.map((item) => (item.id === exercise.id ? { ...item, ...exercise } : item))
       );
 
       toast.success("Exercise updated successfully!");
@@ -146,7 +185,82 @@ function Tables() {
     }
   };
 
-  // Rest of your component code...
+  const handleAddCustomExercise = async (workoutId) => {
+    try {
+      const { data: exercisesData, error } = await supabase.from("exercise").select("*");
+
+      if (error) {
+        throw error;
+      }
+
+      const newCustomExercise = {
+        id: customizedExercises.length + 1, // Just a temporary ID until it's saved to the database
+        workout_id: workoutId,
+        exercise_id: exercisesData[0].id, // Select the first exercise by default
+        sets: 0,
+        reps: 0,
+        duration: "",
+        coach_notes: "",
+      };
+
+      setCustomizedExercises([...customizedExercises, newCustomExercise]);
+      setEditableExerciseId(newCustomExercise.id); // Trigger edit immediately after adding
+      // Remove the confirm message
+      // toast.success("Custom exercise added successfully!");
+    } catch (error) {
+      console.error("Error adding custom exercise:", error.message);
+      toast.error("Error adding custom exercise");
+    }
+  };
+
+  const handleCancel = () => {
+    // Revert the exercise data back to its original state
+    if (originalExerciseData) {
+      setCustomizedExercises((prevState) =>
+        prevState.map((exercise) =>
+          exercise.id === editableExerciseId ? { ...originalExerciseData } : exercise
+        )
+      );
+      // Clear the original exercise data state
+      setOriginalExerciseData(null);
+    }
+    // Reset the editable exercise ID to null
+    setEditableExerciseId(null);
+  };
+
+  const handleCoachNotesEditClick = (exerciseId, coachNotes) => {
+    setCurrentExerciseId(exerciseId);
+    setEditedCoachNotes(coachNotes);
+    setOpenCoachNotesDialog(true);
+  };
+
+  const handleCoachNotesSave = async () => {
+    try {
+      // Update the coach's notes locally before making the API call
+      setCustomizedExercises((prevState) =>
+        prevState.map((exercise) =>
+          exercise.id === currentExerciseId ? { ...exercise, coach_notes: editedCoachNotes } : exercise
+        )
+      );
+
+      const { data, error } = await supabase
+        .from("customized_exercise")
+        .update({
+          coach_notes: editedCoachNotes,
+        })
+        .eq("id", currentExerciseId);
+
+      if (error) {
+        throw error;
+      }
+
+      console.log("Coach's notes updated successfully:", data);
+      setOpenCoachNotesDialog(false);
+    } catch (error) {
+      console.error("Error updating coach's notes:", error.message);
+      toast.error("Error updating coach's notes");
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -181,15 +295,19 @@ function Tables() {
       <Grid container spacing={1} sx={{ marginBottom: 5 }}>
         {workouts.map((workout) => (
           <Grid item xs={12} key={workout.id}>
-            <Accordion>
+            <Accordion
+              expanded={expandedWorkoutId === workout.id}
+              onChange={handleSummaryClick}
+            >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
-                sx={{ display: "flex", gridTemplateColumns: "center" }}
+                sx={{ display: "flex", alignItems: "center" }}
+                onClick={(e) => handleSummaryClick(workout.id)}
               >
                 <Typography sx={{ flexGrow: 1 }}>{workout.workout_name}</Typography>
                 <Button
                   variant="text"
-                  color="primary" // Change back to primary color
+                  color="primary"
                   endIcon={<Icon>arrow_right_alt</Icon>}
                   component={Link}
                   to={`/addassignment/${workout.id}`}
@@ -199,6 +317,20 @@ function Tables() {
                 <Button color="error" onClick={() => handleDeleteWorkout(workout.id)}>
                   <Icon>delete</Icon>
                 </Button>
+                {expandedWorkoutId === workout.id && (
+                  <Button
+                    variant="text"
+                    color="primary"
+                    endIcon={<AddIcon />}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent event propagation
+                      handleAddCustomExercise(workout.id);
+                    }}
+                    sx={{ color: "black" }}
+                  >
+                    Add Exercise to Workout
+                  </Button>
+                )}
               </AccordionSummary>
               <AccordionDetails sx={{ marginTop: 2, marginBottom: 2 }}>
                 <TableContainer component={Paper}>
@@ -231,13 +363,43 @@ function Tables() {
                           const isEditable = editableExerciseId === exercise.id;
                           return (
                             <TableRow key={exercise.id}>
-                              <TableCell align="center">{matchedExercise ? matchedExercise.name : ""}</TableCell>
                               <TableCell align="center">
                                 {isEditable ? (
-                                  <input
+                                  <Select
+                                    sx={{ minHeight: "43px" }}
+                                    label="Exercise"
+                                    value={exercise.exercise_id}
+                                    onChange={(e) => handleInputChange(e, exercise.id, "exercise_id")}
+                                  >
+                                    {Object.entries(exercisesByCategory).map(([category, exercises]) => [
+                                      <MenuItem
+                                        key={category}
+                                        disabled
+                                        style={{
+                                          color: "blueviolet",
+                                          fontWeight: "bold",
+                                          backgroundColor: "lightgray",
+                                        }}
+                                      >
+                                        {category}
+                                      </MenuItem>,
+                                      exercises.map((exercise) => (
+                                        <MenuItem key={exercise.id} value={exercise.id}>
+                                          {exercise.name}
+                                        </MenuItem>
+                                      )),
+                                    ])}
+                                  </Select>
+                                ) : (
+                                  matchedExercise ? matchedExercise.name : ""
+                                )}
+                              </TableCell>
+                              <TableCell align="center">
+                                {isEditable ? (
+                                  <TextField
                                     type="number"
                                     value={exercise.sets}
-                                    onChange={(e) => handleInputChange(e, exercise.id, 'sets')}
+                                    onChange={(e) => handleInputChange(e, exercise.id, "sets")}
                                   />
                                 ) : (
                                   exercise.sets
@@ -245,10 +407,10 @@ function Tables() {
                               </TableCell>
                               <TableCell align="center">
                                 {isEditable ? (
-                                  <input
+                                  <TextField
                                     type="number"
                                     value={exercise.reps}
-                                    onChange={(e) => handleInputChange(e, exercise.id, 'reps')}
+                                    onChange={(e) => handleInputChange(e, exercise.id, "reps")}
                                   />
                                 ) : (
                                   exercise.reps
@@ -256,10 +418,10 @@ function Tables() {
                               </TableCell>
                               <TableCell align="center">
                                 {isEditable ? (
-                                  <input
+                                  <TextField
                                     type="text"
                                     value={exercise.duration}
-                                    onChange={(e) => handleInputChange(e, exercise.id, 'duration')}
+                                    onChange={(e) => handleInputChange(e, exercise.id, "duration")}
                                   />
                                 ) : (
                                   exercise.duration
@@ -267,20 +429,29 @@ function Tables() {
                               </TableCell>
                               <TableCell align="center">
                                 {isEditable ? (
-                                  <input
-                                    type="text"
-                                    value={exercise.coach_notes}
-                                    onChange={(e) => handleInputChange(e, exercise.id, 'coach_notes')}
-                                  />
+                                  <>
+                                    <Typography sx={{ fontWeight: 300, fontSize: "0.9rem" }}>{exercise.coach_notes}</Typography>
+                                    <Button
+                                      variant="text"
+                                      color="inherit"
+                                      onClick={() => handleCoachNotesEditClick(exercise.id, exercise.coach_notes)}
+                                      startIcon={<EditIcon />}
+                                    />
+                                  </>
                                 ) : (
-                                  exercise.coach_notes
+                                  <Typography sx={{ fontWeight: 300, fontSize: "0.9rem" }}>{exercise.coach_notes}</Typography>
                                 )}
                               </TableCell>
                               <TableCell align="center">
                                 {isEditable ? (
-                                  <Button color="primary" onClick={() => handleUpdate(exercise)}>
-                                    <Icon>save</Icon> Save
-                                  </Button>
+                                  <>
+                                    <Button color="primary" onClick={() => handleUpdate(exercise)}>
+                                      <Icon>save</Icon> Save
+                                    </Button>
+                                    <Button color="error" onClick={handleCancel}>
+                                      <Icon>cancel</Icon> Cancel
+                                    </Button>
+                                  </>
                                 ) : (
                                   <>
                                     <Button color="inherit" onClick={() => handleEdit(exercise.id)}>
@@ -303,8 +474,26 @@ function Tables() {
           </Grid>
         ))}
       </Grid>
+      <Dialog open={openCoachNotesDialog} onClose={() => setOpenCoachNotesDialog(false)}>
+        <DialogTitle>Edit Coach&apos;s Notes</DialogTitle>
+        <DialogContent>
+          <TextField
+            multiline
+            rows={4}
+            value={editedCoachNotes}
+            onChange={(e) => setEditedCoachNotes(e.target.value)}
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenCoachNotesDialog(false)}>Cancel</Button>
+          <Button onClick={handleCoachNotesSave} variant="contained" color="primary" sx={{ color: "#fff" }}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Footer />
-      <ToastContainer /> {/* Add this line for toast notifications */}
+      <ToastContainer />
     </DashboardLayout>
   );
 }
