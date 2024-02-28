@@ -1,5 +1,7 @@
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
+import { ToastContainer } from "react-toastify";
+
 import { useState, useEffect, useMemo, Component, Suspense } from "react";
 
 // react-router components
@@ -293,6 +295,7 @@ export default function App() {
             {getRoutes(routes)}
             <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>
+          <ToastContainer />
         </ThemeProvider>
       </CacheProvider>
     ) : (

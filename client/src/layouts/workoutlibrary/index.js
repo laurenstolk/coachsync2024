@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
   Grid,
@@ -493,7 +493,6 @@ function Tables() {
         </DialogActions>
       </Dialog>
       <Footer />
-      <ToastContainer />
     </DashboardLayout>
   );
 }
