@@ -131,7 +131,7 @@ function AddWorkout() {
         toast.success("Workout successfully created!", {
           autoClose: 2000,
           onClose: () => {
-            navigate("/dashboard");
+            navigate("/workoutlibrary");
           },
         });
       }
