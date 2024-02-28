@@ -26,7 +26,7 @@ import MDButton from "components/MDButton";
 
 function Transaction({ color, icon, name, description, value }) {
   return (
-    <MDBox key={name} component="li" py={1} pr={2} mb={1}>
+    <MDBox key={name} component="div" py={1} pr={2} mb={1}>
       <MDBox display="flex" justifyContent="space-between" alignItems="center">
         <MDBox display="flex" alignItems="center">
           <MDBox mr={2}>
