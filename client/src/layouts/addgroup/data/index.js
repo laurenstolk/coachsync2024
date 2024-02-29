@@ -134,8 +134,7 @@ function AddGroup() {
         .from("profile")
         .select("id")
         .eq("team_id", user.team_id)
-        .eq("player", false)
-        .single();
+        .eq("player", false);
   
       if (coachError) {
         console.error("Error retrieving coach information:", coachError);
