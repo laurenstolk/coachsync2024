@@ -16,6 +16,8 @@ Coded by www.creative-tim.com
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
+import { useEffect, useState } from "react";
+
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -27,7 +29,7 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 import Button from "@mui/material/Button"; // Import Button component
-
+import { supabase } from "../../supabaseClient";
 
 //for group component
 import {
@@ -45,22 +47,50 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Link } from "react-router-dom";
 import Icon from "@mui/material/Icon";
+import { fetchUserProfile } from "../../fetchUserProfile";
+
 
 
 // Data
 import playersTableData from "layouts/tables/data/playersTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 import groupsTableData from "layouts/grouptable/data/groupsTableData";
+import { fetchTeamInfo } from "../../fetchTeamInfo";
 
 
 function Tables() {
   const { columns, rows } = playersTableData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
   const { columns: gColumns, rows: gRows} = groupsTableData();
+  const [teamName, setTeamName] = useState(''); // State to hold the team name
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchUserProfile();
+      setUser(data);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const fetchTeamData = async () => {
+      try {
+        if (user) {
+          const teamData = await fetchTeamInfo(user); // Fetch team data with user info
+          setTeamName(teamData.name); // Update team name in state
+        }
+      } catch (error) {
+        console.error('Error fetching team data:', error);
+      }
+    };
+
+    fetchTeamData(); // Call fetchTeamData on component mount
+  }, [user]); // Run only when user changes
 
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle="Team" />
+      <DashboardNavbar pageTitle={teamName || 'Team'} />
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
