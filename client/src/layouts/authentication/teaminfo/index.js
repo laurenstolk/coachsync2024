@@ -31,6 +31,7 @@ import { supabase } from "../../../supabaseClient";
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
 import MenuItem from "@mui/material/MenuItem";
+import { random } from "chroma-js";
 
 function TeamInfoUpdate() {
   const [selectedSport, setSelectedSport] = useState(""); // new state for selected sport
@@ -39,6 +40,7 @@ function TeamInfoUpdate() {
   const [teamid, setTeamID] = useState([]);
   const [profile, setProfile] = useState(null);
   const [formValid, setFormValid] = useState(false);
+  const randomNumber = Math.floor(100000 + Math.random() * 900000); 
 
   const onLogoDrop = useCallback((acceptedFiles) => {
     // Do something with the uploaded file (e.g., store it in state)
@@ -94,11 +96,13 @@ function TeamInfoUpdate() {
   const handleSubmit = async () => {
     const currentDate = new Date().toISOString();
     const teamName = document.getElementById("team-name").value;
+    const teamNameWithoutSpaces = teamName.replace(/\s/g, '');
 
     const teamData = {
       name: teamName,
       sport_id: selectedSport, // use the selectedSport state variable
       logo_picture: `${teamName}_logo_${selectedSport}`, // Construct the profile picture string
+      signup_code: `${teamNameWithoutSpaces}${randomNumber}`, // Construct signup code
     };
     console.log(teamData);
 
