@@ -20,7 +20,7 @@ import {
   Box,
   MenuItem,
   Select,
-  TextField, // Import TextField component
+  TextField,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -54,39 +54,46 @@ function Tables() {
         const { data: workoutsData, error: workoutsError } = await supabase
           .from("workout")
           .select("*");
-        const { data: customizedExercisesData, error: customizedExercisesError } = await supabase
+        const { data: customizedexerciseData, error: customizedExercisesError } = await supabase
           .from("customized_exercise")
           .select("*");
-        const { data: exercisesData, error: exercisesError } = await supabase
+        const { data: exerciseData, error: exercisesError } = await supabase
           .from("exercise")
           .select("*");
+        const { data: categoryData, error: categoryError } = await supabase
+          .from("category")
+          .select("*");
 
+        if (categoryError) throw categoryError;
+
+        if (categoryData != null) {
+          const categoryMap = {};
+          categoryData.forEach((category) => {
+            categoryMap[category.category_id] = category.category_name;
+          });
+
+          const exercisesGroupedByCategory = {};
+          exerciseData.forEach((exercise) => {
+            const categoryName = categoryMap[exercise.category];
+            if (!exercisesGroupedByCategory[categoryName]) {
+              exercisesGroupedByCategory[categoryName] = [];
+            }
+            exercisesGroupedByCategory[categoryName].push(exercise);
+          });
+          setExercisesByCategory(exercisesGroupedByCategory);
+        }
         if (workoutsError || customizedExercisesError || exercisesError) {
           throw new Error("Error fetching data");
         }
 
         setWorkouts(workoutsData || []);
-        setCustomizedExercises(customizedExercisesData || []);
-        setExercises(exercisesData || []);
+        setCustomizedExercises(customizedexerciseData || []);
+        setExercises(exerciseData || []);
 
-        // Categorize and sort exercises
-        const sortedExercisesByCategory = {};
-        exercisesData.forEach((exercise) => {
-          if (!sortedExercisesByCategory[exercise.category]) {
-            sortedExercisesByCategory[exercise.category] = [];
-          }
-          sortedExercisesByCategory[exercise.category].push(exercise);
-        });
-        // Sort exercises within each category alphabetically
-        Object.keys(sortedExercisesByCategory).forEach((category) => {
-          sortedExercisesByCategory[category].sort((a, b) => a.name.localeCompare(b.name));
-        });
-        setExercisesByCategory(sortedExercisesByCategory);
       } catch (error) {
-        console.error("Error fetching data:", error.message);
+        alert(error);
       }
     };
-
     fetchData();
   }, []);
 
@@ -187,7 +194,7 @@ function Tables() {
 
   const handleAddCustomExercise = async (workoutId) => {
     try {
-      const { data: exercisesData, error } = await supabase.from("exercise").select("*");
+      const { data: exerciseData, error } = await supabase.from("exercise").select("*");
 
       if (error) {
         throw error;
@@ -196,7 +203,7 @@ function Tables() {
       const newCustomExercise = {
         id: customizedExercises.length + 1, // Just a temporary ID until it's saved to the database
         workout_id: workoutId,
-        exercise_id: exercisesData[0].id, // Select the first exercise by default
+        exercise_id: exerciseData[0].id, // Select the first exercise by default
         sets: 0,
         reps: 0,
         duration: "",
@@ -369,26 +376,34 @@ function Tables() {
                                     sx={{ minHeight: "43px" }}
                                     label="Exercise"
                                     value={exercise.exercise_id}
-                                    onChange={(e) => handleInputChange(e, exercise.id, "exercise_id")}
+                                    onChange={(event) =>
+                                      handleInputChange(event, exercise.id, "exercise_id")
+                                    }
                                   >
-                                    {Object.entries(exercisesByCategory).map(([category, exercises]) => [
-                                      <MenuItem
-                                        key={category}
-                                        disabled
-                                        style={{
-                                          color: "blueviolet",
-                                          fontWeight: "bold",
-                                          backgroundColor: "lightgray",
-                                        }}
-                                      >
-                                        {category}
-                                      </MenuItem>,
-                                      exercises.map((exercise) => (
-                                        <MenuItem key={exercise.id} value={exercise.id}>
-                                          {exercise.name}
-                                        </MenuItem>
-                                      )),
-                                    ])}
+                                    {Object.entries(exercisesByCategory)
+                                      .sort(([categoryA], [categoryB]) => categoryA.localeCompare(categoryB))
+                                      .map(([category, exercises]) => [
+                                        <MenuItem
+                                          key={category}
+                                          disabled
+                                          style={{
+                                            color: "blueviolet",
+                                            fontWeight: "bold",
+                                            backgroundColor: "lightgray",
+                                          }}
+                                        >
+                                          {category}
+                                        </MenuItem>,
+                                        exercises
+                                          .sort((exerciseA, exerciseB) =>
+                                            exerciseA.name.localeCompare(exerciseB.name)
+                                          )
+                                          .map((exercise) => (
+                                            <MenuItem key={exercise.id} value={exercise.id}>
+                                            {exercise.name}
+                                            </MenuItem>
+                                          )),
+                                      ])}
                                   </Select>
                                 ) : (
                                   matchedExercise ? matchedExercise.name : ""
