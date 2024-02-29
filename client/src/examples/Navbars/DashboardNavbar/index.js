@@ -135,9 +135,9 @@ function DashboardNavbar({ absolute, light, isMini, pageTitle }) {
         </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <MDBox pr={1}>
+            {/* <MDBox pr={1}>
               <MDInput label="Search here" />
-            </MDBox>
+            </MDBox> Remove search bar from global nav */}
             <MDBox color={light ? "white" : "inherit"}>
               <Link to="/profile">
                 <IconButton sx={navbarIconButton} size="small" disableRipple>
@@ -164,7 +164,7 @@ function DashboardNavbar({ absolute, light, isMini, pageTitle }) {
               >
                 <Icon sx={iconsStyle}>settings</Icon>
               </IconButton>
-              <Link to="/notifications">
+              {/* <Link to="/notifications">
                 <IconButton
                   size="small"
                   disableRipple
@@ -177,7 +177,7 @@ function DashboardNavbar({ absolute, light, isMini, pageTitle }) {
                 >
                   <Icon sx={iconsStyle}>notifications</Icon>
                 </IconButton>
-              </Link>
+              </Link> */}
               {renderMenu()}
             </MDBox>
           </MDBox>
