@@ -26,6 +26,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { fetchUserProfile } from "../../../fetchUserProfile";
+
 
 function AddAssignment() {
   const navigate = useNavigate();
@@ -40,10 +42,29 @@ function AddAssignment() {
   const [workoutNotes, setWorkoutNotes] = useState("");
   const [selectAllPlayers, setSelectAllPlayers] = useState(false); // New state for "All Players" checkbox
   const [showPastDateError, setShowPastDateError] = useState(false); // State to control error message display
+  const [user, setUser] = useState(null);
+
 
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = async () => {
+      const data = await fetchUserProfile();
+      setUser(data);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      getGroups();
+      console.log("user info: ", user)
+    }
+  }, [user]); // Add user as a dependency
+
+  async function getGroups() {
       try {
+        if (!user) {
+          return; // Exit early if user is null
+        }
         const { data: workoutsData, error } = await supabase.from("workout").select("*");
         if (error) {
           throw error;
@@ -53,6 +74,8 @@ function AddAssignment() {
         const { data: profilesData, error: profilesError } = await supabase
           .from("profile")
           .select("*")
+          .eq("team_id", user.team_id)
+          .eq("player", true)
           .not("first_name", "is", null)
           .not("last_name", "is", null);
         if (profilesError) {
@@ -80,8 +103,9 @@ function AddAssignment() {
       } catch (error) {
         console.error("Error fetching data:", error.message);
       }
-    }
-    fetchData();
+  }
+  useEffect(() => {
+    getGroups();
   }, [workoutId, selectedDate]);
 
   const handleDeleteWorkout = async (workoutIdToDelete) => {

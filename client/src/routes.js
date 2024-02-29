@@ -67,6 +67,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 import Addnewteam from "./layouts/addteam";
 import AddWorkout from "./layouts/addworkout";
@@ -78,6 +79,8 @@ import CompleteWorkout from "./layouts/completeworkout";
 import EditGroup from "./layouts/editgroup";
 import ViewAssignment from "./layouts/viewassignment";
 import ViewCalendar from "./layouts/viewcalendar";
+import MyCalendar from "./layouts/mycalendar";
+
 
 const routes = [
   {
@@ -90,7 +93,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Players",
+    name: "Team",
     key: "tables",
     icon: <PeopleIcon fontSize="small">table_view</PeopleIcon>,
     route: "/tables",
@@ -104,14 +107,7 @@ const routes = [
     route: "/exerciselibrary",
     component: <ExerciseLibrary />,
   },
-  {
-    type: "collapse",
-    name: "Team Groups",
-    key: "grouptable",
-    icon: <Groups2Icon fontSize="small">book</Groups2Icon>,
-    route: "/grouptable",
-    component: <GroupTable />,
-  },
+ 
 
   {
     type: "collapse",
@@ -137,14 +133,7 @@ const routes = [
     route: "/addworkout",
     component: <AddWorkout />,
   },
-  {
-    type: "collapse",
-    name: "Add New Team",
-    key: "addteam",
-    icon: <Icon fontSize="small">accessibility</Icon>,
-    route: "/addteam",
-    component: <Addnewteam />,
-  },
+
   {
     type: "collapse",
     name: "Create Group",
@@ -158,7 +147,7 @@ const routes = [
     name: "Edit Group",
     key: "editgroup",
     icon: <Groups2Icon fontSize="small">book</Groups2Icon>,
-    route: "/editgroup",
+    route: "/editgroup/:id?",
     component: <EditGroup />,
   },
   {
@@ -169,14 +158,14 @@ const routes = [
     route: "/addwellness",
     component: <Addnewwellness />,
   },
-  {
-    type: "collapse",
-    name: "View Workout",
-    key: "viewworkout",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/viewworkout",
-    component: <ViewWorkout />,
-  },
+  // {
+  //   type: "collapse",
+  //   name: "View Workout",
+  //   key: "viewworkout",
+  //   icon: <Icon fontSize="small">receipt_long</Icon>,
+  //   route: "/viewworkout",
+  //   component: <ViewWorkout />,
+  // },
   {
     type: "collapse",
     name: "Assign Workout",
@@ -197,9 +186,17 @@ const routes = [
     type: "collapse",
     name: "Team Calendar",
     key: "viewcalendar",
-    icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
+    icon: <CalendarMonthIcon fontSize="small">add_assignment</CalendarMonthIcon>,
     route: "/viewcalendar",
     component: <ViewCalendar />,
+  },
+  {
+    type: "collapse",
+    name: "My Calendar",
+    key: "mycalendar",
+    icon: <CalendarMonthIcon fontSize="small">add_assignment</CalendarMonthIcon>,
+    route: "/mycalendar",
+    component: <MyCalendar />,
   },
   {
     type: "collapse",
