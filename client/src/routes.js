@@ -138,7 +138,7 @@ const routes = [
 
   {
     type: "collapse",
-    name: "Create Group",
+    name: "Add Group",
     key: "addgroup",
     icon: <Groups2Icon fontSize="small">book</Groups2Icon>,
     route: "/addgroup",

@@ -186,8 +186,8 @@ function AddGroup() {
         return;
       }
 
-      console.log("Group successfully created!");
-      toast.success("Group successfully created!", {
+      console.log("Group successfully added!");
+      toast.success("Group successfully added!", {
         autoClose: 2000,
         onClose: () => {
           navigate("/tables");
@@ -203,7 +203,7 @@ function AddGroup() {
     <Card id="group-form">
       <MDBox pt={3} px={2}>
         <MDTypography variant="h4" fontWeight="medium">
-          Create Group
+          Add Group
         </MDTypography>
       </MDBox>
 
@@ -246,7 +246,7 @@ function AddGroup() {
       <MDBox px={2} pb={2}>
         <Button variant="contained" color="primary" onClick={handleCreateGroup}>
           <MDTypography variant="caption" color="white" fontWeight="bold" textTransform="uppercase">
-            Create Group
+            Add Group
           </MDTypography>
         </Button>
       </MDBox>
