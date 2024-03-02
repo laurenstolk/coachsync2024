@@ -8,7 +8,7 @@ import AddAssigment from "../addassignment/components/index";
 function AddingAssignment() {
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle="Add Assignment" absolute isMini />
+      <DashboardNavbar pageTitle="Add Assignment" />
       <MDBox mt={8}>
         <MDBox mb={3}>
           <Grid container spacing={3}>
