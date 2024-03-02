@@ -137,11 +137,14 @@ function DashboardNavbar({ absolute, light, isMini, pageTitle }) {
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
             {/* <MDBox pr={1}>
               <MDInput label="Search here" />
-            </MDBox> Remove search bar from global nav */}
+            </MDBox> COMMENTS REMOVE SEARCH BA 
+            R FROM NAVBAR */}
             <MDBox color={light ? "white" : "inherit"}>
               <Link to="/profile">
-                <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>account_circle</Icon>
+                <IconButton sx={navbarIconButton} size="medium" disableRipple>
+                  <Icon sx={iconsStyle}>
+                    account_circle
+                    </Icon>
                 </IconButton>
               </Link>
               <IconButton
@@ -151,7 +154,7 @@ function DashboardNavbar({ absolute, light, isMini, pageTitle }) {
                 sx={navbarMobileMenu}
                 onClick={handleMiniSidenav}
               >
-                <Icon sx={iconsStyle} fontSize="medium">
+                <Icon sx={iconsStyle} fontSize="large">
                   {miniSidenav ? "menu_open" : "menu"}
                 </Icon>
               </IconButton>
@@ -159,14 +162,16 @@ function DashboardNavbar({ absolute, light, isMini, pageTitle }) {
                 size="small"
                 disableRipple
                 color="inherit"
-                sx={navbarIconButton}
+                sx={navbarIconButton} 
                 onClick={handleConfiguratorOpen}
               >
-                <Icon sx={iconsStyle}>settings</Icon>
+                <Icon sx={iconsStyle}>
+                  settings
+                </Icon>
               </IconButton>
               {/* <Link to="/notifications">
                 <IconButton
-                  size="small"
+                  size="medium"
                   disableRipple
                   color="inherit"
                   sx={navbarIconButton}
