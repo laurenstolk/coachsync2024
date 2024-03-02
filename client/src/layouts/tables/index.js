@@ -28,7 +28,6 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 import Button from "@mui/material/Button"; // Import Button component
 
-
 //for group component
 import {
   Table,
@@ -46,17 +45,15 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Link } from "react-router-dom";
 import Icon from "@mui/material/Icon";
 
-
 // Data
 import playersTableData from "layouts/tables/data/playersTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 import groupsTableData from "layouts/grouptable/data/groupsTableData";
 
-
 function Tables() {
   const { columns, rows } = playersTableData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
-  const { columns: gColumns, rows: gRows} = groupsTableData();
+  const { columns: gColumns, rows: gRows } = groupsTableData();
 
   return (
     <DashboardLayout>
@@ -137,13 +134,13 @@ function Tables() {
                                 </TableCell> */}
                           </AccordionSummary>
                           <AccordionDetails>
-                              {/* <TableRow>
+                            {/* <TableRow>
                                 {gColumns.map((column, index) => (
                                   <TableCell style={{ fontWeight: "bold" }} key={index}>{column.Header}</TableCell>
                                 ))}
                               </TableRow> */}
                             <TableRow>
-                              <TableCell style={{fontWeight:"lighter"}}>{row.players}</TableCell>
+                              <TableCell style={{ fontWeight: "lighter" }}>{row.players}</TableCell>
                             </TableRow>
                           </AccordionDetails>
                         </Accordion>

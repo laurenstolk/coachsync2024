@@ -13,7 +13,6 @@ import { FormControl, InputLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import Autocomplete from "@mui/material/Autocomplete";
 
-
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../../supabaseClient";
 import { useNavigate } from "react-router-dom";
@@ -22,7 +21,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
 // import { fetchUserProfile } from '../../../fetchUserProfile';
 import { fetchUserProfile } from "../../../fetchUserProfile";
-
 
 function AddGroup() {
   const [profiles, setProfiles] = useState([]);
@@ -46,11 +44,10 @@ function AddGroup() {
   useEffect(() => {
     if (user) {
       getGroups(); // Call getProfiles when user changes
-      console.log("user info: ", user)
+      console.log("user info: ", user);
     }
   }, [user]); // Add user as a dependency
 
-  
   async function getGroups() {
     try {
       if (!user) {
@@ -60,7 +57,7 @@ function AddGroup() {
         .from("profile")
         .select("*")
         .eq("team_id", user.team_id)
-        .eq("player", true)
+        .eq("player", true);
       if (profilesError) throw profilesError;
       if (profilesData != null) {
         setProfiles(profilesData);
@@ -75,8 +72,10 @@ function AddGroup() {
         .select("*");
       if (membershipError) throw membershipError;
 
-      const { data: teamData, error: teamError } = await supabase.from("team_group").select("*").eq("team_id", user.team_id)
-      ;
+      const { data: teamData, error: teamError } = await supabase
+        .from("team_group")
+        .select("*")
+        .eq("team_id", user.team_id);
       if (teamError) throw teamError;
 
       const groupsWithMembership = teamData
@@ -102,7 +101,6 @@ function AddGroup() {
     getGroups();
   }, []);
 
-
   const handleGroupNameChange = (event) => {
     setGroupName(event.target.value.toLowerCase()); // Convert to lowercase
   };
@@ -114,14 +112,14 @@ function AddGroup() {
       const { data: existingGroups, error: existingGroupsError } = await supabase
         .from("team_group")
         .select("name")
-        .eq("team_id", user.team_id)
-        
+        .eq("team_id", user.team_id);
+
       if (existingGroupsError) {
         console.error("Error checking existing groups:", existingGroupsError);
         // Handle the error here
         return;
       }
-  
+
       // Check if the entered groupName already exists
       const groupNames = existingGroups.map((group) => group.name.toLowerCase());
       if (groupNames.includes(groupName)) {
@@ -136,39 +134,39 @@ function AddGroup() {
         .eq("team_id", user.team_id)
         .eq("player", false)
         .single();
-  
+
       if (coachError) {
         console.error("Error retrieving coach information:", coachError);
         // Handle the error here
         return;
       }
-  
+
       // Ensure that coachProfile is not null
       if (!coachProfile) {
         console.error("Coach information not found.");
         // Handle the error here
         return;
       }
-  
+
       // Construct group data with the coach's user ID
       const groupData = {
         name: groupName,
         team_id: user.team_id,
         coach_user_id: coachProfile.id,
       };
-  
+
       // Insert group data into the team_group table
       const { data: newGroup, error: groupError } = await supabase
         .from("team_group")
         .upsert([groupData])
         .select();
-  
+
       if (groupError) {
         console.error("Error adding group:", groupError);
         // Handle the error here
         return;
       }
-  
+
       console.log("Group added successfully:", newGroup);
 
       // Insert membership records for each selected player

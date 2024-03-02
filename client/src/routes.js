@@ -69,7 +69,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 import Addnewteam from "./layouts/addteam";
 import AddWorkout from "./layouts/addworkout";
@@ -82,7 +82,6 @@ import EditGroup from "./layouts/editgroup";
 import ViewAssignment from "./layouts/viewassignment";
 import ViewCalendar from "./layouts/viewcalendar";
 import MyCalendar from "./layouts/mycalendar";
-
 
 const routes = [
   {
@@ -109,7 +108,6 @@ const routes = [
     route: "/exerciselibrary",
     component: <ExerciseLibrary />,
   },
- 
 
   {
     type: "collapse",

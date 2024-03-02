@@ -19,7 +19,6 @@ import { FormControl, InputLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
-
 import { useParams } from "react-router-dom";
 
 import { useState, useEffect } from "react";
@@ -27,7 +26,6 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fetchUserProfile } from "../../../fetchUserProfile";
-
 
 function AddAssignment() {
   const navigate = useNavigate();
@@ -44,7 +42,6 @@ function AddAssignment() {
   const [showPastDateError, setShowPastDateError] = useState(false); // State to control error message display
   const [user, setUser] = useState(null);
 
-
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchUserProfile();
@@ -56,53 +53,53 @@ function AddAssignment() {
   useEffect(() => {
     if (user) {
       getGroups();
-      console.log("user info: ", user)
+      console.log("user info: ", user);
     }
   }, [user]); // Add user as a dependency
 
   async function getGroups() {
-      try {
-        if (!user) {
-          return; // Exit early if user is null
-        }
-        const { data: workoutsData, error } = await supabase.from("workout").select("*");
-        if (error) {
-          throw error;
-        }
-        setWorkouts(workoutsData || []);
-
-        const { data: profilesData, error: profilesError } = await supabase
-          .from("profile")
-          .select("*")
-          .eq("team_id", user.team_id)
-          .eq("player", true)
-          .not("first_name", "is", null)
-          .not("last_name", "is", null);
-        if (profilesError) {
-          throw profilesError;
-        }
-        setProfiles(profilesData || []);
-
-        if (workoutId) {
-          const selected = workoutsData.find((workout) => workout.id === parseInt(workoutId));
-          if (selected) {
-            setSelectedWorkout(selected);
-            setWorkoutName(selected.workout_name);
-          }
-        }
-
-        const currentDate = new Date();
-        currentDate.setDate(currentDate.getDate() - 1);
-        if (!selectedDate || selectedDate >= currentDate) {
-          setShowPastDateError(false);
-          console.log("Selected Date:", selectedDate);
-        } else {
-          setShowPastDateError(true);
-          setSelectedDate(null);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error.message);
+    try {
+      if (!user) {
+        return; // Exit early if user is null
       }
+      const { data: workoutsData, error } = await supabase.from("workout").select("*");
+      if (error) {
+        throw error;
+      }
+      setWorkouts(workoutsData || []);
+
+      const { data: profilesData, error: profilesError } = await supabase
+        .from("profile")
+        .select("*")
+        .eq("team_id", user.team_id)
+        .eq("player", true)
+        .not("first_name", "is", null)
+        .not("last_name", "is", null);
+      if (profilesError) {
+        throw profilesError;
+      }
+      setProfiles(profilesData || []);
+
+      if (workoutId) {
+        const selected = workoutsData.find((workout) => workout.id === parseInt(workoutId));
+        if (selected) {
+          setSelectedWorkout(selected);
+          setWorkoutName(selected.workout_name);
+        }
+      }
+
+      const currentDate = new Date();
+      currentDate.setDate(currentDate.getDate() - 1);
+      if (!selectedDate || selectedDate >= currentDate) {
+        setShowPastDateError(false);
+        console.log("Selected Date:", selectedDate);
+      } else {
+        setShowPastDateError(true);
+        setSelectedDate(null);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
+    }
   }
   useEffect(() => {
     getGroups();
@@ -114,14 +111,14 @@ function AddAssignment() {
       if (error) {
         throw error;
       }
-      setWorkouts((prevWorkouts) => prevWorkouts.filter((workout) => workout.id !== workoutIdToDelete));
+      setWorkouts((prevWorkouts) =>
+        prevWorkouts.filter((workout) => workout.id !== workoutIdToDelete)
+      );
       toast.success("Workout deleted successfully!");
     } catch (error) {
-
       console.error("Error deleting workout:", error.message);
-
     }
-  }
+  };
 
   const handleAssignWorkout = async () => {
     if (!selectedWorkout) {
@@ -162,7 +159,6 @@ function AddAssignment() {
       });
     } catch (error) {
       console.error("Error assigning workout:", error.message);
-
     }
   };
   const handleWorkoutChange = (event) => {
@@ -282,7 +278,6 @@ function AddAssignment() {
                   Please select a valid future date.
                 </MDTypography>
               )}
-
             </MDBox>
           </MDBox>
           {/* assignment notes: (textfield) */}

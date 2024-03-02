@@ -46,7 +46,6 @@ function AssignmentNotCompleted() {
           ...player,
         };
       });
-      console.log("merged: ", mergedPlayerandAssignment);
 
       setPlayers(mergedPlayerandAssignment);
     };

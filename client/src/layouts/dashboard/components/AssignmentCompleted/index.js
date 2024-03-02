@@ -45,7 +45,6 @@ function AssignmentCompleted() {
           ...player,
         };
       });
-      console.log("merged: ", mergedPlayerandAssignment);
 
       setPlayers(mergedPlayerandAssignment);
     };
