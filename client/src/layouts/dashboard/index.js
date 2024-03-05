@@ -15,7 +15,6 @@ Coded by www.creative-tim.com
 
 // @mui material components
 import Grid from "@mui/material/Grid";
-import MDProgress from "components/MDProgress";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -24,12 +23,8 @@ import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import ReportsBarChart from "examples/Charts/BarCharts/ReportsBarChart";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
-
-// Data
-import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -37,55 +32,66 @@ import { supabase } from "../../supabaseClient";
 import AssignmentCompleted from "./components/AssignmentCompleted";
 import AssignmentNotCompleted from "./components/AssignmentNotCompleted";
 import { fetchUserProfile } from "../../fetchUserProfile";
-import profile from "../profile";
 
 export default function Dashboard() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const { sales, tasks } = reportsLineChartData;
   const [assignedWorkoutNames, setAssignedWorkoutNames] = useState([]);
-  const [exerciseData, setExerciseData] = useState([]);
+  const [workoutData, setWorkoutData] = useState([]);
   const [wellnessData, setWellnessData] = useState([]);
   const [wellnessCompletionData, setWellnessCompletionData] = useState([]);
   const [completedWorkoutData, setCompletedWorkoutData] = useState([]);
   const [currentDate, setCurrentDate] = useState("");
+  const [playerIds, setPlayerIds] = useState([]);
 
-  const getWellness = async() => {
+  const getWellnessChartData = async (endDate, playerIds) => {
+    const startDate = new Date(endDate);
+    startDate.setDate(startDate.getDate() - 6); // Adjust the start date to include 7 days, including today
+
     const { data: wellnessCheckinData, error: wellnessError } = await supabase
-        .from("checkin")
-        .select("*");
+      .from("checkin")
+      .select("*")
+      .in("player_id", playerIds)
+      .gte("date", startDate.toISOString()) // Filter by start date
+      .lte("date", endDate.toISOString()); // Filter by end date
 
     if (wellnessError) {
       console.error("Error fetching wellness checkin data:", wellnessError.message);
     } else {
-      // Count occurrences of each date
+      // Initialize wellnessCountMap with all 7 days within the past week
       const wellnessCountMap = new Map();
+      for (let i = 0; i <= 6; i++) {
+        // Change the loop condition to include today
+        const date = new Date(endDate);
+        date.setDate(date.getDate() - i);
+        wellnessCountMap.set(date.toISOString().split("T")[0], 0); // Set initial count to 0
+      }
+
+      // Update counts based on wellnessCheckinData
       wellnessCheckinData.forEach((item) => {
         const wDateCompleted = item.date;
 
         if (wellnessCountMap.has(wDateCompleted)) {
           wellnessCountMap.set(wDateCompleted, wellnessCountMap.get(wDateCompleted) + 1);
-        } else {
-          wellnessCountMap.set(wDateCompleted, 1);
         }
       });
+
       // Convert the map to an array for use in the chart
       const wellnessChartData = Array.from(wellnessCountMap).map(([wDateCompleted, count]) => ({
         wDateCompleted,
-        count: count / 5,
+        count: (count / 5 / playerIds.length) * 100,
       }));
+      // console.log(wellnessChartData);
 
       wellnessChartData.sort((a, b) => new Date(a.wDateCompleted) - new Date(b.wDateCompleted));
 
       setWellnessData(wellnessChartData);
     }
-  }
+  };
 
   const getCheckinCompletionData = async (date, playerIds) => {
     const formattedDate = date.toISOString().split("T")[0];
-    console.log("Current date:", formattedDate);
-    console.log("Player IDs:", playerIds);
 
     try {
       const { data: wellnessCheckinData, error: wellnessError } = await supabase
@@ -93,7 +99,6 @@ export default function Dashboard() {
         .select("*")
         .eq("date", formattedDate)
         .in("player_id", playerIds);
-      console.log("wellnessCheckinData: ", wellnessCheckinData);
 
       if (wellnessError) {
         console.error("Error fetching wellness checkin data:", wellnessError.message);
@@ -105,11 +110,10 @@ export default function Dashboard() {
 
       // Calculate the completed wellness percentage
       const totalWellnessExpected = playerIds.length * 5; // Assuming each person has 5 wellness check-ins
-      console.log("totalWellnessExpected: ", totalWellnessExpected);
       const totalWellnessCompleted = wellnessCountMap.get(formattedDate) || 0;
-      console.log("totalWellnessCompleted: ", totalWellnessCompleted);
-      const completedPercentage = (totalWellnessCompleted / totalWellnessExpected) * 100;
-      console.log("completedPercentage: ", completedPercentage);
+      const completedPercentage = Math.round(
+        (totalWellnessCompleted / totalWellnessExpected) * 100
+      );
 
       // Set wellnessData to an array containing the completed percentage
       setWellnessCompletionData([{ wDateCompleted: formattedDate, count: completedPercentage }]);
@@ -118,39 +122,54 @@ export default function Dashboard() {
     }
   };
 
-  const getExerciseCompletionData = async () => {
-    const { data: exerciseCompletionData, error: exerciseError } = await supabase
-      .from("exercise_completion")
-      .select("*"); // You can customize the columns you want to select
+  const getWorkoutChartData = async (endDate, playerIds) => {
+    const startDate = new Date(endDate);
+    startDate.setDate(startDate.getDate() - 6); // Adjust the start date to include 7 days, including today
 
-    if (exerciseError) {
-      console.error("Error fetching exercise completion data:", exerciseError.message);
+    // Initialize workoutCountMap with dates of the last 7 days
+    const workoutCountMap = new Map();
+    for (let i = 0; i <= 6; i++) {
+      const date = new Date(endDate);
+      date.setDate(date.getDate() - i);
+      workoutCountMap.set(date.toISOString().split("T")[0], 0);
+    }
+
+    const { data: workoutCompletionData, error: workoutError } = await supabase
+      .from("assignment")
+      .select("*")
+      .eq("completed", true) // Filter by completed workouts
+      .gte("date", startDate.toISOString()) // Filter by start date
+      .lte("date", endDate.toISOString()); // Filter by end date
+
+    if (workoutError) {
+      console.error("Error fetching exercise completion data:", workoutError.message);
     } else {
-      // Count occurrences of each date_completed
-      const exerciseCountMap = new Map();
-      exerciseCompletionData.forEach((item) => {
-        const dateCompleted = item.date_completed;
+      // Populate counts in workoutCountMap
+      workoutCompletionData.forEach((item) => {
+        const dateCompleted = item.date; // Assuming "date" is the field for completion date
 
-        if (exerciseCountMap.has(dateCompleted)) {
-          exerciseCountMap.set(dateCompleted, exerciseCountMap.get(dateCompleted) + 1);
-        } else {
-          exerciseCountMap.set(dateCompleted, 1);
+        if (workoutCountMap.has(dateCompleted)) {
+          workoutCountMap.set(dateCompleted, workoutCountMap.get(dateCompleted) + 1);
         }
       });
+      console.log("workoutCountMap: ", workoutCountMap);
+
       // Convert the map to an array for use in the chart
-      const exerciseChartData = Array.from(exerciseCountMap).map(([dateCompleted, count]) => ({
+      const workoutChartData = Array.from(workoutCountMap).map(([dateCompleted, count]) => ({
         dateCompleted,
-        count,
+        count: (count / playerIds.length) * 100,
       }));
 
-      setExerciseData(exerciseChartData);
+      // Sort workoutData and wellnessData arrays by date in ascending order
+      workoutChartData.sort((a, b) => new Date(a.dateCompleted) - new Date(b.dateCompleted));
+      workoutChartData.sort((a, b) => new Date(a.wDateCompleted) - new Date(b.wDateCompleted));
+
+      setWorkoutData(workoutChartData);
     }
   };
 
   const getWorkoutCompletionData = async (date, playerIds) => {
     const formattedDate = date.toISOString().split("T")[0];
-    console.log("Current date:", formattedDate);
-    console.log("Player IDs:", playerIds);
 
     try {
       // Fetch workout completion data for the specified date and players
@@ -160,7 +179,14 @@ export default function Dashboard() {
         .eq("date", formattedDate)
         .eq("completed", true)
         .in("player_id", playerIds);
-      console.log("completed workouts: ", completedWorkoutsData);
+      // console.log("completedWorkoutsData: ", completedWorkoutsData);
+
+      const { data: expectedWorkoutsData, error: expectedWorkoutError } = await supabase
+        .from("assignment")
+        .select("*")
+        .eq("date", formattedDate)
+        .in("player_id", playerIds);
+      // console.log("expectedWorkoutsData: ", expectedWorkoutsData);
 
       if (workoutError) {
         console.error("Error fetching workout completion data:", workoutError.message);
@@ -168,15 +194,16 @@ export default function Dashboard() {
       }
 
       // Calculate the completed workout percentage
-      const totalWorkoutsExpected = playerIds.length; // Assuming each player has one workout assigned per day
-      console.log("total workouts expected: ", totalWorkoutsExpected);
+      const totalWorkoutsExpected = expectedWorkoutsData.length; // Assuming each player has one workout assigned per day
+      // console.log("workouts expected: ", totalWorkoutsExpected);
       const totalWorkoutsCompleted = completedWorkoutsData.length;
-      console.log("total workouts completed: ", totalWorkoutsCompleted);
+      // console.log("workouts completed: ", totalWorkoutsCompleted);
       const completedPercentage = (totalWorkoutsCompleted / totalWorkoutsExpected) * 100;
-      console.log("completed workout percentage: ", completedPercentage);
+      // console.log("completedPercentage: ", completedPercentage);
 
       // Set workoutData state to an array containing the completed percentage
       setCompletedWorkoutData([{ dateCompleted: formattedDate, count: completedPercentage }]);
+      // console.log("completedWorkoutData: ", completedWorkoutData);
     } catch (error) {
       console.error("Error fetching workout completion data:", error.message);
     }
@@ -189,7 +216,6 @@ export default function Dashboard() {
         .select("*")
         .in("player_id", playerIds)
         .eq("date", today.toISOString().split("T")[0]);
-      console.log("my team's today's workouts: ", assignmentsData);
 
       if (assignmentsError) {
         console.error("Error fetching assignments:", assignmentsError.message);
@@ -204,7 +230,6 @@ export default function Dashboard() {
 
       // Convert workoutIds set to an array
       const workoutIdsArray = Array.from(workoutIds);
-      console.log("Unique workout_ids:", workoutIdsArray);
 
       // Fetch workout names corresponding to unique workout_ids
       const { data: workoutData, error: workoutError } = await supabase
@@ -220,7 +245,6 @@ export default function Dashboard() {
       if (workoutData && workoutData.length > 0) {
         // Extract workout names from the data
         const workoutNames = workoutData.map((workout) => workout.workout_name);
-        console.log("Unique workout names:", workoutNames);
 
         // Store workout names in assignedWorkoutNames state
         setAssignedWorkoutNames(workoutNames);
@@ -230,31 +254,42 @@ export default function Dashboard() {
     }
   };
 
+  const getFormattedDate = (date) => {
+    const options = { weekday: "long", month: "long", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       let playerIds;
 
+      // set the Current Date
+      setCurrentDate(getFormattedDate(today));
+
       try {
         const profileData = await fetchUserProfile();
+
+        // grab the profiles of the players on my team
         const { data: profilesData, error: profilesError } = await supabase
           .from("profile")
           .select("id")
           .filter("team_id", "eq", profileData.team_id);
-        console.log("profilesData: ", profilesData);
+        console.log("profiles on my team: ", profilesData);
 
         if (profilesError) {
           console.error("Error fetching profiles:", profilesError.message);
           return;
         }
 
+        // make an array of the playerIds
         if (profilesData && profilesData.length > 0) {
           playerIds = profilesData.map((profile) => profile.id);
-          console.log("playerIds: ", playerIds);
+          setPlayerIds(playerIds);
         }
 
-        await getWellness();
+        await getWellnessChartData(today, playerIds);
         await getAssignedWorkouts(today, playerIds);
-        await getExerciseCompletionData();
+        await getWorkoutChartData(today, playerIds);
         await getCheckinCompletionData(today, playerIds);
         await getWorkoutCompletionData(today, playerIds);
       } catch (error) {
@@ -287,19 +322,13 @@ export default function Dashboard() {
               <ComplexStatisticsCard
                 icon="check"
                 title="Assigned Workouts"
-                // Replace "Run 1 mile" with the assigned workout name variable
                 count={
                   <Link to="/workoutlibrary" style={{ textDecoration: "none", color: "inherit" }}>
                     {assignedWorkoutNames.length > 0
                       ? assignedWorkoutNames.join(", ")
-                      : "No assigned workout"}
+                      : "No assigned workout today"}
                   </Link>
                 }
-                percentage={{
-                  color: "success",
-                  amount: "+3%",
-                  label: "than last month",
-                }}
               />
             </MDBox>
           </Grid>
@@ -309,18 +338,14 @@ export default function Dashboard() {
                 color="success"
                 icon="store"
                 title="Completed Wellness"
-                count={`${wellnessCompletionData.length > 0 ? wellnessCompletionData[0].count + "%" : "0%"}`}
-                // percentage={{
-                //   color: "success",
-                //   amount: `${wellnessData.length > 0 ? "+" + (wellnessData[0].count - yesterdayWellnessCount) + "%" : "+0%"}`,
-                //   label: "than yesterday",
-                // }}
-              />
-              <MDProgress
-                value={wellnessCompletionData.length > 0 ? wellnessCompletionData[0].count : 0}
-                color="info"
-                variant="gradient"
-                label={false}
+                count={`${
+                  wellnessCompletionData.length > 0 ? wellnessCompletionData[0].count + "%" : "0%"
+                }`}
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: "Just updated",
+                }}
               />
             </MDBox>
           </Grid>
@@ -331,66 +356,83 @@ export default function Dashboard() {
                 color="primary"
                 icon="person_add"
                 title="Completed Workouts"
-                count={`${completedWorkoutData.length > 0 ? completedWorkoutData[0].count + "%" : "0%"}`}
+                count={`${
+                  completedWorkoutData.length > 0 ? completedWorkoutData[0].count + "%" : "0%"
+                }`}
                 percentage={{
                   color: "success",
                   amount: "",
                   label: "Just updated",
                 }}
               />
-              <MDProgress
-                  value={completedWorkoutData.length > 0 ? completedWorkoutData[0].count : 0}
-                  color="success"
-                  variant="gradient"
-                  label={false}
-              />
             </MDBox>
           </Grid>
         </Grid>
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
-                <ReportsBarChart
+                <ReportsLineChart
                   color="info"
-                  title="Exercise Completion"
-                  description="The number of players who completed their assigned workout."
-                  date="Updated today"
+                  title="Workout Completion"
+                  description="Percentage of players who completed their assigned workout."
+                  date="Updated Today"
                   chart={{
-                    labels: exerciseData.map((item) => item.dateCompleted),
+                    labels: workoutData.map((item) => {
+                      const date = new Date(item.dateCompleted);
+                      return `${date.toLocaleString("en-US", {
+                        month: "long",
+                      })} ${date.getUTCDate()}`;
+                    }),
                     datasets: {
-                      label: "Number of Players",
-                      data: exerciseData.map((item) => item.count),
+                      label: "Percentage of Players Completed Workouts",
+                      data: workoutData.map((item) => {
+                        return item.count.toFixed(2);
+                      }),
+                    },
+                    options: {
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          suggestedMax: 100,
+                        },
+                      },
                     },
                   }}
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={6}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
                   title="Wellness Completion"
-                  description="Number of players who completed their wellness per day"
+                  description="Percentage of players who completed a wellness checkin."
                   date="Updated Today"
                   chart={{
-                    labels: wellnessData.map((item) => item.wDateCompleted),
+                    labels: wellnessData.map((item) => {
+                      const date = new Date(item.wDateCompleted);
+                      date.setUTCHours(0, 0, 0, 0); // Set the time to midnight UTC to ensure consistency
+                      return `${date.toLocaleString("en-US", {
+                        month: "long",
+                      })} ${date.getUTCDate()}`;
+                    }),
                     datasets: {
-                      label: "Wellnesses Completed",
-                      data: wellnessData.map((item) => item.count),
+                      label: "Percentage of Players Completed Wellness",
+                      data: wellnessData.map((item) => {
+                        const percentage = item.count; // Assuming item.count is already in the range of 0 to 100
+                        return percentage.toFixed(2); // Round to two decimal places
+                      }),
+                    },
+                    options: {
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          suggestedMax: 100, // Ensure the maximum value on the y-axis is 100
+                        },
+                      },
                     },
                   }}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="completed tasks"
-                  description="Last Campaign Performance"
-                  date="just updated"
-                  chart={tasks}
                 />
               </MDBox>
             </Grid>
