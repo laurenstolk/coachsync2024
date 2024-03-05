@@ -172,7 +172,7 @@ export default function data() {
           <MDButton
             key={index}
             variant="outlined"
-            color="black"
+            color="light"
             sx={{ width: "10%", minHeight: "15px", marginRight: 2 }}
             onClick={() => handleCategoryFilter(category)}
           >
@@ -180,8 +180,8 @@ export default function data() {
           </MDButton>
         ))}
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <MDButton sx={{ minHeight: "15px", marginLeft: 4 }} variant="outlined"
-            color="black" onClick={() => handleCategoryFilter("All")}>
+        <MDButton sx={{ minHeight: "15px", marginLeft: 4 }} variant= "outlined"
+            color="light" onClick={() => handleCategoryFilter("All")}>
           Show All
         </MDButton>
       </div>
