@@ -18,6 +18,8 @@ import MDTypography from "../../../components/MDTypography";
 import { FormControl, InputLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+
 
 
 import { useParams } from "react-router-dom";
@@ -43,6 +45,8 @@ function AddAssignment() {
   const [selectAllPlayers, setSelectAllPlayers] = useState(false); // New state for "All Players" checkbox
   const [showPastDateError, setShowPastDateError] = useState(false); // State to control error message display
   const [user, setUser] = useState(null);
+  const [error, setError] = useState(""); // State to hold error message
+
 
 
   useEffect(() => {
@@ -124,20 +128,28 @@ function AddAssignment() {
   }
 
   const handleAssignWorkout = async () => {
-    if (!selectedWorkout) {
-      alert("Please select a workout.");
-      return;
+     // Data validation logic
+     if (!selectedWorkout) {
+      setError("Workout name cannot be empty");
+      return; // Prevent submission if workout name is empty
     }
 
+    // Check if at least one exercise is selected
     if (!selectedDate) {
-      alert("Please select a date.");
-      return;
+      setError("Please select a date");
+      return; // Prevent submission if no exercise is selected
     }
 
+    console.log("Selected Players Length:", selectedPlayers.length); // Log selected players length for debugging
     if (selectedPlayers.length === 0) {
-      alert("Please select at least one player.");
-      return;
+      setError("Please select at least one player");
+      return; // Prevent submission if no player is selected
     }
+
+    // Clear error if data is valid
+    setError("");
+
+  
 
     try {
       // Insert assignment records for selected players
@@ -209,6 +221,7 @@ function AddAssignment() {
     // Extract the IDs of selected players
     const selectedPlayerIds = values.map((player) => player.id);
     setSelectedPlayers(selectedPlayerIds); // Update the selectedPlayers state
+    console.log("Selected Players info!:", selectedPlayerIds); // Log selected players for debugging
   };
   const handleMemberChange = (event, groupIndex, memberIndex) => {
     const newGroups = [...groups];
@@ -255,11 +268,15 @@ function AddAssignment() {
           <FormControl fullWidth>
             <InputLabel>Workout Name</InputLabel>
             <Select
-              sx={{ minHeight: "43px" }}
+              sx={{ width: "50%", minHeight: "43px" }}
               label="Workout"
               variant="outlined"
               value={selectedWorkout ? selectedWorkout.id : ""} // Update the value to selectedWorkout.id
               onChange={handleWorkoutChange} // Update the change handler
+              IconComponent={() => (
+                <span style={{ fontSize: 24, marginLeft: -6 }}>
+                  <ArrowDropDownIcon style={{ color: "rgba(0, 0, 0, 0.54)" }} />
+                </span>                  )}
             >
               {workouts.map((workout) => (
                 <MenuItem key={workout.id} value={workout.id}>
@@ -349,6 +366,7 @@ function AddAssignment() {
                   console.log("Selected Player IDs:", selectedPlayerIds);
                   setSelectedPlayers(selectedPlayerIds);
                 }}
+                onChange={(event) => handlePlayerSelection(event, profiles.filter((profile) => profile.player))}
               />
               {/* <IndeterminateCheckbox onSelectPlayers={(players) => setSelectedPlayers(players)} /> */}
             </MDBox>
@@ -362,6 +380,11 @@ function AddAssignment() {
           </MDTypography>
         </Button>
       </MDBox>
+      {error && (
+        <MDBox px={2} py={1}>
+          <MDTypography variant="body2" color="error">{error}</MDTypography>
+        </MDBox>
+      )}
     </Card>
   );
 }

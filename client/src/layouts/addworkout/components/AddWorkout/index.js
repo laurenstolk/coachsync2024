@@ -18,12 +18,16 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fetchUserProfile } from "../../../../fetchUserProfile";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+
 
 function AddWorkout() {
   const navigate = useNavigate();
   const [exerciseCount, setExerciseCount] = useState(3);
   const [exercises, setExercises] = useState([]);
   const [exercisesByCategory, setExercisesByCategory] = useState({});
+  const [error, setError] = useState(""); // State to hold error message
+
   const [selectedExercises, setSelectedExercises] = useState(
     Array.from({ length: exerciseCount }, () => ({
       exerciseId: "",
@@ -114,6 +118,30 @@ function AddWorkout() {
   };
 
   const handleSubmit = async () => {
+     // Data validation logic
+    if (!document.getElementById("workout-name").value.trim()) {
+      setError("Workout name cannot be empty");
+      return; // Prevent submission if workout name is empty
+    }
+
+    // Check if at least one exercise is selected
+    if (selectedExercises.length === 0) {
+      setError("You must select at least one exercise to create a workout");
+      return; // Prevent submission if no exercise is selected
+    }
+
+    // Check if each selected exercise has data in sets, reps, coach notes, or duration
+    const hasMissingData = selectedExercises.some(exercise => {
+      return !exercise.sets && !exercise.reps && !exercise.duration && !exercise.notes;
+    });
+
+    if (hasMissingData) {
+      setError("Please provide some information (sets, reps, duration, etc.) for the exercise(s)");
+      return; // Prevent submission if any selected exercise is missing data
+    }
+
+    // Clear error if data is valid
+    setError("");
     const workoutData = {
       workout_name: document.getElementById("workout-name").value,
     };
@@ -168,12 +196,12 @@ function AddWorkout() {
     <Card id="workout-form">
       <MDBox pt={3} px={2}>
         <MDTypography variant="h4" fontWeight="medium">
-          Create Workout
+          Add Workout
         </MDTypography>
       </MDBox>
       <MDBox pt={1} pb={2} px={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          <TextField id="workout-name" label="Workout Name" variant="outlined" />
+          <TextField id="workout-name" label="Workout Name" variant="outlined" sx={{width: "50%"}} />
         </MDBox>
       </MDBox>
 
@@ -181,7 +209,7 @@ function AddWorkout() {
         <MDBox key={index} pt={1} pb={2} px={2}>
           <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
             <MDBox mb={2}>
-              <FormControl fullWidth>
+              <FormControl sx={{ width: "50%"}}>
                 <InputLabel>Exercise</InputLabel>
                 <Select
                   sx={{ minHeight: "43px" }}
@@ -191,6 +219,10 @@ function AddWorkout() {
                   onChange={(event) =>
                     handleExerciseChange(index, "exerciseId", event.target.value)
                   }
+                  IconComponent={() => (
+                    <span style={{ fontSize: 24, marginLeft: -5 }}>
+                      <ArrowDropDownIcon style={{ color: "rgba(0, 0, 0, 0.54)" }} />
+                    </span>                  )}
                 >
                   {Object.entries(exercisesByCategory).map(([category, exercises]) => [
                     <MenuItem
@@ -269,10 +301,12 @@ function AddWorkout() {
         }}
       >
         <div onClick={handleAddExercise}>
-          <AddCircleIcon sx={{ fontSize: 50, color: "#1976D2", marginRight: 1 }} />
+        <span style={{ display: "flex", alignItems: "center" }}>
+          <AddCircleIcon sx={{ fontSize: 50, color: "#1976D2", marginRight: 1  }} />
           <MDTypography variant="body2" color="textSecondary">
             Add Exercise
           </MDTypography>
+        </span>
         </div>
       </MDBox>
 
@@ -287,10 +321,12 @@ function AddWorkout() {
         }}
       >
         <div onClick={handleRemoveExercise}>
-          <RemoveCircleOutlineIcon sx={{ fontSize: 50, color: "#FF0000", marginRight: 1 }} />
-          <MDTypography variant="body2" color="textSecondary">
-            Remove Exercise
-          </MDTypography>
+        <span style={{ display: "flex", alignItems: "center" }}>
+            <RemoveCircleOutlineIcon sx={{ fontSize: 50, color: "#FF0000", marginRight: 1 }} />
+            <MDTypography variant="body2" color="textSecondary">
+              Remove Exercise
+            </MDTypography>
+          </span>
         </div>
       </MDBox>
 
@@ -301,6 +337,12 @@ function AddWorkout() {
           </MDTypography>
         </Button>
       </MDBox>
+      {/* Display error message if present */}
+      {error && (
+        <MDBox px={2} py={1}>
+          <MDTypography variant="body2" color="error">{error}</MDTypography>
+        </MDBox>
+      )}
     </Card>
   );
 }

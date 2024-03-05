@@ -184,7 +184,7 @@ const routes = [
   //COACH
   {
     type: "collapse",
-    name: "Saved Workouts",
+    name: "Workout Library",
     key: "workoutlibrary",
     icon: <CollectionsBookmarkIcon fontSize="small">book</CollectionsBookmarkIcon>,
     route: "/workoutlibrary",
@@ -194,7 +194,7 @@ const routes = [
   //COACH
   {
     type: "collapse",
-    name: "Create Workout",
+    name: "Add Workout",
     key: "addworkout",
     icon: <DirectionsRunIcon fontSize="small">accessibility</DirectionsRunIcon>,
     route: "/addworkout",
