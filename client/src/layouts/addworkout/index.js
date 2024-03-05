@@ -8,7 +8,7 @@ import AddWorkout from "./components/AddWorkout";
 function AddingWorkout() {
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle="Create Workout" absolute isMini />
+      <DashboardNavbar pageTitle="Create Workout" absolute />
       <MDBox mt={8}>
         <MDBox mb={3}>
           <Grid container spacing={3}>
