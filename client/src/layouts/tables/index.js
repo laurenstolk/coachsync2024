@@ -21,6 +21,8 @@ import { useEffect, useState } from "react";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import MDButton from "components/MDButton"
+
 import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
@@ -136,15 +138,15 @@ function Tables() {
                   Groups
                 </MDTypography>
                 {/* Add Create Group button */}
-                <Button
+                <MDButton
                   variant="outlined"
                   component={Link}
                   to="/addgroup"
-                  color="inherit"
-                  style={{ position: "absolute", top: -7, right: 20 }}
+                  color="white"
+                  style={{ position: "absolute", top: -7, right: 40 }}
                 >
                   Add Group
-                </Button>
+                </MDButton>
               </MDBox>
               <MDBox pt={1}>
                 <TableContainer component={Paper}>
