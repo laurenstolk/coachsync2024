@@ -297,10 +297,13 @@ function Tables() {
             <Typography variant="h6" fontWeight="bold" color="#fff">
               Workout Library
             </Typography>
-            <MDButton style={{backgroundColor: 'rgba(255, 255, 255, 0.5)',color: 'rgba(0, 0, 0, 0.6)'}} component={Link} to="/addworkout" >
+            <MDButton
+              style={{ backgroundColor: "rgba(255, 255, 255, 0.5)", color: "rgba(0, 0, 0, 0.6)" }}
+              component={Link}
+              to="/addworkout"
+            >
               Add Workout
             </MDButton>
-            
           </Box>
         </Card>
       </Box>

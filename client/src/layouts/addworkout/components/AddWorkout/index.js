@@ -18,8 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fetchUserProfile } from "../../../../fetchUserProfile";
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 function AddWorkout() {
   const navigate = useNavigate();
@@ -118,7 +117,7 @@ function AddWorkout() {
   };
 
   const handleSubmit = async () => {
-     // Data validation logic
+    // Data validation logic
     if (!document.getElementById("workout-name").value.trim()) {
       setError("Workout name cannot be empty");
       return; // Prevent submission if workout name is empty
@@ -131,7 +130,7 @@ function AddWorkout() {
     }
 
     // Check if each selected exercise has data in sets, reps, coach notes, or duration
-    const hasMissingData = selectedExercises.some(exercise => {
+    const hasMissingData = selectedExercises.some((exercise) => {
       return !exercise.sets && !exercise.reps && !exercise.duration && !exercise.notes;
     });
 
@@ -201,7 +200,12 @@ function AddWorkout() {
       </MDBox>
       <MDBox pt={1} pb={2} px={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          <TextField id="workout-name" label="Workout Name" variant="outlined" sx={{width: "50%"}} />
+          <TextField
+            id="workout-name"
+            label="Workout Name"
+            variant="outlined"
+            sx={{ width: "50%" }}
+          />
         </MDBox>
       </MDBox>
 
@@ -209,7 +213,7 @@ function AddWorkout() {
         <MDBox key={index} pt={1} pb={2} px={2}>
           <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
             <MDBox mb={2}>
-              <FormControl sx={{ width: "50%"}}>
+              <FormControl sx={{ width: "50%" }}>
                 <InputLabel>Exercise</InputLabel>
                 <Select
                   sx={{ minHeight: "43px" }}
@@ -222,7 +226,8 @@ function AddWorkout() {
                   IconComponent={() => (
                     <span style={{ fontSize: 24, marginLeft: -5 }}>
                       <ArrowDropDownIcon style={{ color: "rgba(0, 0, 0, 0.54)" }} />
-                    </span>                  )}
+                    </span>
+                  )}
                 >
                   {Object.entries(exercisesByCategory).map(([category, exercises]) => [
                     <MenuItem
@@ -301,12 +306,12 @@ function AddWorkout() {
         }}
       >
         <div onClick={handleAddExercise}>
-        <span style={{ display: "flex", alignItems: "center" }}>
-          <AddCircleIcon sx={{ fontSize: 50, color: "#1976D2", marginRight: 1  }} />
-          <MDTypography variant="body2" color="textSecondary">
-            Add Exercise
-          </MDTypography>
-        </span>
+          <span style={{ display: "flex", alignItems: "center" }}>
+            <AddCircleIcon sx={{ fontSize: 50, color: "#1976D2", marginRight: 1 }} />
+            <MDTypography variant="body2" color="textSecondary">
+              Add Exercise
+            </MDTypography>
+          </span>
         </div>
       </MDBox>
 
@@ -321,7 +326,7 @@ function AddWorkout() {
         }}
       >
         <div onClick={handleRemoveExercise}>
-        <span style={{ display: "flex", alignItems: "center" }}>
+          <span style={{ display: "flex", alignItems: "center" }}>
             <RemoveCircleOutlineIcon sx={{ fontSize: 50, color: "#FF0000", marginRight: 1 }} />
             <MDTypography variant="body2" color="textSecondary">
               Remove Exercise
@@ -340,7 +345,9 @@ function AddWorkout() {
       {/* Display error message if present */}
       {error && (
         <MDBox px={2} py={1}>
-          <MDTypography variant="body2" color="error">{error}</MDTypography>
+          <MDTypography variant="body2" color="error">
+            {error}
+          </MDTypography>
         </MDBox>
       )}
     </Card>

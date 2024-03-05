@@ -156,7 +156,13 @@ function ViewCalendar() {
                   variant="outlined"
                   component={Link}
                   to="/addassignment"
-                  style={{ position: "absolute", top: -7, right: 40, backgroundColor: 'rgba(255, 255, 255, 0.5)',color: 'rgba(0, 0, 0, 0.6)' }}
+                  style={{
+                    position: "absolute",
+                    top: -7,
+                    right: 40,
+                    backgroundColor: "rgba(255, 255, 255, 0.5)",
+                    color: "rgba(0, 0, 0, 0.6)",
+                  }}
                 >
                   Add Assignment
                 </MDButton>

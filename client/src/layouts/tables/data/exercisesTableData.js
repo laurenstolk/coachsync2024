@@ -167,7 +167,7 @@ export default function data() {
   // );
   const filterButton = (
     <MDBox mb={2}>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
         {categories.map((category, index) => (
           <MDButton
             key={index}
@@ -179,14 +179,17 @@ export default function data() {
             {category}
           </MDButton>
         ))}
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <MDButton sx={{ minHeight: "15px", marginLeft: 4 }} variant= "outlined"
-            color="light" onClick={() => handleCategoryFilter("All")}>
-          Show All
-        </MDButton>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <MDButton
+            sx={{ minHeight: "15px", marginLeft: 4 }}
+            variant="outlined"
+            color="light"
+            onClick={() => handleCategoryFilter("All")}
+          >
+            Show All
+          </MDButton>
+        </div>
       </div>
-      </div>
-      
     </MDBox>
   );
 

@@ -233,7 +233,7 @@ function AddGroup() {
               onChange={(event, newValue) =>
                 setSelectedPlayers(newValue.map((player) => player.id))
               } // Map selected options to their IDs
-              sx= {{width: "50%"}} //change the size of the box
+              sx={{ width: "50%" }} //change the size of the box
               renderInput={(params) => (
                 <TextField {...params} label="Search for players here" placeholder="Assign to:" />
               )}

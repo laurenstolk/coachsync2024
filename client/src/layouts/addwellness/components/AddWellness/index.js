@@ -55,10 +55,10 @@ function AddWellness() {
         const currentTeamId = teamInfo.id;
 
         const { data: teamData, error: teamError } = await supabase
-        .from("team")
-        .select("*")
-        .eq("id", currentTeamId)
-        .single();
+          .from("team")
+          .select("*")
+          .eq("id", currentTeamId)
+          .single();
 
         setTeamData({
           water: teamData.water_checkin,
@@ -162,114 +162,114 @@ function AddWellness() {
         </MDTypography>
       </MDBox>
       {teamData.water && (
-      <MDBox pt={1} pb={2} px={2}>
-        <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          Water
-          <Slider
-            valueLabelDisplay="auto"
-            step={1}
-            marks={[
-              { value: 1, label: "0%" },
-              { value: 2, label: "25%" },
-              { value: 3, label: "50%" },
-              { value: 4, label: "75%" },
-              { value: 5, label: "100%" },
-            ]}
-            min={1}
-            max={5}
-            value={wellnessData.water.value}
-            onChange={(event, value) => handleSliderChange("water", value)}
-          />
+        <MDBox pt={1} pb={2} px={2}>
+          <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+            Water
+            <Slider
+              valueLabelDisplay="auto"
+              step={1}
+              marks={[
+                { value: 1, label: "0%" },
+                { value: 2, label: "25%" },
+                { value: 3, label: "50%" },
+                { value: 4, label: "75%" },
+                { value: 5, label: "100%" },
+              ]}
+              min={1}
+              max={5}
+              value={wellnessData.water.value}
+              onChange={(event, value) => handleSliderChange("water", value)}
+            />
+          </MDBox>
         </MDBox>
-      </MDBox>
       )}
       {teamData.sleep && (
-      <MDBox pt={1} pb={2} px={2}>
-        <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          Sleep
-          <Slider
-            valueLabelDisplay="auto"
-            step={1}
-            marks={[
-              { value: 1, label: 1 },
-              { value: 2, label: 2 },
-              { value: 3, label: 3 },
-              { value: 4, label: 4 },
-              { value: 5, label: 5 },
-            ]}
-            min={1}
-            max={5}
-            value={wellnessData.sleep.value}
-            onChange={(event, value) => handleSliderChange("sleep", value)}
-          />
+        <MDBox pt={1} pb={2} px={2}>
+          <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+            Sleep
+            <Slider
+              valueLabelDisplay="auto"
+              step={1}
+              marks={[
+                { value: 1, label: 1 },
+                { value: 2, label: 2 },
+                { value: 3, label: 3 },
+                { value: 4, label: 4 },
+                { value: 5, label: 5 },
+              ]}
+              min={1}
+              max={5}
+              value={wellnessData.sleep.value}
+              onChange={(event, value) => handleSliderChange("sleep", value)}
+            />
+          </MDBox>
         </MDBox>
-      </MDBox>
       )}
       {teamData.stress && (
-      <MDBox pt={1} pb={2} px={2}>
-        <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          Stress
-          <Slider
-            valueLabelDisplay="auto"
-            step={1}
-            marks={[
-              { value: 1, label: 1 },
-              { value: 2, label: 2 },
-              { value: 3, label: 3 },
-              { value: 4, label: 4 },
-              { value: 5, label: 5 },
-            ]}
-            min={1}
-            max={5}
-            value={wellnessData.stress.value}
-            onChange={(event, value) => handleSliderChange("stress", value)}
-          />
+        <MDBox pt={1} pb={2} px={2}>
+          <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+            Stress
+            <Slider
+              valueLabelDisplay="auto"
+              step={1}
+              marks={[
+                { value: 1, label: 1 },
+                { value: 2, label: 2 },
+                { value: 3, label: 3 },
+                { value: 4, label: 4 },
+                { value: 5, label: 5 },
+              ]}
+              min={1}
+              max={5}
+              value={wellnessData.stress.value}
+              onChange={(event, value) => handleSliderChange("stress", value)}
+            />
+          </MDBox>
         </MDBox>
-      </MDBox>
       )}
-      {teamData.soreness && (  
-      <MDBox pt={1} pb={2} px={2}>
-        <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          Soreness
-          <Slider
-            valueLabelDisplay="auto"
-            step={1}
-            marks={[
-              { value: 1, label: 1 },
-              { value: 2, label: 2 },
-              { value: 3, label: 3 },
-              { value: 4, label: 4 },
-              { value: 5, label: 5 },
-            ]}
-            min={1}
-            max={5}
-            value={wellnessData.soreness.value}
-            onChange={(event, value) => handleSliderChange("soreness", value)}
-          />
+      {teamData.soreness && (
+        <MDBox pt={1} pb={2} px={2}>
+          <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+            Soreness
+            <Slider
+              valueLabelDisplay="auto"
+              step={1}
+              marks={[
+                { value: 1, label: 1 },
+                { value: 2, label: 2 },
+                { value: 3, label: 3 },
+                { value: 4, label: 4 },
+                { value: 5, label: 5 },
+              ]}
+              min={1}
+              max={5}
+              value={wellnessData.soreness.value}
+              onChange={(event, value) => handleSliderChange("soreness", value)}
+            />
+          </MDBox>
         </MDBox>
-      </MDBox>
       )}
       {teamData.energy && (
-      <MDBox pt={1} pb={2} px={2}>
-        <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          Energy
-          <Slider
-            valueLabelDisplay="auto"
-            step={1}
-            marks={[
-              { value: 1, label: 1 },
-              { value: 2, label: 2 },
-              { value: 3, label: 3 },
-              { value: 4, label: 4 },
-              { value: 5, label: 5 },
-            ]}
-            min={1}
-            max={5}
-            value={wellnessData.energy.value}
-            onChange={(event, value) => handleSliderChange("energy", value)}
-          />
+        <MDBox pt={1} pb={2} px={2}>
+          <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+            Energy
+            <Slider
+              valueLabelDisplay="auto"
+              step={1}
+              marks={[
+                { value: 1, label: 1 },
+                { value: 2, label: 2 },
+                { value: 3, label: 3 },
+                { value: 4, label: 4 },
+                { value: 5, label: 5 },
+              ]}
+              min={1}
+              max={5}
+              value={wellnessData.energy.value}
+              onChange={(event, value) => handleSliderChange("energy", value)}
+            />
+          </MDBox>
         </MDBox>
-      </MDBox>
       )}
       <MDBox px={2} pb={2}>
         <Button variant="contained" color="primary" onClick={handleSubmit}>

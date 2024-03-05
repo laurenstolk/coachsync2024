@@ -83,8 +83,7 @@ import ViewAssignment from "./layouts/viewassignment";
 import ViewCalendar from "./layouts/viewcalendar";
 import MyCalendar from "./layouts/mycalendar";
 import { useEffect, useState } from "react";
-import { Route } from 'react-router-dom'; // Add this import statement
-
+import { Route } from "react-router-dom"; // Add this import statement
 
 const routes = [
   //BOTH
@@ -261,8 +260,7 @@ const routes = [
   //   component: <ViewWorkout />,
   // },
 
-
-//BOTH
+  //BOTH
   {
     type: "collapse",
     name: "Profile",
@@ -297,8 +295,6 @@ const routes = [
   //   component: <Notifications />,
   // },
 
-
-
   {
     // type: "collapse",
     // name: "Sign In",
@@ -307,8 +303,6 @@ const routes = [
     route: "/authentication/sign-in",
     component: <SignIn />,
   },
-
-
 
   {
     // type: "collapse",

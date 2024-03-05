@@ -18,8 +18,7 @@ import MDTypography from "../../../components/MDTypography";
 import { FormControl, InputLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 import { useParams } from "react-router-dom";
 
@@ -44,7 +43,6 @@ function AddAssignment() {
   const [showPastDateError, setShowPastDateError] = useState(false); // State to control error message display
   const [user, setUser] = useState(null);
   const [error, setError] = useState(""); // State to hold error message
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,8 +123,8 @@ function AddAssignment() {
   };
 
   const handleAssignWorkout = async () => {
-     // Data validation logic
-     if (!selectedWorkout) {
+    // Data validation logic
+    if (!selectedWorkout) {
       setError("Workout name cannot be empty");
       return; // Prevent submission if workout name is empty
     }
@@ -145,8 +143,6 @@ function AddAssignment() {
 
     // Clear error if data is valid
     setError("");
-
-  
 
     try {
       // Insert assignment records for selected players
@@ -272,7 +268,8 @@ function AddAssignment() {
               IconComponent={() => (
                 <span style={{ fontSize: 24, marginLeft: -6 }}>
                   <ArrowDropDownIcon style={{ color: "rgba(0, 0, 0, 0.54)" }} />
-                </span>                  )}
+                </span>
+              )}
             >
               {workouts.map((workout) => (
                 <MenuItem key={workout.id} value={workout.id}>
@@ -361,7 +358,12 @@ function AddAssignment() {
                   console.log("Selected Player IDs:", selectedPlayerIds);
                   setSelectedPlayers(selectedPlayerIds);
                 }}
-                onChange={(event) => handlePlayerSelection(event, profiles.filter((profile) => profile.player))}
+                onChange={(event) =>
+                  handlePlayerSelection(
+                    event,
+                    profiles.filter((profile) => profile.player)
+                  )
+                }
               />
               {/* <IndeterminateCheckbox onSelectPlayers={(players) => setSelectedPlayers(players)} /> */}
             </MDBox>
@@ -377,7 +379,9 @@ function AddAssignment() {
       </MDBox>
       {error && (
         <MDBox px={2} py={1}>
-          <MDTypography variant="body2" color="error">{error}</MDTypography>
+          <MDTypography variant="body2" color="error">
+            {error}
+          </MDTypography>
         </MDBox>
       )}
     </Card>

@@ -31,11 +31,11 @@ function AssignmentCompleted() {
     const fetchData = async () => {
       const profileData = await fetchUserProfile();
 
-      const playersThatCompleted = await getPlayersThatCompleted();
-
       const { data: profilesData, error: profilesError } = await supabase
-        .from("profile")
-        .select("*");
+          .from("profile")
+          .select("*");
+
+      const playersThatCompleted = await getPlayersThatCompleted();
 
       const mergedPlayerandAssignment = playersThatCompleted.map((player) => {
         const info = profilesData.find((profile) => profile.id === player.player_id);

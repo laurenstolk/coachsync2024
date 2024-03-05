@@ -18,10 +18,9 @@ import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import { useEffect, useState } from "react";
 
-
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-import MDButton from "components/MDButton"
+import MDButton from "components/MDButton";
 
 import MDTypography from "components/MDTypography";
 
@@ -51,7 +50,6 @@ import { Link } from "react-router-dom";
 import Icon from "@mui/material/Icon";
 import { fetchUserProfile } from "../../fetchUserProfile";
 
-
 // Data
 import playersTableData from "layouts/tables/data/playersTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
@@ -61,8 +59,8 @@ import { fetchTeamInfo } from "../../fetchTeamInfo";
 function Tables() {
   const { columns, rows } = playersTableData();
   // const { columns: pColumns, rows: pRows } = projectsTableData();
-  const { columns: gColumns, rows: gRows} = groupsTableData();
-  const [teamName, setTeamName] = useState(''); // State to hold the team name
+  const { columns: gColumns, rows: gRows } = groupsTableData();
+  const [teamName, setTeamName] = useState(""); // State to hold the team name
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -81,7 +79,7 @@ function Tables() {
           setTeamName(teamData.name); // Update team name in state
         }
       } catch (error) {
-        console.error('Error fetching team data:', error);
+        console.error("Error fetching team data:", error);
       }
     };
 
@@ -90,7 +88,7 @@ function Tables() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle={teamName || 'Team'} />
+      <DashboardNavbar pageTitle={teamName || "Team"} />
       <MDBox pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
@@ -140,7 +138,13 @@ function Tables() {
                   variant="outlined"
                   component={Link}
                   to="/addgroup"
-                  style={{ position: "absolute", top: -7, right: 40, backgroundColor: 'rgba(255, 255, 255, 0.5)',color: 'rgba(0, 0, 0, 0.6)' }}
+                  style={{
+                    position: "absolute",
+                    top: -7,
+                    right: 40,
+                    backgroundColor: "rgba(255, 255, 255, 0.5)",
+                    color: "rgba(0, 0, 0, 0.6)",
+                  }}
                 >
                   Add Group
                 </MDButton>
