@@ -29,6 +29,7 @@ function AddWellness() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
+  const [checkinFrequency, setCheckinFrequency] = useState("");
   const [wellnessData, setWellnessData] = useState({
     water: { id: 1, value: 3 }, //make sure to update to percent
     sleep: { id: 2, value: 3 },
@@ -67,6 +68,8 @@ function AddWellness() {
           soreness: teamData.soreness_checkin,
           energy: teamData.energy_checkin,
         });
+
+        setCheckinFrequency(teamData.checkin_frequency)
       } catch (error) {
         console.error("Error:", error);
         // Handle the error here
@@ -75,6 +78,11 @@ function AddWellness() {
 
     fetchData();
   }, []);
+
+  const isWellnessRequired = () => {
+    const currentDayOfWeek = startDate.getDay();
+    return checkinFrequency.includes((currentDayOfWeek + 1).toString());
+  }
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -152,9 +160,10 @@ function AddWellness() {
 
   return (
     <Card id="add-wellness">
+
       <MDBox pt={3} px={2} display="flex" justifyContent="space-between">
         <MDTypography variant="h4" fontWeight="medium">
-          Add Wellness
+          Check In
         </MDTypography>
         <MDTypography variant="body2" fontWeight="textSecondary" id="dateSelected">
           Select Date:
@@ -272,11 +281,17 @@ function AddWellness() {
         </MDBox>
       )}
       <MDBox px={2} pb={2}>
+      {isWellnessRequired() ? (
         <Button variant="contained" color="primary" onClick={handleSubmit}>
           <MDTypography variant="caption" color="white" fontWeight="bold" textTransform="uppercase">
             Submit
           </MDTypography>
         </Button>
+        ):(
+        <MDTypography variant="body1" color="textSecondary">
+          Check-in not required today.
+        </MDTypography>
+        )}
       </MDBox>
     </Card>
   );
