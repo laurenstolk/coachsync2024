@@ -90,7 +90,6 @@ function Tables() {
         setWorkouts(workoutsData || []);
         setCustomizedExercises(customizedexerciseData || []);
         setExercises(exerciseData || []);
-
       } catch (error) {
         alert(error);
       }
@@ -126,7 +125,9 @@ function Tables() {
           throw error;
         }
         // Update the customizedExercises state after deletion
-        setCustomizedExercises((prevExercises) => prevExercises.filter((exercise) => exercise.id !== exerciseId));
+        setCustomizedExercises((prevExercises) =>
+          prevExercises.filter((exercise) => exercise.id !== exerciseId)
+        );
         toast.success("Custom exercise deleted successfully!");
         console.log("Custom exercise deleted successfully!");
       } catch (error) {
@@ -247,7 +248,9 @@ function Tables() {
       // Update the coach's notes locally before making the API call
       setCustomizedExercises((prevState) =>
         prevState.map((exercise) =>
-          exercise.id === currentExerciseId ? { ...exercise, coach_notes: editedCoachNotes } : exercise
+          exercise.id === currentExerciseId
+            ? { ...exercise, coach_notes: editedCoachNotes }
+            : exercise
         )
       );
 
@@ -304,10 +307,7 @@ function Tables() {
       <Grid container spacing={1} sx={{ marginBottom: 5 }}>
         {workouts.map((workout) => (
           <Grid item xs={12} key={workout.id}>
-            <Accordion
-              expanded={expandedWorkoutId === workout.id}
-              onChange={handleSummaryClick}
-            >
+            <Accordion expanded={expandedWorkoutId === workout.id} onChange={handleSummaryClick}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 sx={{ display: "flex", alignItems: "center" }}
@@ -368,7 +368,9 @@ function Tables() {
                       {customizedExercises
                         .filter((exercise) => exercise.workout_id === workout.id)
                         .map((exercise) => {
-                          const matchedExercise = exercises.find((ex) => ex.id === exercise.exercise_id);
+                          const matchedExercise = exercises.find(
+                            (ex) => ex.id === exercise.exercise_id
+                          );
                           const isEditable = editableExerciseId === exercise.id;
                           return (
                             <TableRow key={exercise.id}>
@@ -383,7 +385,9 @@ function Tables() {
                                     }
                                   >
                                     {Object.entries(exercisesByCategory)
-                                      .sort(([categoryA], [categoryB]) => categoryA.localeCompare(categoryB))
+                                      .sort(([categoryA], [categoryB]) =>
+                                        categoryA.localeCompare(categoryB)
+                                      )
                                       .map(([category, exercises]) => [
                                         <MenuItem
                                           key={category}
@@ -402,13 +406,15 @@ function Tables() {
                                           )
                                           .map((exercise) => (
                                             <MenuItem key={exercise.id} value={exercise.id}>
-                                            {exercise.name}
+                                              {exercise.name}
                                             </MenuItem>
                                           )),
                                       ])}
                                   </Select>
+                                ) : matchedExercise ? (
+                                  matchedExercise.name
                                 ) : (
-                                  matchedExercise ? matchedExercise.name : ""
+                                  ""
                                 )}
                               </TableCell>
                               <TableCell align="center">
@@ -447,16 +453,22 @@ function Tables() {
                               <TableCell align="center">
                                 {isEditable ? (
                                   <>
-                                    <Typography sx={{ fontWeight: 300, fontSize: "0.9rem" }}>{exercise.coach_notes}</Typography>
+                                    <Typography sx={{ fontWeight: 300, fontSize: "0.9rem" }}>
+                                      {exercise.coach_notes}
+                                    </Typography>
                                     <Button
                                       variant="text"
                                       color="inherit"
-                                      onClick={() => handleCoachNotesEditClick(exercise.id, exercise.coach_notes)}
+                                      onClick={() =>
+                                        handleCoachNotesEditClick(exercise.id, exercise.coach_notes)
+                                      }
                                       startIcon={<EditIcon />}
                                     />
                                   </>
                                 ) : (
-                                  <Typography sx={{ fontWeight: 300, fontSize: "0.9rem" }}>{exercise.coach_notes}</Typography>
+                                  <Typography sx={{ fontWeight: 300, fontSize: "0.9rem" }}>
+                                    {exercise.coach_notes}
+                                  </Typography>
                                 )}
                               </TableCell>
                               <TableCell align="center">
@@ -474,7 +486,10 @@ function Tables() {
                                     <Button color="inherit" onClick={() => handleEdit(exercise.id)}>
                                       <Icon>edit</Icon> Edit
                                     </Button>
-                                    <Button color="error" onClick={() => handleDeleteCustomExercise(exercise.id)}>
+                                    <Button
+                                      color="error"
+                                      onClick={() => handleDeleteCustomExercise(exercise.id)}
+                                    >
                                       <Icon>delete</Icon> Delete
                                     </Button>
                                   </>
@@ -504,7 +519,12 @@ function Tables() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenCoachNotesDialog(false)}>Cancel</Button>
-          <Button onClick={handleCoachNotesSave} variant="contained" color="primary" sx={{ color: "#fff" }}>
+          <Button
+            onClick={handleCoachNotesSave}
+            variant="contained"
+            color="primary"
+            sx={{ color: "#fff" }}
+          >
             Save
           </Button>
         </DialogActions>

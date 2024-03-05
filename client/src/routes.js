@@ -69,7 +69,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 import Addnewteam from "./layouts/addteam";
 import AddWorkout from "./layouts/addworkout";
@@ -82,10 +82,8 @@ import EditGroup from "./layouts/editgroup";
 import ViewAssignment from "./layouts/viewassignment";
 import ViewCalendar from "./layouts/viewcalendar";
 import MyCalendar from "./layouts/mycalendar";
-
 import { useEffect, useState } from "react";
 import { Route } from 'react-router-dom'; // Add this import statement
-
 
 
 const routes = [
@@ -159,6 +157,7 @@ const routes = [
     component: <ExerciseLibrary />,
     coach: true,
   },
+
   //COACH
   {
     type: "collapse",

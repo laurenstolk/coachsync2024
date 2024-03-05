@@ -28,7 +28,6 @@ import MDProgress from "components/MDProgress";
 import MDButton from "components/MDButton";
 import LogoAsana from "assets/images/small-logos/logo-asana.svg";
 
-
 // Images
 import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
@@ -44,13 +43,11 @@ export default function data() {
   const [user, setUser] = useState(null);
   // const [imageUrl, setImageUrl] = useState(null);
 
-
   // async function getProfilePicURL(file_path) {
   //   const { data, error } = await supabase.storage.from("images/profile_pics").createSignedUrl(`${file_path}`, 60);
-  //   console.log("Profile picture URL:", data.signedUrl); 
+  //   console.log("Profile picture URL:", data.signedUrl);
   //   return data.signedUrl;
   // }
-
 
   // const Project = ({ image, name }) => (
   //   <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -63,9 +60,9 @@ export default function data() {
   useEffect(() => {
     const fetchData = async () => {
       const userProfile = await fetchUserProfile();
-      console.log(userProfile)
+      console.log(userProfile);
       setUser(userProfile);
-  
+
       // const profilesWithURLs = await Promise.all(profiles.map(async (profile) => {
       //   const url = await getProfilePicURL(profile.profile_picture);
       //   console.log("url stuff: ", url)
@@ -77,7 +74,6 @@ export default function data() {
     };
     fetchData();
   }, []);
-  
 
   useEffect(() => {
     if (user) {

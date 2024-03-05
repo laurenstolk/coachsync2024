@@ -37,7 +37,6 @@ import { supabase } from "../../../supabaseClient";
 import { Link, useNavigate } from "react-router-dom"; // Import Link component
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
-
 export default function data() {
   const [groups, setGroups] = useState([]);
   const navigate = useNavigate();
@@ -55,11 +54,9 @@ export default function data() {
   useEffect(() => {
     if (user) {
       getGroups(); // Call getProfiles when user changes
-      console.log("user info: ", user)
+      console.log("user info: ", user);
     }
   }, [user]); // Add user as a dependency
-
-
 
   async function getGroups() {
     try {
@@ -68,9 +65,9 @@ export default function data() {
       }
       const { data: profilesData, error: profilesError } = await supabase
         .from("profile")
-        .select("*")
-        // .eq("team_id", user.team_id)
-        // .eq("player", true)
+        .select("*");
+      // .eq("team_id", user.team_id)
+      // .eq("player", true)
       if (profilesError) throw profilesError;
       if (data != null) {
         setProfiles(profilesData);
@@ -85,8 +82,10 @@ export default function data() {
         .select("*");
       if (membershipError) throw membershipError;
 
-      const { data: teamData, error: teamError } = await supabase.from("team_group").select("*").eq("team_id", user.team_id)
-      ;
+      const { data: teamData, error: teamError } = await supabase
+        .from("team_group")
+        .select("*")
+        .eq("team_id", user.team_id);
       if (teamError) throw teamError;
 
       const groupsWithMembership = teamData

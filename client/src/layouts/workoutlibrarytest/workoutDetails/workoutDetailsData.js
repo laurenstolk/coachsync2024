@@ -47,7 +47,9 @@ export default function data() {
         .select("*");
       if (customizedexerciseError) throw customizedexerciseError;
 
-      const { data: exerciseData, error: exerciseError } = await supabase.from("exercise").select("*");
+      const { data: exerciseData, error: exerciseError } = await supabase
+        .from("exercise")
+        .select("*");
       if (exerciseError) throw exerciseError;
 
       const workoutsWithExercises = workoutsData.map((workout) => {
@@ -55,7 +57,9 @@ export default function data() {
           (customizedexercise) => customizedexercise.workout_id === workout.id
         );
         if (customizedexercise) {
-          const exercise = exerciseData.find((exercise) => exercise.id === customizedexercise.exercise_id);
+          const exercise = exerciseData.find(
+            (exercise) => exercise.id === customizedexercise.exercise_id
+          );
           return { ...workout, customizedexercise, exercise };
         }
         return workout;

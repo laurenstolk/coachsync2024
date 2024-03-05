@@ -52,13 +52,11 @@ import Icon from "@mui/material/Icon";
 import { fetchUserProfile } from "../../fetchUserProfile";
 
 
-
 // Data
 import playersTableData from "layouts/tables/data/playersTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
 import groupsTableData from "layouts/grouptable/data/groupsTableData";
 import { fetchTeamInfo } from "../../fetchTeamInfo";
-
 
 function Tables() {
   const { columns, rows } = playersTableData();
@@ -168,13 +166,13 @@ function Tables() {
                                 </TableCell> */}
                           </AccordionSummary>
                           <AccordionDetails>
-                              {/* <TableRow>
+                            {/* <TableRow>
                                 {gColumns.map((column, index) => (
                                   <TableCell style={{ fontWeight: "bold" }} key={index}>{column.Header}</TableCell>
                                 ))}
                               </TableRow> */}
                             <TableRow>
-                              <TableCell style={{fontWeight:"lighter"}}>{row.players}</TableCell>
+                              <TableCell style={{ fontWeight: "lighter" }}>{row.players}</TableCell>
                             </TableRow>
                           </AccordionDetails>
                         </Accordion>

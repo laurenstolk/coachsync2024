@@ -57,70 +57,70 @@ function PlayerTeamUpdate() {
 
   const handleSubmit = async () => {
     const signupcode = document.getElementById("signup-code").value;
-  
+
     // Check if the signup code is not empty
     const isValid = signupcode.trim() !== "";
     setFormValid(isValid);
-  
+
     if (isValid) {
       try {
         const { data: teamData, error: teamError } = await supabase
-          .from('team')
-          .select('name, sport_id')
-          .eq('signup_code', signupcode)
+          .from("team")
+          .select("name, sport_id")
+          .eq("signup_code", signupcode)
           .single();
-  
+
         if (teamError) {
           // Handle case where no team is found with the provided signup code
-          document.getElementById("team-sport").innerText = "No team found. Please search again."
+          document.getElementById("team-sport").innerText = "No team found. Please search again.";
         }
-  
+
         if (teamData) {
           const { name, sport_id } = teamData;
-  
+
           // Fetch sport name based on sport_id
           const { data: sportData, error: sportError } = await supabase
-            .from('sport')
-            .select('name')
-            .eq('id', sport_id)
+            .from("sport")
+            .select("name")
+            .eq("id", sport_id)
             .single();
-  
+
           if (sportError) {
-            console.error('Error fetching sport data:', sportError.message);
+            console.error("Error fetching sport data:", sportError.message);
             return;
           }
-  
+
           if (sportData) {
             const { name: sportName } = sportData;
-  
+
             // Update UI elements with the retrieved team information
             document.getElementById("team-name").innerText = name;
             document.getElementById("team-sport").innerText = sportName;
-  
+
             // Perform further actions with the retrieved team data
           } else {
-            console.log('No sport found with the provided sport ID.');
+            console.log("No sport found with the provided sport ID.");
             // Handle case where no sport is found with the provided sport ID
           }
         } else {
-          console.log('No team found with the provided signup code.');
+          console.log("No team found with the provided signup code.");
           // Handle case where no team is found with the provided signup code
           document.getElementById("team-name").innerText = "";
           document.getElementById("team-sport").innerText = "No team found with this code";
         }
       } catch (error) {
-        console.error('Error querying data:', error.message);
+        console.error("Error querying data:", error.message);
       }
     }
-  };  
+  };
 
   const handleNext = async () => {
     const signupcode = document.getElementById("signup-code").value;
-  
+
     // Check if the signup code is not empty
     const isValid = signupcode.trim() !== "";
     setFormValid(isValid);
-  
+
     if (isValid) {
       try {
         // Fetch the team data based on the signup code
@@ -129,22 +129,22 @@ function PlayerTeamUpdate() {
           .select("id")
           .eq("signup_code", signupcode)
           .single();
-  
+
         if (teamError) {
           console.error("Error fetching team data:", teamError);
           // Handle the error here
           return;
         }
-  
+
         if (teamData) {
           const { id: teamId } = teamData;
-  
+
           // Update the user's profile with the team ID
           const { error: updateError } = await supabase
             .from("profile")
             .update({ team_id: teamId })
             .eq("id", profile.id);
-  
+
           if (updateError) {
             console.error("Error updating player team info:", updateError);
             // Handle the error here
@@ -163,9 +163,7 @@ function PlayerTeamUpdate() {
       // Handle the case where profile or profile ID is missing
     }
   };
-  
-  
-  
+
   return (
     <CoverLayout image={bgImage}>
       <Card>
@@ -191,7 +189,7 @@ function PlayerTeamUpdate() {
         <MDBox pt={1} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDTypography display="block" variant="button" color="text" my={1} pb={1}>
-              Your coach should&apos;ve provided you with a sign up code. Please enter it here.            
+              Your coach should&apos;ve provided you with a sign up code. Please enter it here.
             </MDTypography>
             <MDBox mb={2}>
               {/* <MDTypography display="block" variant="button" color="text" my={1}>
@@ -222,7 +220,6 @@ function PlayerTeamUpdate() {
               <h2 id="team-name"></h2>
               <p id="team-sport"></p>
             </MDBox>
-
 
             <MDBox mt={4} mb={1}>
               <MDButton

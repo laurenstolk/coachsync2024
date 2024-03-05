@@ -65,7 +65,7 @@ function PlayerInfoUpdate() {
       phoneNumber !== "" &&
       birthDate !== "" &&
       position !== "";
-      jerseyNum !== "";
+    jerseyNum !== "";
     setFormValid(isValid);
     console.log(firstName, lastName, phoneNumber, birthDate, position, jerseyNum);
   };
