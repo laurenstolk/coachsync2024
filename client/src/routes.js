@@ -154,7 +154,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Wellness Checkin",
+    name: "Add Wellness",
     key: "addwellness",
     icon: <PsychologyAltIcon fontSize="small">Wellness</PsychologyAltIcon>,
     route: "/addwellness",

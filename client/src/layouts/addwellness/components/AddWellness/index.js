@@ -127,7 +127,13 @@ function AddWellness() {
           <Slider
             valueLabelDisplay="auto"
             step={1}
-            marks
+            marks={[
+              { value: 1, label: "0%" },
+              { value: 2, label: "25%" },
+              { value: 3, label: "50%" },
+              { value: 4, label: "75%" },
+              { value: 5, label: "100%" },
+            ]}
             min={1}
             max={5}
             value={wellnessData.water.value}
@@ -141,7 +147,13 @@ function AddWellness() {
           <Slider
             valueLabelDisplay="auto"
             step={1}
-            marks
+            marks={[
+              { value: 1, label: 1 },
+              { value: 2, label: 2 },
+              { value: 3, label: 3 },
+              { value: 4, label: 4 },
+              { value: 5, label: 5 },
+            ]}
             min={1}
             max={5}
             value={wellnessData.sleep.value}
@@ -155,7 +167,13 @@ function AddWellness() {
           <Slider
             valueLabelDisplay="auto"
             step={1}
-            marks
+            marks={[
+              { value: 1, label: 1 },
+              { value: 2, label: 2 },
+              { value: 3, label: 3 },
+              { value: 4, label: 4 },
+              { value: 5, label: 5 },
+            ]}
             min={1}
             max={5}
             value={wellnessData.stress.value}
@@ -169,7 +187,13 @@ function AddWellness() {
           <Slider
             valueLabelDisplay="auto"
             step={1}
-            marks
+            marks={[
+              { value: 1, label: 1 },
+              { value: 2, label: 2 },
+              { value: 3, label: 3 },
+              { value: 4, label: 4 },
+              { value: 5, label: 5 },
+            ]}
             min={1}
             max={5}
             value={wellnessData.soreness.value}
@@ -183,7 +207,13 @@ function AddWellness() {
           <Slider
             valueLabelDisplay="auto"
             step={1}
-            marks
+            marks={[
+              { value: 1, label: 1 },
+              { value: 2, label: 2 },
+              { value: 3, label: 3 },
+              { value: 4, label: 4 },
+              { value: 5, label: 5 },
+            ]}
             min={1}
             max={5}
             value={wellnessData.energy.value}
