@@ -23,27 +23,67 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fetchUserProfile } from "../../../../fetchUserProfile";
+import { fetchTeamInfo } from "../../../../fetchTeamInfo";
 
 function AddWellness() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
   const [wellnessData, setWellnessData] = useState({
-    water: { id: 1, value: 3 },
+    water: { id: 1, value: 3 }, //make sure to update to percent
     sleep: { id: 2, value: 3 },
     stress: { id: 3, value: 3 },
     soreness: { id: 4, value: 3 },
     energy: { id: 5, value: 3 },
   });
 
+  const [teamData, setTeamData] = useState({
+    water: true,
+    sleep: true,
+    stress: true,
+    soreness: true,
+    energy: true,
+  });
+
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchUserProfile();
+      try {
+        const data = await fetchUserProfile();
+        setProfile(data);
 
-      setProfile(data);
+        const teamInfo = await fetchTeamInfo();
+        const currentTeamId = teamInfo.id;
+
+        const { data: teamData, error: teamError } = await supabase
+        .from("team")
+        .select("*")
+        .eq("id", currentTeamId)
+        .single();
+
+        setTeamData({
+          water: teamData.water_checkin,
+          sleep: teamData.sleep_checkin,
+          stress: teamData.stress_checkin,
+          soreness: teamData.soreness_checkin,
+          energy: teamData.energy_checkin,
+        });
+      } catch (error) {
+        console.error("Error:", error);
+        // Handle the error here
+      }
     };
+
     fetchData();
   }, []);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const data = await fetchUserProfile();
+
+  //     setProfile(data);
+  //   };
+  //   fetchData();
+  // }, []);
 
   const handleSliderChange = (type, value) => {
     setWellnessData((prevData) => ({
@@ -121,6 +161,7 @@ function AddWellness() {
           <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
         </MDTypography>
       </MDBox>
+      {teamData.water && (
       <MDBox pt={1} pb={2} px={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
           Water
@@ -141,6 +182,8 @@ function AddWellness() {
           />
         </MDBox>
       </MDBox>
+      )}
+      {teamData.sleep && (
       <MDBox pt={1} pb={2} px={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
           Sleep
@@ -161,6 +204,8 @@ function AddWellness() {
           />
         </MDBox>
       </MDBox>
+      )}
+      {teamData.stress && (
       <MDBox pt={1} pb={2} px={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
           Stress
@@ -181,6 +226,8 @@ function AddWellness() {
           />
         </MDBox>
       </MDBox>
+      )}
+      {teamData.soreness && (  
       <MDBox pt={1} pb={2} px={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
           Soreness
@@ -201,6 +248,8 @@ function AddWellness() {
           />
         </MDBox>
       </MDBox>
+      )}
+      {teamData.energy && (
       <MDBox pt={1} pb={2} px={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
           Energy
@@ -221,6 +270,7 @@ function AddWellness() {
           />
         </MDBox>
       </MDBox>
+      )}
       <MDBox px={2} pb={2}>
         <Button variant="contained" color="primary" onClick={handleSubmit}>
           <MDTypography variant="caption" color="white" fontWeight="bold" textTransform="uppercase">
