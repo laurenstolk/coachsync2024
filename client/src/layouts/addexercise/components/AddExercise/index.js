@@ -18,6 +18,8 @@ import { useNavigate } from "react-router-dom";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+
 
 function AddExercise() {
   const navigate = useNavigate();
@@ -85,6 +87,10 @@ function AddExercise() {
                 variant="outlined"
                 value={selectedCategory}
                 onChange={handleCategoryChange}
+                IconComponent={() => (
+                  <span style={{ fontSize: 24, marginLeft: -5 }}>
+                    <ArrowDropDownIcon style={{ color: "rgba(0, 0, 0, 0.54)" }} />
+                  </span>                  )}
                 sx={{ width: "30%", minHeight: "46px" }}
               >
                 <MenuItem value="14">Training</MenuItem>
@@ -101,7 +107,7 @@ function AddExercise() {
       </MDBox>
       <MDBox pt={1} pb={2} px={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          <TextField id="exercise-description" label="Description" variant="outlined" />
+          <TextField id="exercise-description" label="Description" variant="outlined" sx={{width: "50%"}} />
         </MDBox>
       </MDBox>
       <MDBox px={2} pb={2}>
