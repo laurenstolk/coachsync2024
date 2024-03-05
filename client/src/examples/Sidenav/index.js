@@ -39,6 +39,8 @@ import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 import SidenavRoot from "examples/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "examples/Sidenav/styles/sidenav";
 
+import { fetchUserProfile } from "../../fetchUserProfile";
+
 // Material Dashboard 2 React context
 import {
   useMaterialUIController,
@@ -53,6 +55,17 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchUserProfile();
+
+      setProfile(data);
+      console.log("profile: ", data);
+    };
+    fetchData();
+  }, []);
 
   let textColor = "white";
 
@@ -85,7 +98,24 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   }, [dispatch, location]);
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
-  const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
+  const renderRoutes = routes
+  .filter((route) => {
+    // Include the route if it doesn't have player or coach attribute
+    if (!route.player && !route.coach) {
+      return true;
+    }
+    // Include the route if it matches the user's role
+    if (profile) {
+      if (profile.player && route.player) {
+        return true;
+      }
+      if (!profile.player && route.coach) {
+        return true;
+      }
+    }
+    return false;
+  })
+  .map(({ type, name, icon, title, noCollapse, key, href, route }) => {
     let returnValue;
 
     if (type === "collapse") {
@@ -180,7 +210,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         }
       />
       <List>{renderRoutes}</List>
-      <MDBox p={2} mt="auto">
+      {/* <MDBox p={2} mt="auto">
         <MDButton
           component="a"
           href="https://www.creative-tim.com/product/material-dashboard-pro-react"
@@ -192,7 +222,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         >
           Hey there
         </MDButton>
-      </MDBox>
+      </MDBox> */}
     </SidenavRoot>
   );
 }
