@@ -284,7 +284,8 @@ function Configurator() {
           <MDButton
             component={Link}
             href="/authentication/sign-out"
-            color={darkMode ? "light" : "dark"}
+            color="info"
+            // color={darkMode ? "light" : "dark"}
             // variant="outlined"
             fullWidth
           >
