@@ -143,21 +143,50 @@ export default function data() {
     ),
   }));
 
+  // const filterButton = (
+  //   <MDBox mb={2}>
+  //     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+  //       <MDButton sx={{minHeight: "10px"}}  color="info" onClick={() => handleCategoryFilter("All")}>
+  //         Show All
+  //       </MDButton>
+  //     </div>
+  //     <div style={{ display: 'flex', justifyContent: 'center' }}>
+  //       {categories.map((category, index) => (
+  //           <MDButton
+  //             key={index}
+  //             variant="outlined"
+  //             color="white"
+  //             sx={{width: "10%", minHeight: "15px"}}
+  //             onClick={() => handleCategoryFilter(category)}
+  //           >
+  //             {category}
+  //           </MDButton>
+  //       ))}
+  //     </div>
+  //   </MDBox>
+  // );
   const filterButton = (
     <MDBox mb={2}>
-      <MDButton variant="outlined" color="white" onClick={() => handleCategoryFilter("All")}>
-        Show All
-      </MDButton>
-      {categories.map((category, index) => (
-        <MDButton
-          key={index}
-          variant="outlined"
-          color="white"
-          onClick={() => handleCategoryFilter(category)}
-        >
-          {category}
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {categories.map((category, index) => (
+          <MDButton
+            key={index}
+            variant="outlined"
+            color="light"
+            sx={{ width: "10%", minHeight: "15px", marginRight: 2 }}
+            onClick={() => handleCategoryFilter(category)}
+          >
+            {category}
+          </MDButton>
+        ))}
+        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <MDButton sx={{ minHeight: "15px", marginLeft: 4 }} variant= "outlined"
+            color="light" onClick={() => handleCategoryFilter("All")}>
+          Show All
         </MDButton>
-      ))}
+      </div>
+      </div>
+      
     </MDBox>
   );
 

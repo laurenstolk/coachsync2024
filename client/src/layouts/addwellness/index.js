@@ -8,7 +8,7 @@ import AddWellness from "./components/AddWellness";
 function Billing() {
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle="Add New Wellness" absolute isMini />
+      <DashboardNavbar pageTitle="Add Wellness" /> 
       <MDBox mt={8}>
         <MDBox mb={3}>
           <Grid container spacing={3}>
@@ -22,5 +22,6 @@ function Billing() {
     </DashboardLayout>
   );
 }
+// removed: absolute isMini from Dashboard Navbar previously: <DashboardNavbar pageTitle="Add Wellness" absolute isMini />
 
 export default Billing;

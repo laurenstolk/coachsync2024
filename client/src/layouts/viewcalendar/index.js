@@ -11,6 +11,7 @@ import Card from "@mui/material/Card";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
@@ -151,15 +152,14 @@ function ViewCalendar() {
                 <MDTypography variant="h6" color="white">
                   Team Calendar
                 </MDTypography>
-                <Button
+                <MDButton
                   variant="outlined"
                   component={Link}
                   to="/addassignment"
-                  color="inherit"
-                  style={{ position: "absolute", top: -7, right: 20 }}
+                  style={{ position: "absolute", top: -7, right: 40, backgroundColor: 'rgba(255, 255, 255, 0.5)',color: 'rgba(0, 0, 0, 0.6)' }}
                 >
                   Add Assignment
-                </Button>
+                </MDButton>
               </MDBox>
               <MDBox pt={3} pl={2} pr={2} pb={2}>
                 {" "}

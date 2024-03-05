@@ -278,13 +278,13 @@ function Configurator() {
 
           <Switch checked={fixedNavbar} onChange={handleFixedNavbar} />
         </MDBox> */}
-        <Divider />
+        {/* <Divider />
         <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
           <MDTypography variant="h6">Dark Mode</MDTypography>
 
           <Switch checked={darkMode} onChange={handleDarkMode} />
         </MDBox>
-        <Divider />
+        <Divider /> */}
         {/* <MDBox mt={3} mb={2}>
           <MDButton
             component={Link}

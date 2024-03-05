@@ -31,6 +31,7 @@ import Button from "@mui/material/Button"; // Import Button component
 
 // Data
 import exercisesTableData from "layouts/tables/data/exercisesTableData";
+import MDButton from "components/MDButton";
 
 function Tables() {
   const { columns, rows, handleCategoryFilter, filterButton } = exercisesTableData();
@@ -55,15 +56,15 @@ function Tables() {
                 <MDTypography variant="h6" color="white">
                   All Excercises
                 </MDTypography>
-                <Button
+                <MDButton
                   variant="outlined"
                   component={Link}
                   to="/addexercise"
-                  color="inherit"
-                  style={{ position: "absolute", top: -7, right: 20 }}
+                  style={{ position: "absolute", top: -7, right: 40, backgroundColor: 'rgba(255, 255, 255, 0.5)',color: 'rgba(0, 0, 0, 0.6)' }}
                 >
                   Add Exercise
-                </Button>
+                </MDButton>
+                <br></br>
                 {filterButton}
               </MDBox>
               <MDBox pt={3}>

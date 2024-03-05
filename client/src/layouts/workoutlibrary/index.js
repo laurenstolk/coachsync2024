@@ -35,6 +35,7 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import { supabase } from "../../supabaseClient";
+import MDButton from "components/MDButton";
 
 function Tables() {
   const [workouts, setWorkouts] = useState([]);
@@ -274,7 +275,7 @@ function Tables() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle="Saved Workouts" />
+      <DashboardNavbar pageTitle="Workout Library" />
       <Box mb={3}>
         <Card
           variant="outlined"
@@ -294,11 +295,12 @@ function Tables() {
             }}
           >
             <Typography variant="h6" fontWeight="bold" color="#fff">
-              Saved Workouts
+              Workout Library
             </Typography>
-            <Button variant="outlined" component={Link} to="/addworkout" color="inherit">
+            <MDButton style={{backgroundColor: 'rgba(255, 255, 255, 0.5)',color: 'rgba(0, 0, 0, 0.6)'}} component={Link} to="/addworkout" >
               Add Workout
-            </Button>
+            </MDButton>
+            
           </Box>
         </Card>
       </Box>

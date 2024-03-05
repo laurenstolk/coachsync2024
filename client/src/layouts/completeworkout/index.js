@@ -29,7 +29,7 @@ import CompleteWorkout from "layouts/completeworkout/components/CompleteWorkout"
 function CompletingWorkout() {
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle="Complete Workout" absolute isMini />
+      <DashboardNavbar pageTitle="Complete Workout" />
       <MDBox mt={8} justifyContent="center" alignItems="center">
         <MDBox mb={3}>
           <Grid container spacing={3}>
