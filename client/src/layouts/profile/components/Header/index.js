@@ -163,7 +163,7 @@ function Header({ children }) {
               {profile ? profile.first_name : ""} {profile ? profile.last_name : ""}
               </MDTypography>
               <MDTypography variant="button" color="text" fontWeight="regular">
-              {profile ? profile.coach_role : ""}
+                {profile ? (profile.player ? profile.position : profile.coach_role) : ""}
               </MDTypography>
             </MDBox>
           </Grid>

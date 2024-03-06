@@ -136,6 +136,7 @@ function Overview() {
 
     fetchSportName();
   }, [teamData]); // Fetch sport name whenever teamData changes
+  
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Profile" />
@@ -153,8 +154,6 @@ function Overview() {
                   mobile: profile.phone_number,
                   email: profile.email,
                   birthdate: profile.birth_date,
-                  teamCode: teamData ? teamData.signup_code : null, // Add conditional check here
-                  checkinFrequency: teamData ? teamData.checkin_frequency : null, // Add conditional check here
                 }}
                 social={[]}
                 action={{ route: "", tooltip: "Edit Profile" }}
@@ -186,6 +185,10 @@ function Overview() {
                 Check-in Frequency: {teamData ? mapCheckinFrequencyToDays(teamData.checkin_frequency) : ""}
               </MDTypography>
               Team Code: {teamData ? teamData.signup_code : null}
+
+              {/* ADD TABLE HERE */}
+
+
               
             </Grid>
           </Grid>
