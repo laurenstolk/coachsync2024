@@ -30,7 +30,6 @@ import Icon from "@mui/material/Icon";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
 
 // Material Dashboard 2 React example components
 import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
@@ -48,7 +47,6 @@ import {
   setTransparentSidenav,
   setWhiteSidenav,
 } from "context";
-import { supabase } from "../../supabaseClient";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
@@ -62,7 +60,6 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       const data = await fetchUserProfile();
 
       setProfile(data);
-      console.log("profile: ", data);
     };
     fetchData();
   }, []);
