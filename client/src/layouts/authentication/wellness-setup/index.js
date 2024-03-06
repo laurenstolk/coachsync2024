@@ -51,16 +51,6 @@ function WellnessSetup() {
   const [selectedWellnessOptions, setSelectedWellnessOptions] = useState(wellnessOptions);
   const [profile, setProfile] = useState(null);
 
-  const handleWellnessOptionChange = (option) => {
-    setSelectedWellnessOptions((prevSelected) => {
-      if (prevSelected.includes(option)) {
-        return prevSelected.filter((item) => item !== option);
-      } else {
-        return [...prevSelected, option];
-      }
-    });
-  };
-
   useEffect(() => {
     // Fetch wellness options from Supabase
     async function fetchWellnessOptions() {
@@ -102,13 +92,26 @@ function WellnessSetup() {
     });
   };
 
-  const waterCheckinValue = selectedWellnessOptions.includes("water");
-  const sleepCheckinValue = selectedWellnessOptions.includes("sleep");
-  const stressCheckinValue = selectedWellnessOptions.includes("soreness");
-  const sorenessCheckinValue = selectedWellnessOptions.includes("energy");
-  const energyCheckinValue = selectedWellnessOptions.includes("stress");
+  const handleWellnessOptionChange = (option) => {
+    setSelectedWellnessOptions((prevSelected) => {
+      if (prevSelected.includes(option)) {
+        return prevSelected.filter((item) => item !== option);
+      } else {
+        return [...prevSelected, option];
+      }
+    });
+    console.log("Selected wellness options:", selectedWellnessOptions);
+  };
+
+  const waterCheckinValue = selectedWellnessOptions.includes("Water");
+  const sleepCheckinValue = selectedWellnessOptions.includes("Sleep");
+  const stressCheckinValue = selectedWellnessOptions.includes("Soreness");
+  const sorenessCheckinValue = selectedWellnessOptions.includes("Energy");
+  const energyCheckinValue = selectedWellnessOptions.includes("Stress");
 
   const handleSubmit = async () => {
+
+    console.log("Selected wellness options:", selectedWellnessOptions);
     const teamWellnessData = {
       checkin_frequency: selectedDays.sort((a, b) => a - b).join(""),
       water_checkin: waterCheckinValue,
@@ -117,6 +120,8 @@ function WellnessSetup() {
       soreness_checkin: sorenessCheckinValue,
       energy_checkin: energyCheckinValue,
     };
+
+    console.log(teamWellnessData)
 
     try {
       // Fetch profile data to get user's team ID

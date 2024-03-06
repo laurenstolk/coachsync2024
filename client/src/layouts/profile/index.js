@@ -25,6 +25,7 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
+import MDAvatar from "components/MDAvatar";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -50,6 +51,7 @@ import team1 from "assets/images/team-1.jpg";
 import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
+import { supabase } from "../../supabaseClient";
 import { useEffect, useState } from "react";
 import { fetchUserProfile } from "../../fetchUserProfile";
 import { getProfilePicURL } from "../../getProfilePicUrl";
@@ -61,6 +63,27 @@ function Overview() {
   const [imageUrl, setImageUrl] = useState(null);
   const [teamData, setTeamData] = useState(null);
   const [logoUrl, setLogoUrl] = useState(null);
+
+  const mapCheckinFrequencyToDays = (checkinFrequency) => {
+    const daysMap = {
+      1: "Sunday",
+      2: "Monday",
+      3: "Tuesday",
+      4: "Wednesday",
+      5: "Thursday",
+      6: "Friday",
+      7: "Saturday",
+    };
+  
+    // Convert the string to an array of numbers
+    const daysArray = checkinFrequency.split("").map(Number);
+  
+    // Map each number to its corresponding day name
+    const days = daysArray.map((day) => daysMap[day]);
+  
+    // Join the days with a comma and return the result
+    return days.join(", ");
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,37 +109,89 @@ function Overview() {
     fetchData();
   }, []);
 
+  const [sportName, setSportName] = useState("");
+
+  useEffect(() => {
+    async function fetchSportName() {
+      if (teamData && teamData.sport_id) {
+        try {
+          const { data, error } = await supabase
+            .from("sport")
+            .select("name")
+            .eq("id", teamData.sport_id)
+            .single();
+
+          if (error) {
+            throw error;
+          }
+
+          if (data) {
+            setSportName(data.name);
+          }
+        } catch (error) {
+          console.error("Error fetching sport name:", error.message);
+        }
+      }
+    }
+
+    fetchSportName();
+  }, [teamData]); // Fetch sport name whenever teamData changes
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Profile" />
       <MDBox mb={2} />
       <Header>
-        <MDBox mt={5} mb={3} mx={5}>
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={6} sx={{ display: "flex" }}>
-              {profile && (
-                <ProfileInfoCard
-                  info={{
-                    fullName: profile.first_name + " " + profile.last_name,
-                    mobile: profile.phone_number,
-                    email: profile.email,
-                    birthdate: profile.birth_date,
-                    teamCode: teamData ? teamData.signup_code : null, // Add conditional check here
-                  }}
-                  social={[]}
-                  action={{ route: "", tooltip: "Edit Profile" }}
-                  shadow={false}
-                />
-              )}
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Grid container spacing={4}>
-                <Grid item xs={12}></Grid>
-                {/* Add other grid items for your team data here */}
+      <MDBox mt={1} mb={3} mx={5}>
+        <Grid container spacing={4}>
+          {/* Left half for ProfileInfoCard */}
+          
+          <Grid item xs={12} md={6} sx={{ display: "flex" }}>
+            {profile && (
+              <ProfileInfoCard
+                info={{
+                  fullName: profile.first_name + " " + profile.last_name,
+                  mobile: profile.phone_number,
+                  email: profile.email,
+                  birthdate: profile.birth_date,
+                  teamCode: teamData ? teamData.signup_code : null, // Add conditional check here
+                  checkinFrequency: teamData ? teamData.checkin_frequency : null, // Add conditional check here
+                }}
+                social={[]}
+                action={{ route: "", tooltip: "Edit Profile" }}
+                shadow={false}
+              />
+            )}
+          </Grid>
+
+          {/* Divider */}
+          <Divider sx={{ my: 2 }} />
+
+          {/* Right half for MDAvatar and Typography */}
+          <Grid item xs={12} md={6}>
+            <Grid container spacing={4} direction="column" alignItems="center" justify="center">
+              <Grid item>
+                <MDAvatar src={logoUrl} alt="logo-image" style={{ width: '250px', height: '250px' }} shadow="sm" />
               </Grid>
+              {/* Add other grid items for your team data here */}
+              <Grid item direction="column" alignItems="center" justify="center">
+                <MDTypography variant="h5" fontWeight="medium">
+                  {teamData ? teamData.name : ""}
+                </MDTypography>
+                <MDTypography variant="button" color="text" fontWeight="regular">
+                  {teamData ? sportName : ""}
+                </MDTypography>
+              </Grid>
+              <br></br>
+              <MDTypography variant="button" color="text" fontWeight="regular">
+                Check-in Frequency: {teamData ? mapCheckinFrequencyToDays(teamData.checkin_frequency) : ""}
+              </MDTypography>
+              Team Code: {teamData ? teamData.signup_code : null}
+              
             </Grid>
           </Grid>
-        </MDBox>
+        </Grid>
+      </MDBox>
+
       </Header>
       <Footer />
     </DashboardLayout>
