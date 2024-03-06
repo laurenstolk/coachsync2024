@@ -37,6 +37,7 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
+import PlayerDashboard from "layouts/playerdashboard";
 import Tables from "layouts/tables";
 import ExerciseLibrary from "layouts/exerciselibrary";
 import GroupTable from "layouts/grouptable";
@@ -86,7 +87,7 @@ import { useEffect, useState } from "react";
 import { Route } from "react-router-dom"; // Add this import statement
 
 const routes = [
-  //BOTH
+  //COACH
   {
     type: "collapse",
     name: "Dashboard",
@@ -94,6 +95,17 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
     component: <Dashboard />,
+    coach: true,
+  },
+  //PLAYER
+  {
+    type: "collapse",
+    name: "Player Dashboard",
+    key: "playerdashboard",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "/playerdashboard",
+    component: <PlayerDashboard />,
+    player: true,
   },
   //BOTH
   {
