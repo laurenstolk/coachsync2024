@@ -37,7 +37,7 @@ function AddWellness() {
   const [profile, setProfile] = useState(null);
   const [startDate, setStartDate] = useState(new Date());
   const [checkinFrequency, setCheckinFrequency] = useState("");
-  // const [completedWellnessData, setCompletedWellnessData] = useState(null);
+  const [completedWellnessData, setCompletedWellnessData] = useState(null);
   const [wellnessData, setWellnessData] = useState({
     water: { id: 1, value: 3 }, //make sure to update to percent
     sleep: { id: 2, value: 3 },
@@ -87,27 +87,6 @@ function AddWellness() {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   const fetchCompletedWellness = async () => {
-  //     const selectedDate = startDate.toISOString();
-  //     const { data, error } = await supabase
-  //       .from("checkin")
-  //       .select()
-  //       .eq("player_id", profile.id)
-  //       .eq("date", selectedDate);
-  
-  //     if (error) {
-  //       console.error("Error fetching completed wellness data:", error);
-  //       // Handle the error here
-  //     } else {
-  //       // Set the completed wellness data in state
-  //       setCompletedWellnessData(data);
-  //     }
-  //   };
-  
-  //   fetchCompletedWellness();
-  // }, [profile.id, startDate]);
-
   const isWellnessRequired = () => {
     const currentDayOfWeek = startDate.getDay();
     return checkinFrequency.includes((currentDayOfWeek + 1).toString());
@@ -139,6 +118,27 @@ function AddWellness() {
   //   };
   //   fetchData();
   // }, []);
+
+  // useEffect(() => {
+  //   const fetchCompletedWellness = async () => {
+  //     const selectedDate = startDate.toISOString();
+  //     const { data, error } = await supabase
+  //       .from("checkin")
+  //       .select()
+  //       .eq("player_id", profile.id)
+  //       .eq("date", selectedDate);
+  
+  //     if (error) {
+  //       console.error("Error fetching completed wellness data:", error);
+  //       // Handle the error here
+  //     } else {
+  //       // Set the completed wellness data in state
+  //       setCompletedWellnessData(data);
+  //     }
+  //   };
+  
+  //   fetchCompletedWellness();
+  // }, [profile.id, startDate]);
 
   const handleSliderChange = (type, value) => {
     setWellnessData((prevData) => ({
@@ -205,13 +205,6 @@ function AddWellness() {
     }
   };
 
-  // const renderCompletedWellnessText = (category) => {
-  //   const completedValue = completedWellnessData?.[category]?.value;
-  //   return completedValue !== undefined ? `${completedValue}%` : "No data";
-  // };
-
-  // const isPastDate = startDate < new Date();
-
   return (
     <Card id="add-wellness" style={{width: 'auto'}}>
       <MDBox pt={3} px={2} display="flex" justifyContent="space-between">
@@ -235,11 +228,6 @@ function AddWellness() {
                   <InfoIcon />
                 </IconButton>
               </Tooltip>
-              {/* {isPastDate ?(
-                <Typography>
-                  Completed: {renderCompletedWellnessText("water")}
-                </Typography>
-              ) : ( */}
                   <Slider
                     valueLabelDisplay="off"
                     step={1}
@@ -256,7 +244,6 @@ function AddWellness() {
                     onChange={(event, value) => handleSliderChange("water", value)}
                     style={{ marginRight: '16px' }} // Adjust the margin as needed
                   />
-              {/* )} */}
             </MDBox>
           </MDBox>
         )}
