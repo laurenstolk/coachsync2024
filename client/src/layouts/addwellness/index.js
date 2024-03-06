@@ -8,7 +8,7 @@ import AddWellness from "./components/AddWellness";
 function Billing() {
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle="Add Wellness" />
+      <DashboardNavbar pageTitle="Complete Check-in" />
       <MDBox mt={8}>
         <MDBox mb={3}>
           <Grid container spacing={3}>

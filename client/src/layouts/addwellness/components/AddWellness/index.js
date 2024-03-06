@@ -222,7 +222,7 @@ function AddWellness() {
     <Card id="add-wellness" style={{ width: "auto" }}>
       <MDBox pt={3} px={2} display="flex" justifyContent="space-between">
         <MDTypography variant="h4" fontWeight="medium">
-          Check In
+          Complete Check-in
         </MDTypography>
         <MDTypography variant="body2" fontWeight="textSecondary" id="dateSelected">
           Select Date:
