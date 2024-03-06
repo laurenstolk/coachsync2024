@@ -29,7 +29,7 @@ function formatDate(dateString) {
   const date = new Date(dateString);
   // Adding a day to the date
   date.setDate(date.getDate() + 1);
-  const options = { weekday: 'long', month: 'long', day: 'numeric' };
+  const options = { weekday: "long", month: "long", day: "numeric" };
   return date.toLocaleDateString(undefined, options);
 }
 
@@ -49,7 +49,7 @@ function Tables() {
   console.log("Formatted rows:", formattedRows);
 
   const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() -1);
+  yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayString = yesterday.toISOString().split("T")[0];
 
   const assignedToday = formattedRows.filter((row) => row.date === yesterdayString);
@@ -59,7 +59,7 @@ function Tables() {
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Assigned Workouts Library" />
-      
+
       {/* Assigned Today Table */}
       <Box mb={3}>
         <Card
@@ -93,7 +93,16 @@ function Tables() {
                 expandIcon={<ExpandMoreIcon />}
                 sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
               >
-                <Typography sx={{ display: "flex", alignItems: "center", fontWeight: "bold", fontSize: "0.9rem" }}>{formatDate(row.date)} - </Typography>
+                <Typography
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    fontWeight: "bold",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  {formatDate(row.date)} -{" "}
+                </Typography>
                 <Typography sx={{ marginLeft: "10px" }}>{row.workout_name}</Typography>
               </AccordionSummary>
               <AccordionDetails sx={{ marginTop: 2, marginBottom: 2 }}>
@@ -101,8 +110,12 @@ function Tables() {
                   <Table>
                     <TableBody>
                       <TableRow>
-                        <TableCell align="left" style={{ fontWeight: "bold" }}>Assigned to:</TableCell>
-                        <TableCell align="left" style={{ fontWeight: "bold" }}>Notes:</TableCell>
+                        <TableCell align="left" style={{ fontWeight: "bold" }}>
+                          Assigned to:
+                        </TableCell>
+                        <TableCell align="left" style={{ fontWeight: "bold" }}>
+                          Notes:
+                        </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="left">{row.player_ids}</TableCell>
@@ -150,18 +163,31 @@ function Tables() {
                 expandIcon={<ExpandMoreIcon />}
                 sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
               >
-                <Typography sx={{ display: "flex", alignItems: "center", fontWeight: "bold", fontSize: "0.9rem" }}>
+                <Typography
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    fontWeight: "bold",
+                    fontSize: "0.9rem",
+                  }}
+                >
                   {formatDate(upcomingAssignment.date)} -
                 </Typography>
-                <Typography sx={{ marginLeft: "10px" }}>{upcomingAssignment.workout_name}</Typography>
+                <Typography sx={{ marginLeft: "10px" }}>
+                  {upcomingAssignment.workout_name}
+                </Typography>
               </AccordionSummary>
               <AccordionDetails sx={{ marginTop: 2, marginBottom: 2 }}>
                 <TableContainer component={Paper}>
                   <Table>
                     <TableBody>
                       <TableRow>
-                        <TableCell align="left" style={{ fontWeight: "bold" }}>Assigned to:</TableCell>
-                        <TableCell align="left" style={{ fontWeight: "bold" }}>Notes:</TableCell>
+                        <TableCell align="left" style={{ fontWeight: "bold" }}>
+                          Assigned to:
+                        </TableCell>
+                        <TableCell align="left" style={{ fontWeight: "bold" }}>
+                          Notes:
+                        </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="left">{upcomingAssignment.player_ids}</TableCell>
@@ -205,11 +231,15 @@ function Tables() {
         {pastAssignments.map((pastAssignment, index) => (
           <Grid item xs={12} key={index}>
             <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                sx={{ display: "flex" }}
-              >
-                <Typography sx={{ display: "flex", alignItems: "center", fontWeight: "bold", fontSize: "0.9rem" }}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ display: "flex" }}>
+                <Typography
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    fontWeight: "bold",
+                    fontSize: "0.9rem",
+                  }}
+                >
                   {formatDate(pastAssignment.date)} -
                 </Typography>
                 <Typography sx={{ marginLeft: "10px" }}>{pastAssignment.workout_name}</Typography>
@@ -219,8 +249,12 @@ function Tables() {
                   <Table>
                     <TableBody>
                       <TableRow>
-                        <TableCell align="left" style={{ fontWeight: "bold" }}>Assigned to:</TableCell>
-                        <TableCell align="left" style={{ fontWeight: "bold" }}>Notes:</TableCell>
+                        <TableCell align="left" style={{ fontWeight: "bold" }}>
+                          Assigned to:
+                        </TableCell>
+                        <TableCell align="left" style={{ fontWeight: "bold" }}>
+                          Notes:
+                        </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="left">{pastAssignment.player_ids}</TableCell>

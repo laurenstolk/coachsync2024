@@ -35,7 +35,6 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import SignOut from "layouts/authentication/sign-out";
 
-
 // Custom styles for the Configurator
 import ConfiguratorRoot from "examples/Configurator/ConfiguratorRoot";
 
@@ -273,14 +272,14 @@ function Configurator() {
         <br></br>
         <MDBox>
           <MDTypography variant="h5">User Settings</MDTypography>
-          <Divider/>
+          <Divider />
 
           {/*           <MDTypography variant="body2" color="text">
             See our dashboard options.
           </MDTypography> */}
         </MDBox>
         <MDBox mt={3} mb={2}>
-        <MDTypography variant="h6">Sign Out</MDTypography>
+          <MDTypography variant="h6">Sign Out</MDTypography>
           <MDButton
             component={Link}
             href="/authentication/sign-out"

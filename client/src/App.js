@@ -12,8 +12,7 @@ import { BrowserRouter as Router, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
-import MenuIcon from '@mui/icons-material/Menu';
-
+import MenuIcon from "@mui/icons-material/Menu";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -151,7 +150,6 @@ export default function App() {
   // Change the openConfigurator state
   const handleConfiguratorOpen = () => setMiniSidenav(dispatch, !miniSidenav);
   // setOpenConfigurator(dispatch, !openConfigurator);
-  
 
   // Setting the dir attribute for the body element
   useEffect(() => {
@@ -196,14 +194,14 @@ export default function App() {
       color="dark"
       sx={{ cursor: "pointer" }}
       onClick={handleConfiguratorOpen}
-    > 
-    {miniSidenav ? (
-      <Icon sx={{ fontSize: "2rem" }}>menu_open</Icon>
-    ) : (
-      <Icon sx={{ fontSize: "2rem" }}>menu</Icon>
-    )}
+    >
+      {miniSidenav ? (
+        <Icon sx={{ fontSize: "2rem" }}>menu_open</Icon>
+      ) : (
+        <Icon sx={{ fontSize: "2rem" }}>menu</Icon>
+      )}
       {/* <MenuIcon fontSize="small" color="inherit" /> */}
-      
+
       {/* <Icon fontSize="small" color="inherit">
         settings
       </Icon> */}

@@ -87,7 +87,7 @@ function Tables() {
 
     fetchTeamData(); // Call fetchTeamData on component mount
   }, [user]); // Run only when user changes
-//STOP UNDO
+  //STOP UNDO
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle={teamName || "Team"} />
@@ -115,23 +115,20 @@ function Tables() {
           </Box>
         </Card>
       </Box>
-      
-      
-        <Grid container spacing={6} sx={{ marginBottom: 5 }}>
-          <Grid item xs={12}>
-            
-                <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
 
-            </Grid>
-          </Grid>
+      <Grid container spacing={6} sx={{ marginBottom: 5 }}>
+        <Grid item xs={12}>
+          <DataTable
+            table={{ columns, rows }}
+            isSorted={false}
+            entriesPerPage={false}
+            showTotalEntries={false}
+            noEndBorder
+          />
+        </Grid>
+      </Grid>
 
-      <Box mb={3} sx={{ marginTop: 12 }}> 
+      <Box mb={3} sx={{ marginTop: 12 }}>
         <Card
           variant="outlined"
           sx={{
@@ -163,16 +160,25 @@ function Tables() {
                 expandIcon={<ExpandMoreIcon />}
                 sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
               >
-                <Typography sx={{ display: "flex", alignItems: "center", fontWeight: "bold", fontSize: "0.9rem" }}>
+                <Typography
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    fontWeight: "bold",
+                    fontSize: "0.9rem",
+                  }}
+                >
                   {row.name}
                 </Typography>
-                </AccordionSummary>
+              </AccordionSummary>
               <AccordionDetails sx={{ marginTop: 2, marginBottom: 2 }}>
                 <TableContainer component={Paper}>
                   <Table>
                     <TableBody>
                       <TableRow>
-                        <TableCell align="left" style={{ fontWeight: "bold" }}>Players In This Group:</TableCell>
+                        <TableCell align="left" style={{ fontWeight: "bold" }}>
+                          Players In This Group:
+                        </TableCell>
                       </TableRow>
                       <TableRow>
                         <TableCell align="left">{row.players}</TableCell>
@@ -185,7 +191,7 @@ function Tables() {
           </Grid>
         ))}
       </Grid>
-      
+
       <Footer />
     </DashboardLayout>
   );
