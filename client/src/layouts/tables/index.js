@@ -34,6 +34,8 @@ import { supabase } from "../../supabaseClient";
 
 //for group component
 import {
+  Box,
+  Typography,
   Table,
   TableBody,
   TableCell,
@@ -85,29 +87,39 @@ function Tables() {
 
     fetchTeamData(); // Call fetchTeamData on component mount
   }, [user]); // Run only when user changes
-
+//STOP UNDO
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle={teamName || "Team"} />
-      <MDBox pt={6} pb={3}>
-        <Grid container spacing={6}>
+      <Box mb={3}>
+        <Card
+          variant="outlined"
+          sx={{
+            borderRadius: 2,
+            backgroundImage: "linear-gradient(to right, #1976d2, #6ab7ff)",
+            color: "white",
+          }}
+        >
+          <Box
+            p={2}
+            sx={{
+              borderRadius: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold" color="#fff">
+              Players
+            </Typography>
+          </Box>
+        </Card>
+      </Box>
+      
+      
+        <Grid container spacing={6} sx={{ marginBottom: 5 }}>
           <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-              >
-                <MDTypography variant="h6" color="white">
-                  Players
-                </MDTypography>
-              </MDBox>
-              <MDBox pt={3}>
+            
                 <DataTable
                   table={{ columns, rows }}
                   isSorted={false}
@@ -115,107 +127,65 @@ function Tables() {
                   showTotalEntries={false}
                   noEndBorder
                 />
-              </MDBox>
-            </Card>
+
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
+
+      <Box mb={3} sx={{ marginTop: 12 }}> 
+        <Card
+          variant="outlined"
+          sx={{
+            borderRadius: 2,
+            backgroundImage: "linear-gradient(to right, #1976d2, #6ab7ff)",
+            color: "white",
+          }}
+        >
+          <Box
+            p={2}
+            sx={{
+              borderRadius: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold" color="#fff">
+              Groups
+            </Typography>
+          </Box>
+        </Card>
+      </Box>
+      <Grid container spacing={1} sx={{ marginBottom: 5 }}>
+        {gRows.map((row, index) => (
+          <Grid item xs={12} key={index}>
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
               >
-                <MDTypography variant="h6" color="white">
-                  Groups
-                </MDTypography>
-                {/* Add Create Group button */}
-                <MDButton
-                  variant="outlined"
-                  component={Link}
-                  to="/addgroup"
-                  style={{
-                    position: "absolute",
-                    top: -7,
-                    right: 40,
-                    backgroundColor: "rgba(255, 255, 255, 0.5)",
-                    color: "rgba(0, 0, 0, 0.6)",
-                  }}
-                >
-                  Add Group
-                </MDButton>
-              </MDBox>
-              <MDBox pt={1}>
+                <Typography sx={{ display: "flex", alignItems: "center", fontWeight: "bold", fontSize: "0.9rem" }}>
+                  {row.name}
+                </Typography>
+                </AccordionSummary>
+              <AccordionDetails sx={{ marginTop: 2, marginBottom: 2 }}>
                 <TableContainer component={Paper}>
                   <Table>
                     <TableBody>
-                      {gRows.map((row, index) => (
-                        <Accordion key={index}>
-                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            {/* this is the row text that is showing on the table */}
-                            <TableCell style={{ paddingRight: 700, fontWeight: "bold" }}>
-                              {row.name}
-                            </TableCell>
-
-                            <TableCell>{row.actions}</TableCell>
-
-                            {/* <TableCell align="right">
-                                  <Button color="dark" component={Link} to={`/addgroup/${row.id}`} onClick={() => console.log("ID:", row.groupID)}>
-                                    <Icon>edit</Icon>&nbsp;edit
-                                  </Button>
-                                </TableCell> */}
-                          </AccordionSummary>
-                          <AccordionDetails>
-                            {/* <TableRow>
-                                {gColumns.map((column, index) => (
-                                  <TableCell style={{ fontWeight: "bold" }} key={index}>{column.Header}</TableCell>
-                                ))}
-                              </TableRow> */}
-                            <TableRow>
-                              <TableCell style={{ fontWeight: "lighter" }}>{row.players}</TableCell>
-                            </TableRow>
-                          </AccordionDetails>
-                        </Accordion>
-                      ))}
+                      <TableRow>
+                        <TableCell align="left" style={{ fontWeight: "bold" }}>Players In This Group:</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell align="left">{row.players}</TableCell>
+                      </TableRow>
                     </TableBody>
                   </Table>
                 </TableContainer>
-              </MDBox>
-            </Card>
+              </AccordionDetails>
+            </Accordion>
           </Grid>
-          {/* <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-              >
-                <MDTypography variant="h6" color="white">
-                  Projects Table
-                </MDTypography>
-              </MDBox>
-              <MDBox pt={3}>
-                <DataTable
-                  table={{ columns: pColumns, rows: pRows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
-              </MDBox>
-            </Card>
-          </Grid> */}
-        </Grid>
-      </MDBox>
+        ))}
+      </Grid>
+      
       <Footer />
     </DashboardLayout>
   );
