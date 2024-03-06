@@ -82,7 +82,6 @@ export default function Dashboard() {
         wDateCompleted,
         count: (count / 5 / playerIds.length) * 100,
       }));
-      // console.log(wellnessChartData);
 
       wellnessChartData.sort((a, b) => new Date(a.wDateCompleted) - new Date(b.wDateCompleted));
 
@@ -99,6 +98,7 @@ export default function Dashboard() {
         .select("*")
         .eq("date", formattedDate)
         .in("player_id", playerIds);
+      console.log("wellnesscheckindata: ", wellnessCheckinData);
 
       if (wellnessError) {
         console.error("Error fetching wellness checkin data:", wellnessError.message);
@@ -107,13 +107,17 @@ export default function Dashboard() {
 
       // Initialize wellnessCountMap with the current date
       const wellnessCountMap = new Map([[formattedDate, wellnessCheckinData.length]]);
+      console.log("wellnessCountMap: ", wellnessCountMap);
 
       // Calculate the completed wellness percentage
       const totalWellnessExpected = playerIds.length * 5; // Assuming each person has 5 wellness check-ins
+      console.log("total wellness expected: ", totalWellnessExpected);
       const totalWellnessCompleted = wellnessCountMap.get(formattedDate) || 0;
+      console.log("total wellness completed: ", totalWellnessCompleted);
       const completedPercentage = Math.round(
         (totalWellnessCompleted / totalWellnessExpected) * 100
       );
+      console.log("completed wellness percentage: ", completedPercentage);
 
       // Set wellnessData to an array containing the completed percentage
       setWellnessCompletionData([{ wDateCompleted: formattedDate, count: completedPercentage }]);
@@ -139,7 +143,9 @@ export default function Dashboard() {
       .select("*")
       .eq("completed", true) // Filter by completed workouts
       .gte("date", startDate.toISOString()) // Filter by start date
-      .lte("date", endDate.toISOString()); // Filter by end date
+      .lte("date", endDate.toISOString()) // Filter by end date
+      .in("player_id", playerIds);
+    console.log("past week's workout completion data: ", workoutCompletionData);
 
     if (workoutError) {
       console.error("Error fetching exercise completion data:", workoutError.message);
@@ -152,7 +158,7 @@ export default function Dashboard() {
           workoutCountMap.set(dateCompleted, workoutCountMap.get(dateCompleted) + 1);
         }
       });
-      console.log("workoutCountMap: ", workoutCountMap);
+      console.log("workoutcountmap: ", workoutCountMap);
 
       // Convert the map to an array for use in the chart
       const workoutChartData = Array.from(workoutCountMap).map(([dateCompleted, count]) => ({
@@ -179,14 +185,14 @@ export default function Dashboard() {
         .eq("date", formattedDate)
         .eq("completed", true)
         .in("player_id", playerIds);
-      // console.log("completedWorkoutsData: ", completedWorkoutsData);
+      console.log("completedworkoustdata: ", completedWorkoutsData);
 
       const { data: expectedWorkoutsData, error: expectedWorkoutError } = await supabase
         .from("assignment")
         .select("*")
         .eq("date", formattedDate)
         .in("player_id", playerIds);
-      // console.log("expectedWorkoutsData: ", expectedWorkoutsData);
+      console.log("expectedWorkoutsData: ", expectedWorkoutsData);
 
       if (workoutError) {
         console.error("Error fetching workout completion data:", workoutError.message);
@@ -195,15 +201,11 @@ export default function Dashboard() {
 
       // Calculate the completed workout percentage
       const totalWorkoutsExpected = expectedWorkoutsData.length; // Assuming each player has one workout assigned per day
-      // console.log("workouts expected: ", totalWorkoutsExpected);
       const totalWorkoutsCompleted = completedWorkoutsData.length;
-      // console.log("workouts completed: ", totalWorkoutsCompleted);
       const completedPercentage = (totalWorkoutsCompleted / totalWorkoutsExpected) * 100;
-      // console.log("completedPercentage: ", completedPercentage);
 
       // Set workoutData state to an array containing the completed percentage
       setCompletedWorkoutData([{ dateCompleted: formattedDate, count: completedPercentage }]);
-      // console.log("completedWorkoutData: ", completedWorkoutData);
     } catch (error) {
       console.error("Error fetching workout completion data:", error.message);
     }
@@ -273,6 +275,7 @@ export default function Dashboard() {
         const { data: profilesData, error: profilesError } = await supabase
           .from("profile")
           .select("id")
+          .filter("player", "eq", true)
           .filter("team_id", "eq", profileData.team_id);
         console.log("profiles on my team: ", profilesData);
 
@@ -335,11 +338,11 @@ export default function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="success"
-                icon="store"
-                title="Completed Wellness"
+                color="primary"
+                icon="person_add"
+                title="Completed Workouts"
                 count={`${
-                  wellnessCompletionData.length > 0 ? wellnessCompletionData[0].count + "%" : "0%"
+                  completedWorkoutData.length > 0 ? completedWorkoutData[0].count + "%" : "0%"
                 }`}
                 percentage={{
                   color: "success",
@@ -349,15 +352,14 @@ export default function Dashboard() {
               />
             </MDBox>
           </Grid>
-
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="primary"
-                icon="person_add"
-                title="Completed Workouts"
+                color="success"
+                icon="store"
+                title="Completed Wellness"
                 count={`${
-                  completedWorkoutData.length > 0 ? completedWorkoutData[0].count + "%" : "0%"
+                  wellnessCompletionData.length > 0 ? wellnessCompletionData[0].count + "%" : "0%"
                 }`}
                 percentage={{
                   color: "success",
