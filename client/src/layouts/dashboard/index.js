@@ -382,7 +382,7 @@ export default function Dashboard() {
         await getWorkoutChartData(today, playerIds);
         await getCheckinCompletionData(today, playerIds, trueCount);
         await getWorkoutCompletionData(today, playerIds);
-        await getWellnessAverageChartData(tomorrow, playerIds);
+        await getWellnessAverageChartData(today, playerIds);
       } catch (error) {
         console.error("Error fetching data:", error.message);
       }
