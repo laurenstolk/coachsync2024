@@ -27,6 +27,7 @@ import Grid from "@mui/material/Grid";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
+import { AppBar, Tabs, Tab, Icon } from '@mui/material'; // Import Material-UI components
 
 // Material Dashboard 2 React base styles
 import breakpoints from "assets/theme/base/breakpoints";
