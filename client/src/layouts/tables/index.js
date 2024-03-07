@@ -64,6 +64,8 @@ function Tables() {
   const { columns: gColumns, rows: gRows } = groupsTableData();
   const [teamName, setTeamName] = useState(""); // State to hold the team name
   const [user, setUser] = useState(null);
+  const [isUserAPlayer, setIsUserAPlayer] = useState(false);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,6 +89,15 @@ function Tables() {
 
     fetchTeamData(); // Call fetchTeamData on component mount
   }, [user]); // Run only when user changes
+  useEffect(() => {
+    if (user) {
+      // Check if the user is a player based on user data
+      const isPlayer = user.player === true; // Adjust this condition based on your user data structure
+      setIsUserAPlayer(isPlayer);
+      console.log("is a player", isPlayer)
+    }
+  }, [user]); // Run whenever the user object changes
+  
   
   //STOP UNDO
   return (
@@ -150,14 +161,24 @@ function Tables() {
             <Typography variant="h6" fontWeight="bold" color="#fff">
               Groups
             </Typography>
-            <MDButton
+            {!isUserAPlayer && (
+              <MDButton
+                variant="outlined"
+                component={Link}
+                to="/addgroup"
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)', color: 'rgba(0, 0, 0, 0.6)' }}
+              >
+                Add Group
+              </MDButton>
+            )}
+            {/* <MDButton
               variant="outlined"
               component={Link}
               to="/addgroup"
               style={{backgroundColor: 'rgba(255, 255, 255, 0.5)',color: 'rgba(0, 0, 0, 0.6)'}}
             >
               Add Group
-            </MDButton>
+            </MDButton> */}
           </Box>
         </Card>
       </Box>

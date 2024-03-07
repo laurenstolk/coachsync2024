@@ -155,7 +155,7 @@ function ViewCalendar() {
                 <MDTypography variant="h6" color="white">
                   Team Calendar
                 </MDTypography>
-                <Button
+                {/* <Button
                   variant="outlined"
                   component={Link}
                   to="/addassignment"
@@ -163,7 +163,7 @@ function ViewCalendar() {
                   style={{ position: "absolute", top: -7, right: 20 }}
                 >
                   Add Assignment
-                </Button>
+                </Button> */}
               </MDBox>
               <MDBox pt={3} pl={2} pr={2} pb={2}>
                 {" "}
