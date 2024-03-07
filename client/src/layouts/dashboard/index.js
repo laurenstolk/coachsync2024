@@ -212,7 +212,9 @@ export default function Dashboard() {
       // Calculate the completed workout percentage
       const totalWorkoutsExpected = expectedWorkoutsData.length; // Assuming each player has one workout assigned per day
       const totalWorkoutsCompleted = completedWorkoutsData.length;
-      const completedPercentage = (totalWorkoutsCompleted / totalWorkoutsExpected) * 100;
+      const completedPercentage = Math.round(
+        (totalWorkoutsCompleted / totalWorkoutsExpected) * 100
+      );
 
       // Set workoutData state to an array containing the completed percentage
       setCompletedWorkoutData([{ dateCompleted: formattedDate, count: completedPercentage }]);
