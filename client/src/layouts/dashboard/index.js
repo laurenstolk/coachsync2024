@@ -32,20 +32,30 @@ import { supabase } from "../../supabaseClient";
 import AssignmentCompleted from "./components/AssignmentCompleted";
 import AssignmentNotCompleted from "./components/AssignmentNotCompleted";
 import { fetchUserProfile } from "../../fetchUserProfile";
+import VerticalBarChart from "../../examples/Charts/BarCharts/VerticalBarChart";
 
 export default function Dashboard() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  yesterday.setHours(0, 0, 0, 0);
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+
   const [assignedWorkoutNames, setAssignedWorkoutNames] = useState([]);
   const [workoutData, setWorkoutData] = useState([]);
   const [wellnessData, setWellnessData] = useState([]);
+  const [wellnessAverageData, setWellnessAverageData] = useState([]);
   const [wellnessCompletionData, setWellnessCompletionData] = useState([]);
   const [completedWorkoutData, setCompletedWorkoutData] = useState([]);
   const [currentDate, setCurrentDate] = useState("");
   const [playerIds, setPlayerIds] = useState([]);
 
-  const getWellnessChartData = async (endDate, playerIds) => {
+  const getWellnessChartData = async (endDate, playerIds, checkinCount) => {
     const startDate = new Date(endDate);
     startDate.setDate(startDate.getDate() - 6); // Adjust the start date to include 7 days, including today
 
@@ -80,7 +90,7 @@ export default function Dashboard() {
       // Convert the map to an array for use in the chart
       const wellnessChartData = Array.from(wellnessCountMap).map(([wDateCompleted, count]) => ({
         wDateCompleted,
-        count: (count / 5 / playerIds.length) * 100,
+        count: (count / checkinCount / playerIds.length) * 100,
       }));
 
       wellnessChartData.sort((a, b) => new Date(a.wDateCompleted) - new Date(b.wDateCompleted));
@@ -89,7 +99,7 @@ export default function Dashboard() {
     }
   };
 
-  const getCheckinCompletionData = async (date, playerIds) => {
+  const getCheckinCompletionData = async (date, playerIds, checkinCount) => {
     const formattedDate = date.toISOString().split("T")[0];
 
     try {
@@ -110,7 +120,7 @@ export default function Dashboard() {
       console.log("wellnessCountMap: ", wellnessCountMap);
 
       // Calculate the completed wellness percentage
-      const totalWellnessExpected = playerIds.length * 5; // Assuming each person has 5 wellness check-ins
+      const totalWellnessExpected = playerIds.length * checkinCount;
       console.log("total wellness expected: ", totalWellnessExpected);
       const totalWellnessCompleted = wellnessCountMap.get(formattedDate) || 0;
       console.log("total wellness completed: ", totalWellnessCompleted);
@@ -256,6 +266,64 @@ export default function Dashboard() {
     }
   };
 
+  const getWellnessAverageChartData = async (date, playerIds) => {
+    try {
+      const { data: wellnessData, error: wellnessError } = await supabase
+        .from("checkin")
+        .select("*")
+        .in("player_id", playerIds)
+        .eq("date", date.toISOString().split("T")[0]);
+
+      console.log("wellness data: ", wellnessData);
+
+      if (wellnessError) {
+        console.error("Error fetching wellness data:", wellnessError.message);
+        return;
+      }
+
+      // Group wellness data by wellness_id and calculate average value
+      const groupedWellnessData = {};
+      wellnessData.forEach((item) => {
+        if (!groupedWellnessData[item.wellness_id]) {
+          groupedWellnessData[item.wellness_id] = {
+            sum: item.value,
+            count: 1,
+          };
+        } else {
+          groupedWellnessData[item.wellness_id].sum += item.value;
+          groupedWellnessData[item.wellness_id].count++;
+        }
+      });
+
+      // Fetch wellness names from the wellness table
+      const { data: wellnessNames, error: namesError } = await supabase
+        .from("wellness")
+        .select("id, name");
+      // .in("id", Object.keys(groupedWellnessData).map(Number));
+      console.log("wellnessNames: ", wellnessNames);
+
+      if (namesError) {
+        console.error("Error fetching wellness names:", namesError.message);
+        return;
+      }
+
+      // Calculate average value for each wellness_id
+      const wellnessAverageData = Object.keys(groupedWellnessData).map((key) => ({
+        wellness_id: parseInt(key),
+        wellness_name: wellnessNames.find((name) => name.id === parseInt(key)).name,
+        average_value: groupedWellnessData[key].sum / groupedWellnessData[key].count,
+      }));
+
+      // Log the wellness average data
+      console.log("Wellness average data:", wellnessAverageData);
+
+      // Set wellness average data state
+      setWellnessAverageData(wellnessAverageData);
+    } catch (error) {
+      console.error("Error fetching wellness data:", error.message);
+    }
+  };
+
   const getFormattedDate = (date) => {
     const options = { weekday: "long", month: "long", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
@@ -270,6 +338,24 @@ export default function Dashboard() {
 
       try {
         const profileData = await fetchUserProfile();
+
+        const { data: checkinCountData, error: checkinCountError } = await supabase
+          .from("team")
+          .select("*")
+          .filter("id", "eq", profileData.team_id);
+        console.log("checkin count data: ", checkinCountData);
+
+        const checkinData = checkinCountData[0]; // Assuming checkinCountData contains the check-in data object
+
+        let trueCount = 0;
+
+        for (const key in checkinData) {
+          if (checkinData.hasOwnProperty(key) && checkinData[key] === true) {
+            trueCount++;
+          }
+        }
+
+        console.log("Number of true check-in values:", trueCount);
 
         // grab the profiles of the players on my team
         const { data: profilesData, error: profilesError } = await supabase
@@ -289,12 +375,14 @@ export default function Dashboard() {
           playerIds = profilesData.map((profile) => profile.id);
           setPlayerIds(playerIds);
         }
+        console.log(tomorrow);
 
-        await getWellnessChartData(today, playerIds);
+        await getWellnessChartData(today, playerIds, trueCount);
         await getAssignedWorkouts(today, playerIds);
         await getWorkoutChartData(today, playerIds);
-        await getCheckinCompletionData(today, playerIds);
+        await getCheckinCompletionData(today, playerIds, trueCount);
         await getWorkoutCompletionData(today, playerIds);
+        await getWellnessAverageChartData(tomorrow, playerIds);
       } catch (error) {
         console.error("Error fetching data:", error.message);
       }
@@ -372,7 +460,7 @@ export default function Dashboard() {
         </Grid>
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={6}>
+            <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="info"
@@ -404,7 +492,34 @@ export default function Dashboard() {
                 />
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={6}>
+            <Grid item xs={12} md={6} lg={4}>
+              <MDBox mb={3} height="70%">
+                <VerticalBarChart
+                  icon={{ color: "info", component: "" }}
+                  title="Average Wellness Over the Week"
+                  description="Average check-in value across all players."
+                  chart={{
+                    labels: wellnessAverageData.map((item) => item.wellness_name),
+                    datasets: [
+                      {
+                        label: "Average of check-in value",
+                        data: wellnessAverageData.map((item) => item.average_value.toFixed(2)),
+                        color: "primary", // You can adjust this if needed
+                      },
+                    ],
+                  }}
+                  options={{
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        suggestedMax: 5, // Set the maximum value of the y-axis scale to 5
+                      },
+                    },
+                  }}
+                />
+              </MDBox>
+            </Grid>
+            <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
