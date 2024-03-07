@@ -1,38 +1,30 @@
 // @mui material components
 import Card from "@mui/material/Card";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import InfoIcon from "@mui/icons-material/Info";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
 
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
 import MDTypography from "../../../../components/MDTypography";
 
 import {
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  Select,
+  // FormControl,
+  // FormControlLabel,
+  // InputLabel,
+  // Select,
   Slider,
-  Typography,
+  // Typography,
 } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../../../supabaseClient";
-import Checkbox from "@mui/material/Checkbox";
-
-import slider from "@mui/material/Slider";
-
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fetchUserProfile } from "../../../../fetchUserProfile";
 import { fetchTeamInfo } from "../../../../fetchTeamInfo";
@@ -320,7 +312,7 @@ function AddWellness() {
               </MDBox>
             </MDBox>
           )}
-          <divider/>
+          <divider />
           {teamData.stress && (
             <MDBox pt={1} pb={2} px={2}>
               <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
@@ -334,11 +326,11 @@ function AddWellness() {
                   valueLabelDisplay="off"
                   step={1}
                   marks={[
-                    { value: 1, label: 1},
-                    { value: 2, label: 2},
-                    { value: 3, label: 3},
-                    { value: 4, label: 4},
-                    { value: 5, label: 5},
+                    { value: 1, label: 1 },
+                    { value: 2, label: 2 },
+                    { value: 3, label: 3 },
+                    { value: 4, label: 4 },
+                    { value: 5, label: 5 },
                   ]}
                   min={1}
                   max={5}
