@@ -41,6 +41,8 @@ import { supabase } from "../../../supabaseClient";
 export default function data() {
   const [profiles, setProfiles] = useState([]);
   const [user, setUser] = useState(null);
+  const [teamSignupCode, setTeamSignupCode] = useState(null);
+
   // const [imageUrl, setImageUrl] = useState(null);
 
   // async function getProfilePicURL(file_path) {
@@ -80,6 +82,7 @@ export default function data() {
       getProfiles(); // Call getProfiles when user changes
     }
   }, [user]); // Add user as a dependency
+  
 
   async function getProfiles() {
     try {
@@ -114,6 +117,48 @@ export default function data() {
   useEffect(() => {
     getProfiles();
   }, []);
+  useEffect(() => {
+    async function fetchTeamSignupCode() {
+      try {
+        if (!user) {
+          return;
+        }
+
+        const { data: teamData, error } = await supabase
+          .from("team")
+          .select("signup_code")
+          .eq("id", user.team_id)
+          .single();
+
+        if (error) throw error;
+        if (teamData) {
+          setTeamSignupCode(teamData.signup_code);
+          console.log("Team Signup Code:", teamData.signup_code); // Log the signup code
+        }
+      } catch (error) {
+        console.error("Error fetching team signup code:", error);
+      }
+    }
+
+    fetchTeamSignupCode();
+  }, [user]);
+  // useEffect to log teamSignupCode
+  useEffect(() => {
+    console.log("Team Signup Code:", teamSignupCode); // Log the signup code
+  }, [teamSignupCode]); // useEffect dependency
+
+     // Check if there are no profiles
+  if (profiles.length === 0) {
+    // Return a single row with the message if there are no profiles
+    return {
+      columns: [
+        { Header: "No assigned players", accessor: "message", width: "100%", align: "center" },
+      ],
+      rows: [
+        { message: `You currently have no players assigned your team. Send your players this code to add them: ${teamSignupCode || 'Loading...'}` }
+      ],
+    };
+  }
 
   return {
     columns: [
@@ -177,122 +222,5 @@ export default function data() {
         </MDBox>
       ),
     })),
-
-    // rows: [
-    //   {
-    //     author: <Author image={team2} name="John Michael" email="john@creative-tim.com" />,
-    //     function: <Job title="Manager" description="Organization" />,
-    //     status: (
-    //       <MDBox ml={-1}>
-    //         <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-    //       </MDBox>
-    //     ),
-    //     employed: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         23/04/18
-    //       </MDTypography>
-    //     ),
-    //     action: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         Edit
-    //       </MDTypography>
-    //     ),
-    //   },
-    //   {
-    //     author: <Author image={team3} name="Alexa Liras" email="alexa@creative-tim.com" />,
-    //     function: <Job title="Programator" description="Developer" />,
-    //     status: (
-    //       <MDBox ml={-1}>
-    //         <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-    //       </MDBox>
-    //     ),
-    //     employed: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         11/01/19
-    //       </MDTypography>
-    //     ),
-    //     action: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         Edit
-    //       </MDTypography>
-    //     ),
-    //   },
-    //   {
-    //     author: <Author image={team4} name="Laurent Perrier" email="laurent@creative-tim.com" />,
-    //     function: <Job title="Executive" description="Projects" />,
-    //     status: (
-    //       <MDBox ml={-1}>
-    //         <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-    //       </MDBox>
-    //     ),
-    //     employed: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         19/09/17
-    //       </MDTypography>
-    //     ),
-    //     action: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         Edit
-    //       </MDTypography>
-    //     ),
-    //   },
-    //   {
-    //     author: <Author image={team3} name="Michael Levi" email="michael@creative-tim.com" />,
-    //     function: <Job title="Programator" description="Developer" />,
-    //     status: (
-    //       <MDBox ml={-1}>
-    //         <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-    //       </MDBox>
-    //     ),
-    //     employed: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         24/12/08
-    //       </MDTypography>
-    //     ),
-    //     action: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         Edit
-    //       </MDTypography>
-    //     ),
-    //   },
-    //   {
-    //     author: <Author image={team3} name="Richard Gran" email="richard@creative-tim.com" />,
-    //     function: <Job title="Manager" description="Executive" />,
-    //     status: (
-    //       <MDBox ml={-1}>
-    //         <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-    //       </MDBox>
-    //     ),
-    //     employed: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         04/10/21
-    //       </MDTypography>
-    //     ),
-    //     action: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         Edit
-    //       </MDTypography>
-    //     ),
-    //   },
-    //   {
-    //     author: <Author image={team4} name="Miriam Eric" email="miriam@creative-tim.com" />,
-    //     function: <Job title="Programator" description="Developer" />,
-    //     status: (
-    //       <MDBox ml={-1}>
-    //         <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-    //       </MDBox>
-    //     ),
-    //     employed: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         14/09/20
-    //       </MDTypography>
-    //     ),
-    //     action: (
-    //       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-    //         Edit
-    //       </MDTypography>
-    //     ),
-    //   },
-    // ],
   };
 }

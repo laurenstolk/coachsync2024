@@ -64,6 +64,8 @@ function Tables() {
   const { columns: gColumns, rows: gRows } = groupsTableData();
   const [teamName, setTeamName] = useState(""); // State to hold the team name
   const [user, setUser] = useState(null);
+  const [isUserAPlayer, setIsUserAPlayer] = useState(false);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,6 +89,16 @@ function Tables() {
 
     fetchTeamData(); // Call fetchTeamData on component mount
   }, [user]); // Run only when user changes
+  useEffect(() => {
+    if (user) {
+      // Check if the user is a player based on user data
+      const isPlayer = user.player === true; // Adjust this condition based on your user data structure
+      setIsUserAPlayer(isPlayer);
+      console.log("is a player", isPlayer)
+    }
+  }, [user]); // Run whenever the user object changes
+  
+  
   //STOP UNDO
   return (
     <DashboardLayout>
@@ -128,7 +140,7 @@ function Tables() {
         </Grid>
       </Grid>
 
-      <Box mb={3} sx={{ marginTop: 12 }}>
+      <Box mb={3} sx={{ marginTop: 6 }}>
         <Card
           variant="outlined"
           sx={{
@@ -149,9 +161,43 @@ function Tables() {
             <Typography variant="h6" fontWeight="bold" color="#fff">
               Groups
             </Typography>
+            {!isUserAPlayer && (
+              <MDButton
+                variant="outlined"
+                component={Link}
+                to="/addgroup"
+                style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)', color: 'rgba(0, 0, 0, 0.6)' }}
+              >
+                Add Group
+              </MDButton>
+            )}
+            {/* <MDButton
+              variant="outlined"
+              component={Link}
+              to="/addgroup"
+              style={{backgroundColor: 'rgba(255, 255, 255, 0.5)',color: 'rgba(0, 0, 0, 0.6)'}}
+            >
+              Add Group
+            </MDButton> */}
           </Box>
         </Card>
       </Box>
+      {/* Render groups or "No groups assigned" message */}
+      <Grid container spacing={1}>
+        {gRows.length === 0 ? (
+          <Grid item xs={12}>
+            <Typography variant="subtitle1" sx={{ marginTop: 2, marginLeft: 2 }}>
+              No groups assigned
+            </Typography>
+          </Grid>
+        ) : (
+          gRows.map((row, index) => (
+            <Grid item xs={12} key={index}>
+              {/* Accordion for each group */}
+            </Grid>
+          ))
+        )}
+      </Grid>
       <Grid container spacing={1} sx={{ marginBottom: 5 }}>
         {gRows.map((row, index) => (
           <Grid item xs={12} key={index}>
@@ -171,7 +217,7 @@ function Tables() {
                   {row.name}
                 </Typography>
               </AccordionSummary>
-              <AccordionDetails sx={{ marginTop: 2, marginBottom: 2 }}>
+              <AccordionDetails >
                 <TableContainer component={Paper}>
                   <Table>
                     <TableBody>

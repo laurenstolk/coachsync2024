@@ -10,6 +10,8 @@ import MDBadge from "components/MDBadge";
 import MDProgress from "components/MDProgress";
 import MDButton from "components/MDButton";
 
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 // Images
 import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";

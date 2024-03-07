@@ -105,7 +105,7 @@ function Tables() {
                 </Typography>
                 <Typography sx={{ marginLeft: "10px" }}>{row.workout_name}</Typography>
               </AccordionSummary>
-              <AccordionDetails sx={{ marginTop: 2, marginBottom: 2 }}>
+              <AccordionDetails>
                 <TableContainer component={Paper}>
                   <Table>
                     <TableBody>
@@ -177,7 +177,7 @@ function Tables() {
                   {upcomingAssignment.workout_name}
                 </Typography>
               </AccordionSummary>
-              <AccordionDetails sx={{ marginTop: 2, marginBottom: 2 }}>
+              <AccordionDetails>
                 <TableContainer component={Paper}>
                   <Table>
                     <TableBody>
@@ -244,7 +244,7 @@ function Tables() {
                 </Typography>
                 <Typography sx={{ marginLeft: "10px" }}>{pastAssignment.workout_name}</Typography>
               </AccordionSummary>
-              <AccordionDetails sx={{ marginTop: 2, marginBottom: 2 }}>
+              <AccordionDetails>
                 <TableContainer component={Paper}>
                   <Table>
                     <TableBody>
