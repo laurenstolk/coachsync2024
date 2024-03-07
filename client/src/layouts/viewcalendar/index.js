@@ -5,13 +5,13 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { supabase } from "../../supabaseClient";
 import { fetchUserProfile } from "../../fetchUserProfile";
 
-
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
+import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
@@ -27,7 +27,6 @@ function ViewCalendar() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [user, setUser] = useState(null);
 
-
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchUserProfile();
@@ -38,7 +37,7 @@ function ViewCalendar() {
   useEffect(() => {
     if (user) {
       getGroups(); // Call getProfiles when user changes
-      console.log("user info: ", user)
+      console.log("user info: ", user);
     }
   }, [user]); // Add user as a dependency
 
@@ -61,12 +60,15 @@ function ViewCalendar() {
         .not("last_name", "is", null);
       if (profileError) throw profileError;
       console.log("Profile Data:", profileData);
-      
+
       // Fetch data from the assignment table
       const { data: assignmentData, error: assignmentError } = await supabase
         .from("assignment")
         .select("*")
-        .in("player_id", profileData.map(profile => profile.id)); // Filter assignments by player IDs belonging to the user's team
+        .in(
+          "player_id",
+          profileData.map((profile) => profile.id)
+        ); // Filter assignments by player IDs belonging to the user's team
       if (assignmentError) throw assignmentError;
 
       // Group assignments by date, notes, and workout_id
@@ -92,8 +94,6 @@ function ViewCalendar() {
       workoutData.forEach((workout) => {
         workoutMap[workout.id] = workout;
       });
-
-      
 
       // Create a map to store profile data by profile id for easy lookup
       const profileMap = {};
@@ -152,15 +152,20 @@ function ViewCalendar() {
                 <MDTypography variant="h6" color="white">
                   Team Calendar
                 </MDTypography>
-                <Button
+                <MDButton
                   variant="outlined"
                   component={Link}
                   to="/addassignment"
-                  color="inherit"
-                  style={{ position: "absolute", top: -7, right: 20 }}
+                  style={{
+                    position: "absolute",
+                    top: -7,
+                    right: 40,
+                    backgroundColor: "rgba(255, 255, 255, 0.5)",
+                    color: "rgba(0, 0, 0, 0.6)",
+                  }}
                 >
                   Add Assignment
-                </Button>
+                </MDButton>
               </MDBox>
               <MDBox pt={3} pl={2} pr={2} pb={2}>
                 {" "}

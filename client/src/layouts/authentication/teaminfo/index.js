@@ -40,7 +40,7 @@ function TeamInfoUpdate() {
   const [teamid, setTeamID] = useState([]);
   const [profile, setProfile] = useState(null);
   const [formValid, setFormValid] = useState(false);
-  const randomNumber = Math.floor(100000 + Math.random() * 900000); 
+  const randomNumber = Math.floor(100000 + Math.random() * 900000);
 
   const onLogoDrop = useCallback((acceptedFiles) => {
     // Do something with the uploaded file (e.g., store it in state)
@@ -96,7 +96,7 @@ function TeamInfoUpdate() {
   const handleSubmit = async () => {
     const currentDate = new Date().toISOString();
     const teamName = document.getElementById("team-name").value;
-    const teamNameWithoutSpaces = teamName.replace(/\s/g, '');
+    const teamNameWithoutSpaces = teamName.replace(/\s/g, "");
 
     const teamData = {
       name: teamName,

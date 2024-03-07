@@ -142,9 +142,7 @@ function DashboardNavbar({ absolute, light, isMini, pageTitle }) {
             <MDBox color={light ? "white" : "inherit"}>
               <Link to="/profile">
                 <IconButton sx={navbarIconButton} size="medium" disableRipple>
-                  <Icon sx={iconsStyle}>
-                    account_circle
-                    </Icon>
+                  <Icon sx={iconsStyle}>account_circle</Icon>
                 </IconButton>
               </Link>
               <IconButton
@@ -162,12 +160,10 @@ function DashboardNavbar({ absolute, light, isMini, pageTitle }) {
                 size="small"
                 disableRipple
                 color="inherit"
-                sx={navbarIconButton} 
+                sx={navbarIconButton}
                 onClick={handleConfiguratorOpen}
               >
-                <Icon sx={iconsStyle}>
-                  settings
-                </Icon>
+                <Icon sx={iconsStyle}>settings</Icon>
               </IconButton>
               {/* <Link to="/notifications">
                 <IconButton

@@ -1,36 +1,19 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-import { useEffect, useState } from "react";
-
-// Material Dashboard 2 React components
+import React, { useEffect, useState } from "react";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
+import { MenuItem, Select } from "@mui/material";
 import Icon from "@mui/material/Icon";
-
-// Add supabase connection
 import { supabase } from "../../../supabaseClient";
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
-export default function data() {
+export default function ExercisesTableData() {
   const [exercises, setExercises] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filteredExercises, setFilteredExercises] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   async function getExercises() {
     try {
@@ -95,6 +78,7 @@ export default function data() {
 
   // Function to handle category filter
   const handleCategoryFilter = (category) => {
+    setSelectedCategory(category);
     if (category === "All") {
       setFilteredExercises(exercises); // Show all exercises
     } else {
@@ -143,23 +127,5 @@ export default function data() {
     ),
   }));
 
-  const filterButton = (
-    <MDBox mb={2}>
-      <MDButton variant="outlined" color="white" onClick={() => handleCategoryFilter("All")}>
-        Show All
-      </MDButton>
-      {categories.map((category, index) => (
-        <MDButton
-          key={index}
-          variant="outlined"
-          color="white"
-          onClick={() => handleCategoryFilter(category)}
-        >
-          {category}
-        </MDButton>
-      ))}
-    </MDBox>
-  );
-
-  return { columns, rows, handleCategoryFilter, filterButton };
+  return { columns, rows, handleCategoryFilter, categories, selectedCategory };
 }

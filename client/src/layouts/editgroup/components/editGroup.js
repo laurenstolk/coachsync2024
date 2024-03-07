@@ -16,7 +16,6 @@ function EditGroup() {
   const { id } = useParams();
   const [originalSelectedPlayers, setOriginalSelectedPlayers] = useState([]); // State to store the original selected players
 
-
   useEffect(() => {
     async function fetchData() {
       try {
@@ -47,22 +46,25 @@ function EditGroup() {
 
           // Fetch profiles for selected players
           const { data: profilesData, error: profilesError } = await supabase
-          .from("profile")
-          .select("*")
-          .in("id", membershipData.map((membership) => membership.player_user_id));
+            .from("profile")
+            .select("*")
+            .in(
+              "id",
+              membershipData.map((membership) => membership.player_user_id)
+            );
 
-        if (profilesError) throw profilesError;
-        setProfiles(profilesData);
+          if (profilesError) throw profilesError;
+          setProfiles(profilesData);
         }
-        } catch (error) {
+      } catch (error) {
         alert(error.message);
-        }
-        }
+      }
+    }
 
-        fetchData();
-        }, [id]);
+    fetchData();
+  }, [id]);
 
-    // Function to get full name of a player by their ID
+  // Function to get full name of a player by their ID
   const getPlayerNameById = (playerId) => {
     const player = profiles.find((profile) => profile.id === playerId);
     return player ? `${player.first_name} ${player.last_name}` : "";
@@ -72,57 +74,54 @@ function EditGroup() {
     setGroupName(event.target.value);
   };
   // Function to compare two arrays for equality
-const arraysAreEqual = (array1, array2) => {
-  if (array1.length !== array2.length) {
-    return false;
-  }
-
-  for (let i = 0; i < array1.length; i++) {
-    if (array1[i] !== array2[i]) {
+  const arraysAreEqual = (array1, array2) => {
+    if (array1.length !== array2.length) {
       return false;
     }
-  }
 
-  return true;
-};
+    for (let i = 0; i < array1.length; i++) {
+      if (array1[i] !== array2[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  };
 
   const handleCreateGroup = async () => {
     try {
       console.log("Original Selected Players:", originalSelectedPlayers);
       console.log("Updated Selected Players:", selectedPlayers);
-  
+
       // Check if there are any changes made to the selected players
       if (arraysAreEqual(selectedPlayers, originalSelectedPlayers)) {
         alert("You have not made any edits.");
         return;
       }
-  
+
       // Update the group memberships if selected players have changed
-      const { error: membershipError } = await supabase
-        .from("team_group_membership")
-        .upsert(
-          selectedPlayers.map((playerId) => ({
-            team_group_id: id,
-            player_user_id: playerId
-          })),
-          { onConflict: ['team_group_id', 'player_user_id'] }
-        );
-  
+      const { error: membershipError } = await supabase.from("team_group_membership").upsert(
+        selectedPlayers.map((playerId) => ({
+          team_group_id: id,
+          player_user_id: playerId,
+        })),
+        { onConflict: ["team_group_id", "player_user_id"] }
+      );
+
       if (membershipError) throw membershipError;
-  
+
       // Display success toast
       toast.success("Group edited successfully!", {
         autoClose: 2000,
         onClose: () => {
           navigate("/exerciselibrary");
-        }
+        },
       });
     } catch (error) {
       alert("Error updating group: " + error.message);
     }
   };
-  
-  
+
   return (
     <Card id="group-form">
       <MDBox pt={3} px={2}>
@@ -144,27 +143,27 @@ const arraysAreEqual = (array1, array2) => {
 
       <MDBox pt={1} pb={2} px={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-        <FormControl fullWidth>
-          <Autocomplete
-            multiple
-            id="player-names"
-            options={profiles.map((profile) => ({
-              id: profile.id,
-              name: `${profile.first_name} ${profile.last_name}`,
-            }))}
-            getOptionLabel={(option) => option.name} // Use player's full name as the display value
-            onChange={(event, newValue) =>
-              setSelectedPlayers(newValue.map((player) => player.id))
-            } // Map selected options to their IDs
-            value={selectedPlayers.map((playerId) => ({
-              id: playerId,
-              name: getPlayerNameById(playerId),
-            }))} // Set selected players based on their profile IDs
-            renderInput={(params) => (
-              <TextField {...params} label="Assigned Players" placeholder="Assign to:" />
-            )}
-          />
-        </FormControl>
+          <FormControl fullWidth>
+            <Autocomplete
+              multiple
+              id="player-names"
+              options={profiles.map((profile) => ({
+                id: profile.id,
+                name: `${profile.first_name} ${profile.last_name}`,
+              }))}
+              getOptionLabel={(option) => option.name} // Use player's full name as the display value
+              onChange={(event, newValue) =>
+                setSelectedPlayers(newValue.map((player) => player.id))
+              } // Map selected options to their IDs
+              value={selectedPlayers.map((playerId) => ({
+                id: playerId,
+                name: getPlayerNameById(playerId),
+              }))} // Set selected players based on their profile IDs
+              renderInput={(params) => (
+                <TextField {...params} label="Assigned Players" placeholder="Assign to:" />
+              )}
+            />
+          </FormControl>
         </MDBox>
       </MDBox>
 

@@ -7,7 +7,6 @@ import { supabase } from "../../../supabaseClient";
 import { date } from "yup";
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
-
 export default function ViewAssignedWorkouts() {
   const [assignments, setAssignments] = useState([]);
   const [user, setUser] = useState(null);
@@ -25,7 +24,7 @@ export default function ViewAssignedWorkouts() {
   useEffect(() => {
     if (user) {
       getGroups(); // Call getProfiles when user changes
-      console.log("user info: ", user)
+      console.log("user info: ", user);
     }
   }, [user]); // Add user as a dependency
 
@@ -34,31 +33,34 @@ export default function ViewAssignedWorkouts() {
       if (!user) {
         return; // Exit early if user is null
       }
-          // Fetch data from the profile table
-          const { data: profileData, error: profileError } = await supabase
-          .from("profile")
-          .select("*")
-          .eq("team_id", user.team_id)
-          .eq("player", true)
-          .not("first_name", "is", null) // Filter out entries where first_name is null
-          .not("last_name", "is", null);
-        if (profileError) throw profileError;
-        console.log("Profile Data:", profileData);
-  
-        // Create a map to store profile data by profile id for easy lookup
-        const profileMap = {};
-        profileData.forEach((profile) => {
-          profileMap[profile.id] = profile;
-        });
-        console.log("Profile Map:", profileMap);
+      // Fetch data from the profile table
+      const { data: profileData, error: profileError } = await supabase
+        .from("profile")
+        .select("*")
+        .eq("team_id", user.team_id)
+        .eq("player", true)
+        .not("first_name", "is", null) // Filter out entries where first_name is null
+        .not("last_name", "is", null);
+      if (profileError) throw profileError;
+      console.log("Profile Data:", profileData);
+
+      // Create a map to store profile data by profile id for easy lookup
+      const profileMap = {};
+      profileData.forEach((profile) => {
+        profileMap[profile.id] = profile;
+      });
+      console.log("Profile Map:", profileMap);
 
       // Fetch data from the assignment table
       const { data: assignmentData, error: assignmentError } = await supabase
         .from("assignment")
         .select("*")
-        .in("player_id", profileData.map(profile => profile.id)); // Filter assignments by player IDs belonging to the user's team
-        if (assignmentError) throw assignmentError;
-        console.log("player info: ", assignmentData)
+        .in(
+          "player_id",
+          profileData.map((profile) => profile.id)
+        ); // Filter assignments by player IDs belonging to the user's team
+      if (assignmentError) throw assignmentError;
+      console.log("player info: ", assignmentData);
 
       // Group assignments by date, notes, and workout_id
       const groupedAssignments = {};
@@ -83,8 +85,6 @@ export default function ViewAssignedWorkouts() {
       workoutData.forEach((workout) => {
         workoutMap[workout.id] = workout;
       });
-
-  
 
       // Join assignment data with workout data based on workout_id
       const assignmentsWithWorkouts = assignmentsWithGroupedPlayers.map((assignment) => ({

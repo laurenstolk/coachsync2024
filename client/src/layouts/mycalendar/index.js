@@ -5,7 +5,6 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import { supabase } from "../../supabaseClient";
 import { fetchUserProfile } from "../../fetchUserProfile";
 
-
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -27,7 +26,6 @@ function ViewCalendar() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [user, setUser] = useState(null);
 
-
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchUserProfile();
@@ -38,7 +36,7 @@ function ViewCalendar() {
   useEffect(() => {
     if (user) {
       getGroups(); // Call getProfiles when user changes
-      console.log("user info: ", user)
+      console.log("user info: ", user);
     }
   }, [user]); // Add user as a dependency
 
@@ -61,18 +59,21 @@ function ViewCalendar() {
         .not("last_name", "is", null);
       if (profileError) throw profileError;
       console.log("Profile Data:", profileData);
-      
+
       // Fetch data from the assignment table
       const { data: assignmentData, error: assignmentError } = await supabase
         .from("assignment")
         .select("*")
-        .in("player_id", profileData.map(profile => profile.id)); // Filter assignments by player IDs belonging to the user's team
-     
-        if (assignmentError) throw assignmentError;
-        // Filter assignments by player IDs belonging to the current user
-        const assignmentsForCurrentUser = assignmentData.filter(assignment =>
-            assignment.player_id === user.id
-        );
+        .in(
+          "player_id",
+          profileData.map((profile) => profile.id)
+        ); // Filter assignments by player IDs belonging to the user's team
+
+      if (assignmentError) throw assignmentError;
+      // Filter assignments by player IDs belonging to the current user
+      const assignmentsForCurrentUser = assignmentData.filter(
+        (assignment) => assignment.player_id === user.id
+      );
       // Group assignments by date, notes, and workout_id
       const groupedAssignments = {};
       assignmentsForCurrentUser.forEach((assignment) => {
@@ -96,8 +97,6 @@ function ViewCalendar() {
       workoutData.forEach((workout) => {
         workoutMap[workout.id] = workout;
       });
-
-      
 
       // Create a map to store profile data by profile id for easy lookup
       const profileMap = {};
@@ -156,7 +155,7 @@ function ViewCalendar() {
                 <MDTypography variant="h6" color="white">
                   Team Calendar
                 </MDTypography>
-                <Button
+                {/* <Button
                   variant="outlined"
                   component={Link}
                   to="/addassignment"
@@ -164,7 +163,7 @@ function ViewCalendar() {
                   style={{ position: "absolute", top: -7, right: 20 }}
                 >
                   Add Assignment
-                </Button>
+                </Button> */}
               </MDBox>
               <MDBox pt={3} pl={2} pr={2} pb={2}>
                 {" "}

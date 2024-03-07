@@ -37,6 +37,7 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
+import PlayerDashboard from "layouts/playerdashboard";
 import Tables from "layouts/tables";
 import ExerciseLibrary from "layouts/exerciselibrary";
 import GroupTable from "layouts/grouptable";
@@ -68,7 +69,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 import Addnewteam from "./layouts/addteam";
 import AddWorkout from "./layouts/addworkout";
@@ -81,14 +82,11 @@ import EditGroup from "./layouts/editgroup";
 import ViewAssignment from "./layouts/viewassignment";
 import ViewCalendar from "./layouts/viewcalendar";
 import MyCalendar from "./layouts/mycalendar";
-
 import { useEffect, useState } from "react";
-import { Route } from 'react-router-dom'; // Add this import statement
-
-
+import { Route } from "react-router-dom"; // Add this import statement
 
 const routes = [
-  //BOTH
+  //COACH
   {
     type: "collapse",
     name: "Dashboard",
@@ -96,6 +94,17 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
     component: <Dashboard />,
+    coach: true,
+  },
+  //PLAYER
+  {
+    type: "collapse",
+    name: "Player Dashboard",
+    key: "playerdashboard",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "/playerdashboard",
+    component: <PlayerDashboard />,
+    player: true,
   },
   //BOTH
   {
@@ -129,10 +138,10 @@ const routes = [
   //PLAYER
   {
     type: "collapse",
-    name: "Add Wellness",
+    name: "Complete Check-in",
     key: "addwellness",
     icon: <PsychologyAltIcon fontSize="small">Wellness</PsychologyAltIcon>,
-    route: "/addwellness",
+    route: "/completecheckin",
     component: <Addnewwellness />,
     player: true,
   },
@@ -158,6 +167,7 @@ const routes = [
     component: <ExerciseLibrary />,
     coach: true,
   },
+
   //COACH
   {
     type: "collapse",
@@ -183,7 +193,7 @@ const routes = [
   //COACH
   {
     type: "collapse",
-    name: "Saved Workouts",
+    name: "Workout Library",
     key: "workoutlibrary",
     icon: <CollectionsBookmarkIcon fontSize="small">book</CollectionsBookmarkIcon>,
     route: "/workoutlibrary",
@@ -193,7 +203,7 @@ const routes = [
   //COACH
   {
     type: "collapse",
-    name: "Create Workout",
+    name: "Add Workout",
     key: "addworkout",
     icon: <DirectionsRunIcon fontSize="small">accessibility</DirectionsRunIcon>,
     route: "/addworkout",
@@ -261,8 +271,7 @@ const routes = [
   //   component: <ViewWorkout />,
   // },
 
-
-//BOTH
+  //BOTH
   {
     type: "collapse",
     name: "Profile",
@@ -297,8 +306,6 @@ const routes = [
   //   component: <Notifications />,
   // },
 
-
-
   {
     // type: "collapse",
     // name: "Sign In",
@@ -307,8 +314,6 @@ const routes = [
     route: "/authentication/sign-in",
     component: <SignIn />,
   },
-
-
 
   {
     // type: "collapse",

@@ -1,84 +1,98 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
+import React from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-
-// Material Dashboard 2 React components
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-
-// Material Dashboard 2 React example components
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import DataTable from "examples/Tables/DataTable";
 import { Link } from "react-router-dom";
-import Button from "@mui/material/Button"; // Import Button component
-
-// Data
-import exercisesTableData from "layouts/tables/data/exercisesTableData";
+import Button from "@mui/material/Button";
+import ExercisesTableData from "layouts/tables/data/exercisesTableData.js";
+import { Select, MenuItem } from "@mui/material";
 
 function Tables() {
-  const { columns, rows, handleCategoryFilter, filterButton } = exercisesTableData();
+  const { columns, rows, handleCategoryFilter, categories, selectedCategory } = ExercisesTableData();
 
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Exercise Library" />
-      <MDBox pt={6} pb={3}>
-        <Grid container spacing={6}>
-          <Grid item xs={12}>
-            <Card>
-              <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
+
+      <Box mb={3}>
+        <Card
+          variant="outlined"
+          sx={{
+            borderRadius: 2,
+            backgroundImage: "linear-gradient(to right, #1976d2, #6ab7ff)",
+            color: "white",
+          }}
+        >
+          <Box
+            p={2}
+            sx={{
+              borderRadius: 2,
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography variant="h5" fontWeight="bold" color="#fff">
+              All Exercises
+            </Typography>
+            <Box>
+              <Button
+                variant="outlined"
+                component={Link}
+                to="/addexercise"
+                style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.5)",
+                  color: "rgba(0, 0, 0, 0.6)",
+                }}
               >
-                <MDTypography variant="h6" color="white">
-                  All Excercises
-                </MDTypography>
-                <Button
-                  variant="outlined"
-                  component={Link}
-                  to="/addexercise"
-                  color="inherit"
-                  style={{ position: "absolute", top: -7, right: 20 }}
-                >
-                  Add Exercise
-                </Button>
-                {filterButton}
-              </MDBox>
-              <MDBox pt={3}>
-                <DataTable
-                  table={{ columns, rows }}
-                  isSorted={false}
-                  entriesPerPage={false}
-                  showTotalEntries={false}
-                  noEndBorder
-                />
-              </MDBox>
-            </Card>
-          </Grid>
+                Add Exercise
+              </Button>
+            </Box>
+          </Box>
+          <Box mb={2} sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", pl: 2 }}>
+            <Typography variant="subtitle2" fontWeight="bold" color="#fff" sx={{ mr: 1 }}>
+              Filter:
+            </Typography>
+            <Select
+              value={selectedCategory}
+              onChange={(event) => handleCategoryFilter(event.target.value)}
+              variant="outlined"
+              color="light"
+              sx={{ minWidth: 120, color: "white" }}
+              IconComponent={() => (
+                <span style={{ fontSize: 24, marginLeft: -5 }}>
+                  <ArrowDropDownIcon style={{ color: "white" }} />
+                </span>
+              )}
+              renderValue={(value) => <span style={{ color: "white" }}>{value}</span>}
+            >
+              <MenuItem value="All" sx={{ color: "white" }}>Show All</MenuItem>
+              {categories.map((category, index) => (
+                <MenuItem key={index} value={category} sx={{ color: "white" }}>
+                  {category}
+                </MenuItem>
+              ))}
+            </Select>
+          </Box>
+        </Card>
+      </Box>
+
+      <Grid container spacing={6} sx={{ marginBottom: 5 }}>
+        <Grid item xs={12}>
+          <DataTable
+            table={{ columns, rows }}
+            isSorted={false}
+            entriesPerPage={false}
+            showTotalEntries={false}
+            noEndBorder
+          />
         </Grid>
-      </MDBox>
+      </Grid>
       <Footer />
     </DashboardLayout>
   );

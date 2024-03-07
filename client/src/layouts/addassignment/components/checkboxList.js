@@ -7,13 +7,10 @@ import { supabase } from "../../../supabaseClient";
 import PropTypes from "prop-types"; // Import PropTypes
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
-
-
 export default function IndeterminateCheckbox({ onSelectPlayers }) {
   const [groups, setGroups] = useState([]);
   const [user, setUser] = useState(null);
   const [profiles, setProfiles] = useState([]);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,41 +23,48 @@ export default function IndeterminateCheckbox({ onSelectPlayers }) {
   useEffect(() => {
     if (user) {
       getGroups();
-      console.log("user info: ", user)
+      console.log("user info: ", user);
     }
   }, [user]); // Add user as a dependency
 
   async function getGroups() {
-      try {
-        if (!user) {
-          return; // Exit early if user is null
-        }
-        const { data: teamGroups, error } = await supabase.from("team_group").select("*").eq("team_id", user.team_id);
-        if (error) throw error;
-
-        const { data: teamMemberships, error: membershipsError } = await supabase
-          .from("team_group_membership")
-          .select("*");
-        if (membershipsError) throw membershipsError;
-
-        const { data: profiles, error: profilesError } = await supabase.from("profile").select("*").eq("team_id", user.team_id).eq("player", true);
-        if (profilesError) throw profilesError;
-
-        const formattedGroups = teamGroups.map((teamGroup) => {
-          const groupMemberships = teamMemberships.filter(
-            (membership) => membership.team_group_id === teamGroup.id
-          );
-          const members = groupMemberships.map((membership) =>
-            profiles.find((profile) => profile.id === membership.player_user_id)
-          );
-          return { ...teamGroup, members };
-        });
-
-        setGroups(formattedGroups);
-      } catch (error) {
-        console.error("Error fetching data:", error.message);
+    try {
+      if (!user) {
+        return; // Exit early if user is null
       }
+      const { data: teamGroups, error } = await supabase
+        .from("team_group")
+        .select("*")
+        .eq("team_id", user.team_id);
+      if (error) throw error;
+
+      const { data: teamMemberships, error: membershipsError } = await supabase
+        .from("team_group_membership")
+        .select("*");
+      if (membershipsError) throw membershipsError;
+
+      const { data: profiles, error: profilesError } = await supabase
+        .from("profile")
+        .select("*")
+        .eq("team_id", user.team_id)
+        .eq("player", true);
+      if (profilesError) throw profilesError;
+
+      const formattedGroups = teamGroups.map((teamGroup) => {
+        const groupMemberships = teamMemberships.filter(
+          (membership) => membership.team_group_id === teamGroup.id
+        );
+        const members = groupMemberships.map((membership) =>
+          profiles.find((profile) => profile.id === membership.player_user_id)
+        );
+        return { ...teamGroup, members };
+      });
+
+      setGroups(formattedGroups);
+    } catch (error) {
+      console.error("Error fetching data:", error.message);
     }
+  }
   useEffect(() => {
     getGroups();
   }, []);

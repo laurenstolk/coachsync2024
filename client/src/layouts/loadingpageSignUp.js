@@ -18,7 +18,7 @@ const LoadingPageSignUp = () => {
             .eq("id", userId)
             .single();
 
-            console.log("User ID:", data.first_name)
+          console.log("User ID:", data.first_name);
 
           if (error) {
             throw error;
@@ -38,7 +38,7 @@ const LoadingPageSignUp = () => {
         }
       } catch (error) {
         console.error("Error fetching user data:", error.message);
-        
+
         // Handle error, redirect to an error page or show an error message
       } finally {
         setLoading(false);
