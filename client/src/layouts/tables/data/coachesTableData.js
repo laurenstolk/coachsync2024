@@ -95,7 +95,7 @@ export default function data() {
         .from("profile")
         .select("*")
         .eq("team_id", user.team_id)
-        .eq("player", true)
+        .eq("player", false)
         .order("first_name", { ascending: true });
 
       if (error) throw error;
@@ -106,14 +106,6 @@ export default function data() {
       alert(error.message);
     }
 
-    //   const { data, error } = await supabase.from("profile").select("*");
-    //   if (error) throw error;
-    //   if (data != null) {
-    //     setProfiles(data);
-    //   }
-    // } catch (error) {
-    //   alert(error.message);
-    // }
   }
   useEffect(() => {
     getProfiles();
@@ -122,39 +114,25 @@ export default function data() {
   return {
     columns: [
       // { Header: "image", accessor: "image", width: "30%", align: "left" },
-      { Header: "First Name", accessor: "first", width: "20%", align: "left" },
-      { Header: "Last Name", accessor: "last", width: "20%", align: "left" },
-      { Header: "Position", accessor: "position", width: "40%", align: "left" },
-      { Header: "Jersey Number", accessor: "jersey", width: "40%", align: "left" },
-      { Header: "Phone Number", accessor: "phone", width: "40%", align: "left" },
-      { Header: "Email Address", accessor: "email", width: "40%", align: "left" },
-      { Header: "Edit", accessor: "edit", width: "10%", align: "left" },
-      { Header: "Delete", accessor: "delete", width: "10%", align: "center" },
+      { Header: "Name", accessor: "name", width: "25%", align: "left" },
+      { Header: "Role", accessor: "role", width: "25%", align: "left" },
+      { Header: "Phone Number", accessor: "phone", width: "25%", align: "left" },
+      { Header: "Email Address", accessor: "email", width: "25%", align: "left" },
     ],
 
     rows: profiles.map((profile, index) => ({
       // image: profile.profile_picture ? (
       //   <Project image={profile.imageUrl} name={`${profile.first_name} ${profile.last_name}`} />
       // ) : null,
-      first: (
+      name: (
         <MDBox display="flex" py={1}>
-          {profile.first_name} {/* Display the name of the current exercise */}
+          {profile.first_name} {profile.last_name}
         </MDBox>
       ),
-      last: (
+      role: (
         <MDBox display="flex" py={1}>
-          {profile.last_name} {/* Display the name of the current exercise */}
+          {profile.coach_role} {/* Display the name of the current exercise */}
         </MDBox>
-      ),
-      position: (
-        <MDTypography variant="caption" color="text" fontWeight="medium">
-          {profile.position}
-        </MDTypography>
-      ),
-      jersey: (
-        <MDTypography variant="caption" color="text" fontWeight="medium">
-          {profile.jersey_number}
-        </MDTypography>
       ),
       phone: (
         <MDTypography variant="caption" color="text" fontWeight="medium">
@@ -165,20 +143,6 @@ export default function data() {
         <MDTypography variant="caption" color="text" fontWeight="medium">
           {profile.email}
         </MDTypography>
-      ),
-      edit: (
-        <MDBox>
-          <MDButton variant="text" color="dark">
-            <Icon>edit</Icon>&nbsp;edit
-          </MDButton>
-        </MDBox>
-      ),
-      delete: (
-        <MDBox mr={1}>
-          <MDButton variant="text" color="error">
-            <Icon>delete</Icon>&nbsp;delete
-          </MDButton>
-        </MDBox>
       ),
     })),
 

@@ -36,7 +36,7 @@ import MDAvatar from "components/MDAvatar";
 import breakpoints from "assets/theme/base/breakpoints";
 
 // Images
-import backgroundImage from "assets/images/bg-profile.jpeg";
+import backgroundImage from "assets/images/grass2.jpg";
 import { supabase } from "../../../../supabaseClient";
 import { getProfilePicURL } from "../../../../getProfilePicUrl";
 import { fetchUserProfile } from "../../../../fetchUserProfile";
@@ -136,8 +136,8 @@ function Header({ children }) {
         sx={{
           backgroundImage: ({ functions: { rgba, linearGradient }, palette: { gradients } }) =>
             `${linearGradient(
-              rgba(gradients.info.main, 0.6),
-              rgba(gradients.info.state, 0.6)
+              rgba(gradients.info.main, 0.2),
+              rgba(gradients.info.state, 0.2)
             )}, url(${backgroundImage})`,
           backgroundSize: "cover",
           backgroundPosition: "50%",
@@ -178,7 +178,7 @@ function Header({ children }) {
               <Tab
                 label="Edit Profile"
                 component={Link}
-                to="/authentication/coachinfo"
+                to={profile && profile.player ? "/authentication/playerinfo" : "/authentication/coachinfo"}
                 icon={
                   <Icon fontSize="small" sx={{ mt: -0.25 }}>
                     settings

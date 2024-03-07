@@ -115,55 +115,55 @@ function PlayerTeamUpdate() {
   };  
 
   const handleNext = async () => {
-    const signupcode = document.getElementById("signup-code").value;
-  
-    // Check if the signup code is not empty
-    const isValid = signupcode.trim() !== "";
-    setFormValid(isValid);
-  
-    if (isValid) {
-      try {
-        // Fetch the team data based on the signup code
-        const { data: teamData, error: teamError } = await supabase
-          .from("team")
-          .select("id")
-          .eq("signup_code", signupcode)
-          .single();
-  
-        if (teamError) {
-          console.error("Error fetching team data:", teamError);
-          // Handle the error here
-          return;
-        }
-  
-        if (teamData) {
-          const { id: teamId } = teamData;
-  
-          // Update the user's profile with the team ID
-          const { error: updateError } = await supabase
-            .from("profile")
-            .update({ team_id: teamId })
-            .eq("id", profile.id);
-  
-          if (updateError) {
-            console.error("Error updating player team info:", updateError);
-            // Handle the error here
-          } else {
-            console.log("Player Team updated successfully!");
-          }
-        } else {
-          console.error("No team found with the provided signup code.");
-        }
-      } catch (error) {
-        console.error("Error:", error);
+  const signupcode = document.getElementById("signup-code").value;
+
+  // Check if the signup code is not empty
+  const isValid = signupcode.trim() !== "";
+  setFormValid(isValid);
+
+  if (isValid) {
+    try {
+      // Fetch the team data based on the signup code
+      const { data: teamData, error: teamError } = await supabase
+        .from("team")
+        .select("id")
+        .eq("signup_code", signupcode)
+        .single();
+
+      if (teamError) {
+        console.error("Error fetching team data:", teamError);
         // Handle the error here
+        return;
       }
-    } else {
-      console.error("Profile or profile ID is missing.");
-      // Handle the case where profile or profile ID is missing
+
+      if (teamData) {
+        const { id: teamId } = teamData;
+
+        // Update the user's profile with the team ID
+        const { error: updateError } = await supabase
+          .from("profile")
+          .update({ team_id: teamId })
+          .eq("id", profile.id);
+
+        if (updateError) {
+          console.error("Error updating player team info:", updateError);
+          // Handle the error here
+        } else {
+          console.log("Player Team updated successfully!");
+        }
+      } else {
+        console.error("No team found with the provided signup code.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      // Handle the error here
     }
-  };
-  
+  } else {
+    console.error("Profile or profile ID is missing.");
+    // Handle the case where profile or profile ID is missing
+  }
+};
+
   
   
   return (

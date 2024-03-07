@@ -16,6 +16,9 @@ Coded by www.creative-tim.com
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
+import Card from "@mui/material/Card";
+import DataTable from "examples/Tables/DataTable";
+import Button from "@mui/material/Button"; // Import Button component
 
 // @mui icons
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -57,12 +60,16 @@ import { fetchUserProfile } from "../../fetchUserProfile";
 import { getProfilePicURL } from "../../getProfilePicUrl";
 import { getTeamLogoURL } from "../../getTeamLogoUrl";
 import { fetchTeamInfo } from "../../fetchTeamInfo";
+import { Link } from "react-router-dom";
+
+import coachesTableData from "layouts/tables/data/coachesTableData";
 
 function Overview() {
   const [profile, setProfile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [teamData, setTeamData] = useState(null);
   const [logoUrl, setLogoUrl] = useState(null);
+  const { columns, rows } = coachesTableData();
 
   const mapCheckinFrequencyToDays = (checkinFrequency) => {
     const daysMap = {
@@ -107,6 +114,27 @@ function Overview() {
       console.log("team: ", data);
     };
     fetchData();
+  }, []);
+
+  const [wellnessOptions, setWellnessOptions] = useState([]);
+
+  useEffect(() => {
+    // Fetch wellness options from Supabase
+    async function fetchWellnessOptions() {
+      try {
+        const { data, error } = await supabase.from("wellness").select("name");
+        if (error) {
+          throw error;
+        }
+        if (data != null) {
+          setWellnessOptions(data.map((wellness) => wellness.name));
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    fetchWellnessOptions();
   }, []);
 
   const [sportName, setSportName] = useState("");
@@ -167,34 +195,103 @@ function Overview() {
 
           {/* Right half for MDAvatar and Typography */}
           <Grid item xs={12} md={6}>
-            <Grid container spacing={4} direction="column" alignItems="center" justify="center">
+            <Grid container spacing={4} mb={3} direction="column" alignItems="center" justify="center">
               <Grid item>
                 <MDAvatar src={logoUrl} alt="logo-image" style={{ width: '250px', height: '250px' }} shadow="sm" />
               </Grid>
-              {/* Add other grid items for your team data here */}
-              <Grid item direction="column" alignItems="center" justify="center">
-                <MDTypography variant="h5" fontWeight="medium">
-                  {teamData ? teamData.name : ""}
-                </MDTypography>
-                <MDTypography variant="button" color="text" fontWeight="regular">
-                  {teamData ? sportName : ""}
-                </MDTypography>
+              <Grid item>
+                <Grid container direction="column" alignItems="center" justify="center">
+                  <Grid item>
+                    <MDTypography variant="h5" fontWeight="medium">
+                      {teamData ? teamData.name : ""}
+                    </MDTypography>
+                  </Grid>
+                  <Grid item>
+                    <MDTypography variant="button" color="text" fontWeight="regular">
+                      {teamData ? sportName : ""}
+                    </MDTypography>
+                  </Grid>
+                </Grid>
               </Grid>
-              <br></br>
-              <MDTypography variant="button" color="text" fontWeight="regular">
-                Check-in Frequency: {teamData ? mapCheckinFrequencyToDays(teamData.checkin_frequency) : ""}
-              </MDTypography>
-              Team Code: {teamData ? teamData.signup_code : null}
-
-              {/* ADD TABLE HERE */}
-
-
-              
+              {
+                !profile || !profile.player ? (
+                  <>
+                    <Grid item>
+                      <MDTypography variant="button" color="text" fontWeight="regular">
+                        <strong>Team Code:</strong> {teamData ? teamData.signup_code : null}
+                      </MDTypography>
+                    </Grid>
+                    <Grid item>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                          <MDBox border={1} borderColor="lightgrey" p={2} borderRadius={4}>
+                            <MDTypography variant="h6" gutterBottom>
+                              Check-ins
+                            </MDTypography>
+                            <Grid container spacing={2}>
+                              <Grid item xs={12}>
+                                <MDTypography variant="button" color="text" fontWeight="regular">
+                                  <strong>Frequency:</strong> {teamData ? mapCheckinFrequencyToDays(teamData.checkin_frequency) : ""}
+                                </MDTypography>
+                              </Grid>
+                              <Grid item>
+                                <Button
+                                  variant="outlined"
+                                  component={Link}
+                                  to="/authentication/wellness-setup"
+                                  sx={{
+                                    borderColor: '#1A73E8', // Set border color to blue on hover
+                                    backgroundColor: '#1A73E8', // Set background color to blue on hover
+                                    color: 'white', // Set font color to white on hover
+                                    '&:hover': {
+                                      borderColor: '#1A73E8', // Set border color to blue on hover
+                                      backgroundColor: '#1A73E8', // Set background color to blue on hover
+                                      color: 'white', // Set font color to white on hover
+                                    }
+                                  }}
+                                >
+                                  Edit Wellness Check-ins
+                                </Button>
+                              </Grid>
+                            </Grid>
+                          </MDBox>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </>
+                ) : null
+              }
             </Grid>
           </Grid>
         </Grid>
       </MDBox>
-
+      <Grid item xs={12} md={6}>
+        <Card>
+          <MDBox
+            mx={2}
+            mt={-3}
+            py={3}
+            px={2}
+            variant="gradient"
+            bgColor="info"
+            borderRadius="lg"
+            coloredShadow="info"
+          >
+            <MDTypography variant="h6" color="white">
+              Coaches
+            </MDTypography>
+          </MDBox>
+          <MDBox pt={3}>
+            <DataTable
+              table={{ columns, rows }}
+              isSorted={false}
+              entriesPerPage={false}
+              showTotalEntries={false}
+              noEndBorder
+            />
+          </MDBox>
+        </Card>
+      </Grid>
       </Header>
       <Footer />
     </DashboardLayout>

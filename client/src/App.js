@@ -95,7 +95,7 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  //THIS IS WHERE THE USER IS NULL ERROR ON SIGN IN IS HAPPENING
+  // WHERE THE USER IS NULL ERROR ON SIGN IN IS HAPPENING
   useEffect(() => {
     const fetchData = async () => {
       const userdata = await fetchUserProfile();
