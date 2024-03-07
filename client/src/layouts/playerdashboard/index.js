@@ -26,7 +26,6 @@ import Footer from "examples/Footer";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import Button from "@mui/material/Button"; // Import Button component
-import Typography from "@mui/material/Typography";
 
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -350,19 +349,21 @@ export default function PlayerDashboard() {
                 icon="person_add"
                 title="Completed Workouts"
                 count={
-                  completedWorkoutData.length > 0 
-                  ? completedWorkoutData[0].count
-                    ? "Your workout is complete."
-                    : (
+                  completedWorkoutData.length > 0 ? (
+                    completedWorkoutData[0].count ? (
+                      "Your workout is complete."
+                    ) : (
                       <Button
-                      style={{border: "2px solid", color: "inherit"}}
-                      component={Link}
-                      to="/completeworkout"
+                        style={{ border: "2px solid", color: "inherit" }}
+                        component={Link}
+                        to="/completeworkout"
                       >
                         No. Complete Workout?
                       </Button>
                     )
-                  : "No data available"
+                  ) : (
+                    "No data available"
+                  )
                 }
                 percentage={{
                   color: "success",
@@ -373,34 +374,38 @@ export default function PlayerDashboard() {
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
-          <MDBox mb={1.5}>
-            <ComplexStatisticsCard
-              color="success"
-              icon={<PsychologyAlt>Wellness</PsychologyAlt>}
-              title="Completed Check-in?"
-              count={
-                wellnessCompletionData.length > 0
-                  ? wellnessCompletionData[0].count
-                    ? "Your check-in is complete."
-                    : (
-                    <Button
-                    style={{border: "2px solid", color: "inherit"}}
-                    component={Link}
-                    to="/completecheckin"
-                    >
-                      No. Complete Check-in?
-                    </Button>
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="success"
+                icon={<PsychologyAlt>Wellness</PsychologyAlt>}
+                title="Completed Check-in?"
+                count={
+                  wellnessCompletionData.length > 0 ? (
+                    wellnessCompletionData[0].count ? (
+                      "Your check-in is complete."
+                    ) : (
+                      <Button
+                        style={{ border: "2px solid", color: "inherit" }}
+                        component={Link}
+                        to="/completecheckin"
+                      >
+                        No. Complete Check-in?
+                      </Button>
                     )
-                  : "No data available"
-              }
-              percentage={{
-                color: wellnessCompletionData.length > 0 && wellnessCompletionData[0].count ? "success" : "error",
-                amount: "",
-                label: "Just updated",
-              }}
-            >
-            </ComplexStatisticsCard>
-          </MDBox>
+                  ) : (
+                    "No data available"
+                  )
+                }
+                percentage={{
+                  color:
+                    wellnessCompletionData.length > 0 && wellnessCompletionData[0].count
+                      ? "success"
+                      : "error",
+                  amount: "",
+                  label: "Just updated",
+                }}
+              ></ComplexStatisticsCard>
+            </MDBox>
           </Grid>
         </Grid>
         <MDBox mt={4.5}>

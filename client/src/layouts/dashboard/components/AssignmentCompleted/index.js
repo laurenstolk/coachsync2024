@@ -12,16 +12,30 @@ async function getPlayersThatCompleted(playerIds) {
     today.setHours(0, 0, 0, 0);
     const { data: completedAssignmentData, error: completedAssignmentError } = await supabase
       .from("assignment")
-      .select("player_id, date")
+      .select("*")
       .eq("completed", true)
       .in("player_id", playerIds)
       .eq("date", today.toISOString().split("T")[0]);
-    console.log("today's completed assignment data: ", completedAssignmentData);
 
     return completedAssignmentData;
   } catch (completedAssignmentError) {
     alert(completedAssignmentError.message);
     return [];
+  }
+}
+
+async function getWorkoutName(workoutId) {
+  try {
+    const { data: workoutData, error: workoutError } = await supabase
+      .from("workout")
+      .select("workout_name")
+      .eq("id", workoutId)
+      .single();
+
+    return workoutData.workout_name;
+  } catch (workoutError) {
+    alert(workoutError.message);
+    return "";
   }
 }
 
@@ -50,14 +64,18 @@ function AssignmentCompleted() {
 
       const playersThatCompleted = await getPlayersThatCompleted(playerIds);
 
-      const mergedPlayerandAssignment = playersThatCompleted.map((player) => {
-        const info = profilesData.find((profile) => profile.id === player.player_id);
+      const mergedPlayerandAssignment = await Promise.all(
+        playersThatCompleted.map(async (player) => {
+          const info = profilesData.find((profile) => profile.id === player.player_id);
+          const workoutName = await getWorkoutName(player.workout_id);
 
-        return {
-          ...info,
-          ...player,
-        };
-      });
+          return {
+            ...info,
+            ...player,
+            workoutName,
+          };
+        })
+      );
 
       setPlayers(mergedPlayerandAssignment);
     };
@@ -78,7 +96,7 @@ function AssignmentCompleted() {
             color="success"
             icon="check_circle_outline"
             name={`${player.first_name} ${player.last_name}`}
-            description={`completed the workout on ${player.date}`}
+            description={`completed the ${player.workoutName} workout`}
             value="Completed"
           />
         ))}
