@@ -139,10 +139,10 @@ const routes = [
   //PLAYER
   {
     type: "collapse",
-    name: "Add Wellness",
+    name: "Complete Check-in",
     key: "addwellness",
     icon: <PsychologyAltIcon fontSize="small">Wellness</PsychologyAltIcon>,
-    route: "/addwellness",
+    route: "/completecheckin",
     component: <Addnewwellness />,
     player: true,
   },

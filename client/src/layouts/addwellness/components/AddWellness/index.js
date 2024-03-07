@@ -222,7 +222,7 @@ function AddWellness() {
     <Card id="add-wellness" style={{ width: "auto" }}>
       <MDBox pt={3} px={2} display="flex" justifyContent="space-between">
         <MDTypography variant="h4" fontWeight="medium">
-          Check In
+          Complete Check-in
         </MDTypography>
         <MDTypography variant="body2" fontWeight="textSecondary" id="dateSelected">
           Select Date:
@@ -293,11 +293,11 @@ function AddWellness() {
               </MDBox>
             </MDBox>
           )}
-          {teamData.stress && (
+          {teamData.energy && (
             <MDBox pt={1} pb={2} px={2}>
               <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-                <Tooltip title="1=Not Stressed. 5=Extremely Stressed." placement="top-start">
-                  Stress
+                <Tooltip title="1=Low energy. 5=High energy." placement="top-start">
+                  Energy
                   <IconButton color="primary" size="small">
                     <InfoIcon />
                   </IconButton>
@@ -311,6 +311,34 @@ function AddWellness() {
                     { value: 3, label: 3 },
                     { value: 4, label: 4 },
                     { value: 5, label: 5 },
+                  ]}
+                  min={1}
+                  max={5}
+                  value={wellnessData.energy.value}
+                  onChange={(event, value) => handleSliderChange("energy", value)}
+                />
+              </MDBox>
+            </MDBox>
+          )}
+          <divider/>
+          {teamData.stress && (
+            <MDBox pt={1} pb={2} px={2}>
+              <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+                <Tooltip title="1=Not Stressed. 5=Extremely Stressed." placement="top-start">
+                  Stress
+                  <IconButton color="primary" size="small">
+                    <InfoIcon />
+                  </IconButton>
+                </Tooltip>
+                <Slider
+                  valueLabelDisplay="off"
+                  step={1}
+                  marks={[
+                    { value: 1, label: 1},
+                    { value: 2, label: 2},
+                    { value: 3, label: 3},
+                    { value: 4, label: 4},
+                    { value: 5, label: 5},
                   ]}
                   min={1}
                   max={5}
@@ -343,33 +371,6 @@ function AddWellness() {
                   max={5}
                   value={wellnessData.soreness.value}
                   onChange={(event, value) => handleSliderChange("soreness", value)}
-                />
-              </MDBox>
-            </MDBox>
-          )}
-          {teamData.energy && (
-            <MDBox pt={1} pb={2} px={2}>
-              <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-                <Tooltip title="1=Low energy. 5=High energy." placement="top-start">
-                  Energy
-                  <IconButton color="primary" size="small">
-                    <InfoIcon />
-                  </IconButton>
-                </Tooltip>
-                <Slider
-                  valueLabelDisplay="off"
-                  step={1}
-                  marks={[
-                    { value: 1, label: 1 },
-                    { value: 2, label: 2 },
-                    { value: 3, label: 3 },
-                    { value: 4, label: 4 },
-                    { value: 5, label: 5 },
-                  ]}
-                  min={1}
-                  max={5}
-                  value={wellnessData.energy.value}
-                  onChange={(event, value) => handleSliderChange("energy", value)}
                 />
               </MDBox>
             </MDBox>
