@@ -430,7 +430,9 @@ export default function Dashboard() {
                 icon="person_add"
                 title="Completed Workouts"
                 count={`${
-                  completedWorkoutData.length > 0 ? completedWorkoutData[0].count + "%" : "0%"
+                  completedWorkoutData.length > 0 && !isNaN(completedWorkoutData[0].count)
+                    ? completedWorkoutData[0].count + "%" // If data exists and is valid, display the count
+                    : "0%" // If no data or invalid data, display 0%
                 }`}
                 percentage={{
                   color: "success",
