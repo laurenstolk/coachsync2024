@@ -48,13 +48,15 @@ function Tables() {
 
   console.log("Formatted rows:", formattedRows);
 
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayString = yesterday.toISOString().split("T")[0];
+  const today = new Date();
+  today.setDate(today.getDate());
+  const todayString = today.toISOString().split("T")[0];
 
-  const assignedToday = formattedRows.filter((row) => row.date === yesterdayString);
-  const upcomingAssignments = formattedRows.filter((row) => row.date > yesterdayString);
-  const pastAssignments = formattedRows.filter((row) => row.date < yesterdayString);
+  console.log(today)
+
+  const assignedToday = formattedRows.filter((row) => row.date === todayString);
+  const upcomingAssignments = formattedRows.filter((row) => row.date > todayString);
+  const pastAssignments = formattedRows.filter((row) => row.date < todayString);
 
   return (
     <DashboardLayout>
