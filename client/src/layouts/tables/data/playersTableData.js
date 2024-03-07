@@ -204,7 +204,7 @@ export default function data() {
       ),
       email: (
         <MDTypography variant="caption" color="text" fontWeight="medium">
-          {profile.email_address}
+          {profile.email}
         </MDTypography>
       ),
       edit: (

@@ -54,7 +54,6 @@ import PlayerInfo from "layouts/authentication/playerinfo";
 import TeamInfo from "layouts/authentication/teaminfo";
 import PlayerTeam from "layouts/authentication/playerteam";
 import WellnessSetup from "layouts/authentication/wellness-setup";
-import Summary from "layouts/authentication/summary";
 import WorkoutLibrary from "layouts/workoutlibrary";
 // import WorkoutLibraryTest from "layouts/workoutlibrarytest";
 import ViewWorkout from "layouts/viewworkout";
@@ -249,7 +248,7 @@ const routes = [
   {
     // type: "collapse",
     // name: "Create Group",
-    // key: "addgroup",
+    key: "addgroup",
     icon: <Groups2Icon fontSize="small">book</Groups2Icon>,
     route: "/addgroup",
     component: <AddGroup />,
@@ -257,7 +256,7 @@ const routes = [
   {
     // type: "collapse",
     // name: "Edit Group",
-    // key: "editgroup",
+    key: "editgroup",
     icon: <Groups2Icon fontSize="small">book</Groups2Icon>,
     route: "/editgroup/:id?",
     component: <EditGroup />,
@@ -310,7 +309,7 @@ const routes = [
   {
     // type: "collapse",
     // name: "Sign In",
-    // key: "sign-in",
+    key: "sign-in",
     icon: <Icon fontSize="small">login</Icon>,
     route: "/authentication/sign-in",
     component: <SignIn />,
@@ -319,7 +318,7 @@ const routes = [
   {
     // type: "collapse",
     // name: "Coach or Player",
-    // key: "coachorplayer",
+    key: "coachorplayer",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/authentication/coachorplayer",
     component: <CoachOrPlayer />,
@@ -327,7 +326,7 @@ const routes = [
   {
     // type: "collapse",
     // name: "Coach Info",
-    // key: "coachinfo",
+    key: "coachinfo",
     icon: <Icon fontSize="small"></Icon>,
     route: "/authentication/coachinfo",
     component: <CoachInfo />,
@@ -335,7 +334,7 @@ const routes = [
   {
     // type: "collapse",
     // name: "Player Info",
-    // key: "playerinfo",
+    key: "playerinfo",
     icon: <Icon fontSize="small"></Icon>,
     route: "/authentication/playerinfo",
     component: <PlayerInfo />,
@@ -343,7 +342,7 @@ const routes = [
   {
     // type: "collapse",
     // name: "Team Info",
-    // key: "teaminfo",
+    key: "teaminfo",
     icon: <Icon fontSize="small"></Icon>,
     route: "/authentication/teaminfo",
     component: <TeamInfo />,
@@ -351,7 +350,7 @@ const routes = [
   {
     // type: "collapse",
     // name: "Player Team",
-    // key: "playerteam",
+    key: "playerteam",
     icon: <Icon fontSize="small"></Icon>,
     route: "/authentication/playerteam",
     component: <PlayerTeam />,
@@ -359,23 +358,15 @@ const routes = [
   {
     // type: "collapse",
     // name: "Wellness Setup",
-    // key: "wellness-setup",
+    key: "wellness-setup",
     icon: <Icon fontSize="small"></Icon>,
     route: "/authentication/wellness-setup",
     component: <WellnessSetup />,
   },
   {
     // type: "collapse",
-    // name: "Summary",
-    // key: "summary",
-    icon: <Icon fontSize="small"></Icon>,
-    route: "/authentication/summary",
-    component: <Summary />,
-  },
-  {
-    // type: "collapse",
     // name: "Sign Up",
-    // key: "sign-up",
+    key: "sign-up",
     icon: <Icon fontSize="small"></Icon>,
     route: "/authentication/sign-up",
     component: <SignUp />,

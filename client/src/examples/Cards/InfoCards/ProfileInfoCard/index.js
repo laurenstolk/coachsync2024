@@ -56,11 +56,11 @@ function ProfileInfoCard({ title, description, info, social, action, shadow }) {
 
   // Render the card info items
   const renderItems = labels.map((label, key) => (
-    <MDBox key={label} display="flex" py={1} pr={2}>
-      <MDTypography variant="button" fontWeight="bold" textTransform="capitalize">
+    <MDBox key={label} display="flex" py={2} pr={2}>
+      <MDTypography variant="button" fontWeight="bold" textTransform="capitalize" fontSize={16}>
         {label}: &nbsp;
       </MDTypography>
-      <MDTypography variant="button" fontWeight="regular" color="text">
+      <MDTypography variant="button" fontWeight="regular" color="text" fontSize={16}>
         &nbsp;{values[key]}
       </MDTypography>
     </MDBox>
