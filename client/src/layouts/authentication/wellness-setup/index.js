@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 // @mui material components
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
+import Typography from "@mui/material/Typography";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -33,6 +34,8 @@ import { fetchUserProfile } from "../../../fetchUserProfile";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import Tooltip from "@mui/material/Tooltip";
 
 const daysOfWeekMap = [
   { id: 1, name: "Sunday" },
@@ -188,9 +191,24 @@ function WellnessSetup() {
         </MDBox>
         <MDBox pt={2} pb={3} px={3}>
           <MDBox component="form" role="form">
-            <MDTypography display="block" variant="button" color="text" my={1}>
-              Select the wellness check-in activities that you want to assign your team.
-            </MDTypography>
+          <MDTypography display="block" variant="button" color="text" my={1}>
+            Select the wellness check-in activities that you want to assign your team.{" "}
+            <Tooltip 
+              title={
+                <React.Fragment>
+                  <Typography variant="body2" style={{ fontSize: '11px' }}><b>Water:</b> Players can input an approximate percentage representing how much of their water goal for the day they hit. Their water goal will be something they decide outside of the application.</Typography>
+                  <Typography variant="body2" style={{ fontSize: '11px' }}><b>Sleep:</b> Players can input how many hours of sleep they got the night before.</Typography>
+                  <Typography variant="body2" style={{ fontSize: '11px' }}><b>Soreness:</b> Players can rate their current soreness on a scale of 1-5, 1 being No Soreness and 5 being Extremely Sore.</Typography>
+                  <Typography variant="body2" style={{ fontSize: '11px' }}><b>Energy:</b> Players can rate their current overall energy level on a scale of 1-5, 1 being low energy and 5 being high.</Typography>
+                  <Typography variant="body2" style={{ fontSize: '11px' }}><b>Stress:</b> Players can rate their current stress on a scale of 1-5, 1 being No Stress and 5 being Extremely Stressed.</Typography>
+                </React.Fragment>
+              }
+              arrow
+              PopperProps={{ style: { maxWidth: '400px' } }} // Set the maximum width of the tooltip box
+            >
+              <Icon>info</Icon>
+            </Tooltip>
+          </MDTypography>
             <MDBox pt={1} pb={2} px={2}>
               <FormControl>
                 <MDBox display="flex" flexDirection="column">
@@ -212,7 +230,17 @@ function WellnessSetup() {
             </MDBox>
             <MDBox pt={1} pb={2} px={2}>
               <MDTypography display="block" variant="button" color="text" my={1}>
-                How often you want to check-in?
+                How often you want to check-in?{" "}
+                <Tooltip title={
+                  <React.Fragment>
+                    <Typography variant="body2" style={{ fontSize: '11px' }}>Here you can select days of the week. Players will only report their wellness metrics on the application on these days of the week.</Typography>
+                  </React.Fragment>
+                }
+                arrow
+                PopperProps={{ style: { maxWidth: '400px' } }}
+                >
+                  <Icon>info</Icon>
+                </Tooltip>
               </MDTypography>
 
               <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
