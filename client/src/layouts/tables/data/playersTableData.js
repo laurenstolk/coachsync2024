@@ -155,7 +155,7 @@ export default function data() {
         { Header: "No assigned players", accessor: "message", width: "100%", align: "center" },
       ],
       rows: [
-        { message: `You currently have no players assigned your team. Send your players this code to add them: ${teamSignupCode || 'Loading...'}` }
+        { message: `You currently have no players assigned to your team. Send your players this code to add them: ${teamSignupCode || 'Loading...'}` }
       ],
     };
   }
