@@ -172,7 +172,7 @@ function Tables() {
         </Card>
       </Box>
       {/* Render groups or "No groups assigned" message */}
-      <Grid container spacing={1} justifyContent="center">
+      {/* <Grid container spacing={1} justifyContent="center"> */}
         {gRows.length === 0 ? (
           <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
             <Box
@@ -195,7 +195,7 @@ function Tables() {
             </Grid>
           ))
         )}
-      </Grid>
+      {/* </Grid> */}
       <Grid container spacing={1} sx={{ marginBottom: 5 }}>
         {gRows.map((row, index) => (
           <Grid item xs={12} key={index}>
