@@ -109,7 +109,7 @@ export default function data() {
       ],
       rows: [
         {
-          message: `You currently have no players assigned your team. Send your players this code to add them: ${
+          message: `You currently have no players assigned to your team. Send your players this code to add them: ${
             teamSignupCode || "Loading..."
           }`,
         },
