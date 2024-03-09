@@ -19,6 +19,9 @@ import Divider from "@mui/material/Divider";
 import Card from "@mui/material/Card";
 import DataTable from "examples/Tables/DataTable";
 import Button from "@mui/material/Button"; // Import Button component
+import { AppBar, Tabs, Tab, Icon } from '@mui/material'; // Import Material-UI components
+
+import breakpoints from "assets/theme/base/breakpoints";
 
 // @mui icons
 // import FacebookIcon from "@mui/icons-material/Facebook";
@@ -35,6 +38,8 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
+import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
+
 
 // Overview page components
 import Header from "layouts/profile/components/Header";
@@ -161,107 +166,191 @@ function Overview() {
     fetchSportName();
   }, [teamData]); // Fetch sport name whenever teamData changes
   
+  const [tabsOrientation, setTabsOrientation] = useState("horizontal");
+  const [tabValue, setTabValue] = useState(0);
+
+  useEffect(() => {
+    // A function that sets the orientation state of the tabs.
+    function handleTabsOrientation() {
+      return window.innerWidth < breakpoints.values.sm
+        ? setTabsOrientation("vertical")
+        : setTabsOrientation("horizontal");
+    }
+
+    /** 
+     The event listener that's calling the handleTabsOrientation function when resizing the window.
+    */
+    window.addEventListener("resize", handleTabsOrientation);
+
+    // Call the handleTabsOrientation function to set the state with the initial value.
+    handleTabsOrientation();
+
+    // Remove event listener on cleanup
+    return () => window.removeEventListener("resize", handleTabsOrientation);
+  }, [tabsOrientation]);
+
+  const handleSetTabValue = (event, newValue) => setTabValue(newValue);
+
+
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Profile" />
-      <MDBox mb={2} />
       <Header>
+      </Header>
+      <MDBox mb={2} />
       <MDBox mt={1} mb={3} mx={5}>
         <Grid container spacing={4}>
           {/* Left half for ProfileInfoCard */}
-          
-          <Grid item xs={12} md={6} sx={{ display: "flex" }}>
-            {profile && (
-              <ProfileInfoCard
-                info={{
-                  fullName: profile.first_name + " " + profile.last_name,
-                  mobile: profile.phone_number,
-                  email: profile.email,
-                  birthdate: profile.birth_date,
-                }}
-                social={[]}
-                action={{ route: "", tooltip: "Edit Profile" }}
-                shadow={false}
-              />
-            )}
-          </Grid>
-
-          {/* Divider */}
-          <Divider sx={{ my: 2 }} />
-
-          {/* Right half for MDAvatar and Typography */}
-          <Grid item xs={12} md={6}>
-            <Grid container spacing={4} mb={3} direction="column" alignItems="center" justify="center">
-              <Grid item>
-                <MDAvatar src={logoUrl} alt="logo-image" style={{ width: '250px', height: '250px' }} shadow="sm" />
-              </Grid>
-              <Grid item>
-                <Grid container direction="column" alignItems="center" justify="center">
-                  <Grid item>
-                    <MDTypography variant="h5" fontWeight="medium">
-                      {teamData ? teamData.name : ""}
-                    </MDTypography>
-                  </Grid>
-                  <Grid item>
-                    <MDTypography variant="button" color="text" fontWeight="regular">
-                      {teamData ? sportName : ""}
-                    </MDTypography>
-                  </Grid>
-                </Grid>
-              </Grid>
-              {
-                !profile || !profile.player ? (
-                  <>
+            <Grid item xs={12} md={6} mt={-15}>
+              {profile && (
+                <Card
+                  sx={{
+                    position: "relative",
+                    mt: 0,
+                    mx: 3,
+                    py: 2,
+                    px: 2,
+                  }}
+                >
+                  <Grid container alignItems="center" spacing={2} mb={8}>
                     <Grid item>
-                      <MDTypography variant="button" color="text" fontWeight="regular">
-                        <strong>Team Code:</strong> {teamData ? teamData.signup_code : null}
+                      <MDAvatar src={imageUrl} alt="profile-image" size="xxl" shadow="sm" />
+                    </Grid>
+                    <Grid item>
+                      <MDBox height="100%" lineHeight={1}>
+                        <MDTypography variant="h5" fontWeight="medium">
+                          {profile ? profile.first_name : ""} {profile ? profile.last_name : ""}
+                        </MDTypography>
+                        <MDTypography variant="button" color="text" fontWeight="regular">
+                          {profile ? (profile.player ? profile.position : profile.coach_role) : ""}
+                        </MDTypography>
+                      </MDBox>
+                    </Grid>
+                  </Grid>
+
+                  <MDTypography variant="h5" fontWeight="light" mb={5}>
+                    <strong>Full Name: </strong>{profile ? profile.first_name : ""} {profile ? profile.last_name : ""}
+                  </MDTypography>
+                  <MDTypography variant="h5" fontWeight="light" mb={5}>
+                    <strong>Email: </strong>{profile ? profile.email : ""}
+                  </MDTypography>
+                  <MDTypography variant="h5" fontWeight="light" mb={5}>
+                    <strong>Phone Number: </strong> {profile ? profile.phone_number : ""}
+                  </MDTypography>
+                  <MDTypography variant="h5" fontWeight="light">
+                    <strong>Birthdate: </strong> {profile ? profile.birth_date : ""}
+                  </MDTypography>
+
+                  <Grid container justifyContent="center" mt={4}>
+                    <Grid item xs={12} md={6} lg={4}>
+                      <AppBar position="static">
+                        <Tabs
+                          orientation={tabsOrientation}
+                          value={tabValue}
+                          onChange={handleSetTabValue}
+                          sx={{ width: '100%' }} // Adjust the width as needed
+                        >
+                          <Tab
+                            label="Edit Profile"
+                            component={Link}
+                            to={profile && profile.player ? "/authentication/playerinfo" : "/authentication/coachinfo"}
+                            icon={
+                              <Icon fontSize="small" sx={{ mt: -0.25 }}>
+                                settings
+                              </Icon>
+                            }
+                          />
+                        </Tabs>
+                      </AppBar>
+                    </Grid>
+                  </Grid>
+                </Card>
+
+              )}
+            </Grid>
+            {/* Right half for MDAvatar and Typography */}
+            <Grid item xs={12} md={6} mt={-15}>
+            <Card
+              sx={{
+                position: "relative",
+                mt: 0,
+                mx: 3,
+                py: 2,
+                px: 2,
+              }}
+            >
+              <Grid container spacing={4} mb={3} direction="column" alignItems="center" justify="center">
+                <Grid item>
+                  <MDAvatar src={logoUrl} alt="logo-image" style={{ width: '250px', height: '250px' }} shadow="sm" />
+                </Grid>
+                <Grid item>
+                  <Grid container direction="column" alignItems="center" justify="center">
+                    <Grid item>
+                      <MDTypography variant="h5" fontWeight="medium">
+                        {teamData ? teamData.name : ""}
                       </MDTypography>
                     </Grid>
                     <Grid item>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                          <MDBox border={1} borderColor="lightgrey" p={2} borderRadius={4}>
-                            <MDTypography variant="h6" gutterBottom>
-                              Check-ins
-                            </MDTypography>
-                            <Grid container spacing={2}>
-                              <Grid item xs={12}>
-                                <MDTypography variant="button" color="text" fontWeight="regular">
-                                  <strong>Frequency:</strong> {teamData ? mapCheckinFrequencyToDays(teamData.checkin_frequency) : ""}
-                                </MDTypography>
-                              </Grid>
-                              <Grid item>
-                                <Button
-                                  variant="outlined"
-                                  component={Link}
-                                  to="/authentication/wellness-setup"
-                                  sx={{
-                                    borderColor: '#1A73E8', // Set border color to blue on hover
-                                    backgroundColor: '#1A73E8', // Set background color to blue on hover
-                                    color: 'white', // Set font color to white on hover
-                                    '&:hover': {
+                      <MDTypography variant="button" color="text" fontWeight="regular">
+                        {teamData ? sportName : ""}
+                      </MDTypography>
+                    </Grid>
+                  </Grid>
+                </Grid>
+                {
+                  !profile || !profile.player ? (
+                    <>
+                      <Grid item>
+                        <MDTypography variant="button" color="text" fontWeight="regular">
+                          <strong>Team Code:</strong> {teamData ? teamData.signup_code : null}
+                        </MDTypography>
+                      </Grid>
+                      <Grid item>
+                        <Grid container spacing={2}>
+                          <Grid item xs={12}>
+                            <MDBox border={1} borderColor="lightgrey" p={2} borderRadius={4}>
+                              <MDTypography variant="h6" gutterBottom>
+                                Check-ins
+                              </MDTypography>
+                              <Grid container spacing={2}>
+                                <Grid item xs={12}>
+                                  <MDTypography variant="button" color="text" fontWeight="regular">
+                                    <strong>Frequency:</strong> {teamData ? mapCheckinFrequencyToDays(teamData.checkin_frequency) : ""}
+                                  </MDTypography>
+                                </Grid>
+                                <Grid item>
+                                  <Button
+                                    variant="outlined"
+                                    component={Link}
+                                    to="/authentication/wellness-setup"
+                                    sx={{
                                       borderColor: '#1A73E8', // Set border color to blue on hover
                                       backgroundColor: '#1A73E8', // Set background color to blue on hover
                                       color: 'white', // Set font color to white on hover
-                                    }
-                                  }}
-                                >
-                                  Edit Wellness Check-ins
-                                </Button>
+                                      '&:hover': {
+                                        borderColor: '#1A73E8', // Set border color to blue on hover
+                                        backgroundColor: '#1A73E8', // Set background color to blue on hover
+                                        color: 'white', // Set font color to white on hover
+                                      }
+                                    }}
+                                  >
+                                    Edit Wellness Check-ins
+                                  </Button>
+                                </Grid>
                               </Grid>
-                            </Grid>
-                          </MDBox>
+                            </MDBox>
+                          </Grid>
                         </Grid>
                       </Grid>
-                    </Grid>
-                  </>
-                ) : null
-              }
+                    </>
+                  ) : null
+                }
+              </Grid>
+              </Card>
             </Grid>
-          </Grid>
         </Grid>
       </MDBox>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={6} mt={6} mb={3}>
         <Card>
           <MDBox
             mx={2}
@@ -288,7 +377,6 @@ function Overview() {
           </MDBox>
         </Card>
       </Grid>
-      </Header>
       <Footer />
     </DashboardLayout>
   );

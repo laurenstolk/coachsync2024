@@ -100,6 +100,7 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       const userdata = await fetchUserProfile();
+      console.log(userdata)
       setProfile(userdata);
       setLoading(false); // Set loading to false after fetching profile data
     };
