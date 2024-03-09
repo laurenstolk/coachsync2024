@@ -30,7 +30,7 @@ function AddingExercise() {
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Add Exercise" />
-      <MDBox mt={8} justifyContent="center" alignItems="center">
+      <MDBox justifyContent="center" alignItems="center">
         <MDBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={12}>

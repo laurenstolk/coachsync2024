@@ -12,7 +12,7 @@ async function getPlayersThatHaveNotCompleted(playerIds) {
     today.setHours(0, 0, 0, 0);
     const { data: completedAssignmentData, error: completedAssignmentError } = await supabase
       .from("assignment")
-      .select("player_id, date")
+      .select("*")
       .eq("completed", false)
       .in("player_id", playerIds)
       .eq("date", today.toISOString().split("T")[0]);
@@ -21,6 +21,22 @@ async function getPlayersThatHaveNotCompleted(playerIds) {
   } catch (completedAssignmentError) {
     alert(completedAssignmentError.message);
     return [];
+  }
+}
+
+async function getWorkoutName(workoutId) {
+  try {
+    const { data: workoutData, error: workoutError } = await supabase
+      .from("workout")
+      .select("workout_name")
+      .eq("id", workoutId)
+      .single();
+    console.log("here: ", workoutData);
+
+    return workoutData.workout_name;
+  } catch (workoutError) {
+    alert(workoutError.message);
+    return "";
   }
 }
 
@@ -49,14 +65,20 @@ function AssignmentNotCompleted() {
 
       const playersThatDidntComplete = await getPlayersThatHaveNotCompleted(playerIds);
 
-      const mergedPlayerandAssignment = playersThatDidntComplete.map((player) => {
-        const info = profilesData.find((profile) => profile.id === player.player_id);
+      const mergedPlayerandAssignment = await Promise.all(
+        playersThatDidntComplete.map(async (player) => {
+          const info = profilesData.find((profile) => profile.id === player.player_id);
+          const workoutName = await getWorkoutName(player.workout_id);
 
-        return {
-          ...info,
-          ...player,
-        };
-      });
+          return {
+            ...info,
+            ...player,
+            workoutName,
+          };
+        })
+      );
+
+      console.log("merged ya: ", mergedPlayerandAssignment);
 
       setPlayers(mergedPlayerandAssignment);
     };
@@ -80,7 +102,7 @@ function AssignmentNotCompleted() {
             description={
               player.completed
                 ? `completed the workout on ${player.date}`
-                : "hasn't completed the workout yet"
+                : `hasn't completed the ${player.workoutName} workout yet`
             }
             value={player.completed ? "Completed" : "Not Completed"} // Change value text based on completion status
           />

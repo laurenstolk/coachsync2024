@@ -1,7 +1,5 @@
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
-import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
@@ -20,10 +18,10 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Data from "layouts/viewassignment/data/viewAssignmentData";
-import { Link } from "react-router-dom";
-import Button from "@mui/material/Button"; // Import Button component
-import { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+// import { Link } from "react-router-dom";
+// import Button from "@mui/material/Button"; // Import Button component
+// import { useState, useEffect } from "react";
+// import PropTypes from "prop-types";
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -52,7 +50,7 @@ function Tables() {
   today.setDate(today.getDate());
   const todayString = today.toISOString().split("T")[0];
 
-  console.log(today)
+  console.log(today);
 
   const assignedToday = formattedRows.filter((row) => row.date === todayString);
   const upcomingAssignments = formattedRows.filter((row) => row.date > todayString);
@@ -87,6 +85,30 @@ function Tables() {
           </Box>
         </Card>
       </Box>
+      {/* <Grid container spacing={1} justifyContent="center"> */}
+        {assignedToday.length === 0 ? (
+          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+            <Box
+              sx={{
+                width: "100%",
+                backgroundColor: "#fff",
+                borderRadius: "10px",
+                padding: "20px",
+                textAlign: "center",
+                marginTop: "5px",
+              }}
+            >
+              <Typography variant="subtitle1" fontSize="15px">No Assigned Workouts Today</Typography>
+            </Box>
+          </Grid>
+        ) : (
+          assignedToday.map((row, index) => (
+            <Grid item xs={12} key={index}>
+              {/* Accordion for each group */}
+            </Grid>
+          ))
+        )}
+      {/* </Grid> */}
       <Grid container spacing={1} sx={{ marginBottom: 5 }}>
         {assignedToday.map((row, index) => (
           <Grid item xs={12} key={index}>
@@ -157,6 +179,30 @@ function Tables() {
           </Box>
         </Card>
       </Box>
+      {/* <Grid container spacing={1} justifyContent="center"> */}
+        {upcomingAssignments.length === 0 ? (
+          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+            <Box
+              sx={{
+                width: "100%",
+                backgroundColor: "#fff",
+                borderRadius: "10px",
+                padding: "20px",
+                textAlign: "center",
+                marginTop: "5px",
+              }}
+            >
+              <Typography variant="subtitle1" fontSize="15px">No Upcoming Assigned Workouts</Typography>
+            </Box>
+          </Grid>
+        ) : (
+          upcomingAssignments.map((row, index) => (
+            <Grid item xs={12} key={index}>
+              {/* Accordion for each group */}
+            </Grid>
+          ))
+        )}
+      {/* </Grid> */}
       <Grid container spacing={1} sx={{ marginBottom: 5 }}>
         {upcomingAssignments.map((upcomingAssignment, index) => (
           <Grid item xs={12} key={index}>
@@ -229,6 +275,30 @@ function Tables() {
           </Box>
         </Card>
       </Box>
+      {/* <Grid container spacing={1} justifyContent="center"> */}
+        {pastAssignments.length === 0 ? (
+          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+            <Box
+              sx={{
+                width: "100%",
+                backgroundColor: "#fff",
+                borderRadius: "10px",
+                padding: "20px",
+                textAlign: "center",
+                marginTop: "5px",
+              }}
+            >
+              <Typography variant="subtitle1" fontSize="15px">No Past Assigned Workouts</Typography>
+            </Box>
+          </Grid>
+        ) : (
+          pastAssignments.map((row, index) => (
+            <Grid item xs={12} key={index}>
+              {/* Accordion for each group */}
+            </Grid>
+          ))
+        )}
+      {/* </Grid> */}
       <Grid container spacing={1} sx={{ marginBottom: 5 }}>
         {pastAssignments.map((pastAssignment, index) => (
           <Grid item xs={12} key={index}>

@@ -19,18 +19,13 @@ import Card from "@mui/material/Card";
 import { useEffect, useState } from "react";
 
 // Material Dashboard 2 React components
-import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
-
-import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
-import Button from "@mui/material/Button"; // Import Button component
-import { supabase } from "../../supabaseClient";
 
 //for group component
 import {
@@ -40,7 +35,6 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
   Paper,
   Accordion,
@@ -49,23 +43,19 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Link } from "react-router-dom";
-import Icon from "@mui/material/Icon";
 import { fetchUserProfile } from "../../fetchUserProfile";
 
 // Data
 import playersTableData from "layouts/tables/data/playersTableData";
-import projectsTableData from "layouts/tables/data/projectsTableData";
 import groupsTableData from "layouts/grouptable/data/groupsTableData";
 import { fetchTeamInfo } from "../../fetchTeamInfo";
 
 function Tables() {
   const { columns, rows } = playersTableData();
-  // const { columns: pColumns, rows: pRows } = projectsTableData();
   const { columns: gColumns, rows: gRows } = groupsTableData();
   const [teamName, setTeamName] = useState(""); // State to hold the team name
   const [user, setUser] = useState(null);
   const [isUserAPlayer, setIsUserAPlayer] = useState(false);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,11 +84,10 @@ function Tables() {
       // Check if the user is a player based on user data
       const isPlayer = user.player === true; // Adjust this condition based on your user data structure
       setIsUserAPlayer(isPlayer);
-      console.log("is a player", isPlayer)
+      console.log("is a player", isPlayer);
     }
   }, [user]); // Run whenever the user object changes
-  
-  
+
   //STOP UNDO
   return (
     <DashboardLayout>
@@ -166,7 +155,7 @@ function Tables() {
                 variant="outlined"
                 component={Link}
                 to="/addgroup"
-                style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)', color: 'rgba(0, 0, 0, 0.6)' }}
+                style={{ backgroundColor: "rgba(255, 255, 255, 0.5)", color: "rgba(0, 0, 0, 0.6)" }}
               >
                 Add Group
               </MDButton>
@@ -183,12 +172,21 @@ function Tables() {
         </Card>
       </Box>
       {/* Render groups or "No groups assigned" message */}
-      <Grid container spacing={1}>
+      {/* <Grid container spacing={1} justifyContent="center"> */}
         {gRows.length === 0 ? (
-          <Grid item xs={12}>
-            <Typography variant="subtitle1" sx={{ marginTop: 2, marginLeft: 2 }}>
-              No groups assigned
-            </Typography>
+          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+            <Box
+              sx={{
+                width: "100%",
+                backgroundColor: "#fff",
+                borderRadius: "10px",
+                padding: "20px",
+                textAlign: "center",
+                marginTop: "5px",
+              }}
+            >
+              <Typography variant="subtitle1" fontSize="15px">No Groups Assigned</Typography>
+            </Box>
           </Grid>
         ) : (
           gRows.map((row, index) => (
@@ -197,7 +195,7 @@ function Tables() {
             </Grid>
           ))
         )}
-      </Grid>
+      {/* </Grid> */}
       <Grid container spacing={1} sx={{ marginBottom: 5 }}>
         {gRows.map((row, index) => (
           <Grid item xs={12} key={index}>
@@ -217,7 +215,7 @@ function Tables() {
                   {row.name}
                 </Typography>
               </AccordionSummary>
-              <AccordionDetails >
+              <AccordionDetails>
                 <TableContainer component={Paper}>
                   <Table>
                     <TableBody>

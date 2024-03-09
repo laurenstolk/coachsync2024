@@ -14,7 +14,8 @@ import ExercisesTableData from "layouts/tables/data/exercisesTableData.js";
 import { Select, MenuItem } from "@mui/material";
 
 function Tables() {
-  const { columns, rows, handleCategoryFilter, categories, selectedCategory } = ExercisesTableData();
+  const { columns, rows, handleCategoryFilter, categories, selectedCategory } =
+    ExercisesTableData();
 
   return (
     <DashboardLayout>
@@ -54,7 +55,10 @@ function Tables() {
               </Button>
             </Box>
           </Box>
-          <Box mb={2} sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", pl: 2 }}>
+          <Box
+            mb={2}
+            sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", pl: 2 }}
+          >
             <Typography variant="subtitle2" fontWeight="bold" color="#fff" sx={{ mr: 1 }}>
               Filter:
             </Typography>
@@ -71,7 +75,9 @@ function Tables() {
               )}
               renderValue={(value) => <span style={{ color: "white" }}>{value}</span>}
             >
-              <MenuItem value="All" sx={{ color: "white" }}>Show All</MenuItem>
+              <MenuItem value="All" sx={{ color: "white" }}>
+                Show All
+              </MenuItem>
               {categories.map((category, index) => (
                 <MenuItem key={index} value={category} sx={{ color: "white" }}>
                   {category}
