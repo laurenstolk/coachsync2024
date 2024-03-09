@@ -77,12 +77,20 @@ function PlayerInfoUpdate() {
     if (profile && profile.id) {
       const firstName = document.getElementById("first-name").value;
       const lastName = document.getElementById("last-name").value;
+
+      let profilePicture = `${firstName}_${lastName}_${currentDate}`; // Default logo picture value
+
+      // Check if teamLogo is null and assign GenericLogo if it is
+      if (!profilePic) {
+        profilePicture = "GenericUser";
+      }
+
       const playerRoleData = {
         position: document.getElementById("player-position").value,
         jersey_number: document.getElementById("jersey-number").value,
         first_name: firstName,
         last_name: lastName,
-        profile_picture: `${firstName}_${lastName}_${currentDate}`, // Construct the profile picture string
+        profile_picture: profilePicture, // Construct the profile picture string
         phone_number: document.getElementById("phone-number").value,
         birth_date: document.getElementById("birth-date").value,
       };
