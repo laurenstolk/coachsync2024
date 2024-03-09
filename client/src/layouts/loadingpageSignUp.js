@@ -9,6 +9,13 @@ const LoadingPageSignUp = () => {
     const fetchUserData = async () => {
       try {
         const user = await supabase.auth.getUser();
+
+        // Check if there's an active session
+        if (!user) {
+          // No active session, redirect to login page
+          window.location.href = "/";
+          return;
+        }
         const userId = user.data.user.id;
 
         if (user) {
@@ -26,16 +33,12 @@ const LoadingPageSignUp = () => {
 
           if (data && data.first_name) {
             // User has a first name, redirect to homepage
-            window.location.href = "/";
+            window.location.href = "/dashboard";
           } else {
             // User doesn't have a first name, redirect to authentication page
             window.location.href = "/authentication/coachorplayer/";
           }
-        } else {
-          // User is not authenticated, handle as needed
-          // For example, redirect to login page
-          window.location.href = "/login";
-        }
+        } 
       } catch (error) {
         console.error("Error fetching user data:", error.message);
 
@@ -79,15 +82,10 @@ const LoadingPageSignUp = () => {
       {/* Include the style tag to add the animation definition */}
       <style>{styles}</style>
 
-      {/* <Routes>
-        {hasFirstName ? (
-          <Route path="*" element={<Navigate to="/dashboard" />} />
-        ) : (
-          <Route path="*" element={<Navigate to="/authentication/coachorplayer" />} />
-        )}
-      </Routes> */}
     </div>
   );
 };
 
 export default LoadingPageSignUp;
+
+
