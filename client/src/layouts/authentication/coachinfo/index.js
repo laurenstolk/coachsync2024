@@ -155,7 +155,6 @@
 
 // export default CoachInfoUpdate;
 
-
 import React, { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 
@@ -442,5 +441,3 @@ function CoachInfoUpdate() {
 }
 
 export default CoachInfoUpdate;
-
-
