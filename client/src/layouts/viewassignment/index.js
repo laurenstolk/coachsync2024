@@ -86,28 +86,30 @@ function Tables() {
         </Card>
       </Box>
       {/* <Grid container spacing={1} justifyContent="center"> */}
-        {assignedToday.length === 0 ? (
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-            <Box
-              sx={{
-                width: "100%",
-                backgroundColor: "#fff",
-                borderRadius: "10px",
-                padding: "20px",
-                textAlign: "center",
-                marginTop: "5px",
-              }}
-            >
-              <Typography variant="subtitle1" fontSize="15px">No Assigned Workouts Today</Typography>
-            </Box>
+      {assignedToday.length === 0 ? (
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            sx={{
+              width: "100%",
+              backgroundColor: "#fff",
+              borderRadius: "10px",
+              padding: "20px",
+              textAlign: "center",
+              marginTop: "5px",
+            }}
+          >
+            <Typography variant="subtitle1" fontSize="15px">
+              No Assigned Workouts Today
+            </Typography>
+          </Box>
+        </Grid>
+      ) : (
+        assignedToday.map((row, index) => (
+          <Grid item xs={12} key={index}>
+            {/* Accordion for each group */}
           </Grid>
-        ) : (
-          assignedToday.map((row, index) => (
-            <Grid item xs={12} key={index}>
-              {/* Accordion for each group */}
-            </Grid>
-          ))
-        )}
+        ))
+      )}
       {/* </Grid> */}
       <Grid container spacing={1} sx={{ marginBottom: 5 }}>
         {assignedToday.map((row, index) => (
@@ -180,28 +182,30 @@ function Tables() {
         </Card>
       </Box>
       {/* <Grid container spacing={1} justifyContent="center"> */}
-        {upcomingAssignments.length === 0 ? (
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-            <Box
-              sx={{
-                width: "100%",
-                backgroundColor: "#fff",
-                borderRadius: "10px",
-                padding: "20px",
-                textAlign: "center",
-                marginTop: "5px",
-              }}
-            >
-              <Typography variant="subtitle1" fontSize="15px">No Upcoming Assigned Workouts</Typography>
-            </Box>
+      {upcomingAssignments.length === 0 ? (
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            sx={{
+              width: "100%",
+              backgroundColor: "#fff",
+              borderRadius: "10px",
+              padding: "20px",
+              textAlign: "center",
+              marginTop: "5px",
+            }}
+          >
+            <Typography variant="subtitle1" fontSize="15px">
+              No Upcoming Assigned Workouts
+            </Typography>
+          </Box>
+        </Grid>
+      ) : (
+        upcomingAssignments.map((row, index) => (
+          <Grid item xs={12} key={index}>
+            {/* Accordion for each group */}
           </Grid>
-        ) : (
-          upcomingAssignments.map((row, index) => (
-            <Grid item xs={12} key={index}>
-              {/* Accordion for each group */}
-            </Grid>
-          ))
-        )}
+        ))
+      )}
       {/* </Grid> */}
       <Grid container spacing={1} sx={{ marginBottom: 5 }}>
         {upcomingAssignments.map((upcomingAssignment, index) => (
@@ -276,28 +280,30 @@ function Tables() {
         </Card>
       </Box>
       {/* <Grid container spacing={1} justifyContent="center"> */}
-        {pastAssignments.length === 0 ? (
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-            <Box
-              sx={{
-                width: "100%",
-                backgroundColor: "#fff",
-                borderRadius: "10px",
-                padding: "20px",
-                textAlign: "center",
-                marginTop: "5px",
-              }}
-            >
-              <Typography variant="subtitle1" fontSize="15px">No Past Assigned Workouts</Typography>
-            </Box>
+      {pastAssignments.length === 0 ? (
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            sx={{
+              width: "100%",
+              backgroundColor: "#fff",
+              borderRadius: "10px",
+              padding: "20px",
+              textAlign: "center",
+              marginTop: "5px",
+            }}
+          >
+            <Typography variant="subtitle1" fontSize="15px">
+              No Past Assigned Workouts
+            </Typography>
+          </Box>
+        </Grid>
+      ) : (
+        pastAssignments.map((row, index) => (
+          <Grid item xs={12} key={index}>
+            {/* Accordion for each group */}
           </Grid>
-        ) : (
-          pastAssignments.map((row, index) => (
-            <Grid item xs={12} key={index}>
-              {/* Accordion for each group */}
-            </Grid>
-          ))
-        )}
+        ))
+      )}
       {/* </Grid> */}
       <Grid container spacing={1} sx={{ marginBottom: 5 }}>
         {pastAssignments.map((pastAssignment, index) => (

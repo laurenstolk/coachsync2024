@@ -11,28 +11,23 @@ import Typography from "@mui/material/Typography";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
-
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 // Authentication layout components
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 
 // Images
 import bgImage from "assets/images/grass2.jpg";
-import { FormControl, FormControlLabel, InputLabel, Select } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
+import { FormControl, FormControlLabel } from "@mui/material";
 
 import { supabase } from "../../../supabaseClient";
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import Tooltip from "@mui/material/Tooltip";
@@ -113,7 +108,6 @@ function WellnessSetup() {
   const energyCheckinValue = selectedWellnessOptions.includes("Stress");
 
   const handleSubmit = async () => {
-
     console.log("Selected wellness options:", selectedWellnessOptions);
     const teamWellnessData = {
       checkin_frequency: selectedDays.sort((a, b) => a - b).join(""),
@@ -124,7 +118,7 @@ function WellnessSetup() {
       energy_checkin: energyCheckinValue,
     };
 
-    console.log(teamWellnessData)
+    console.log(teamWellnessData);
 
     try {
       // Fetch profile data to get user's team ID
@@ -191,24 +185,40 @@ function WellnessSetup() {
         </MDBox>
         <MDBox pt={2} pb={3} px={3}>
           <MDBox component="form" role="form">
-          <MDTypography display="block" variant="button" color="text" my={1}>
-            Select the wellness check-in activities that you want to assign your team.{" "}
-            <Tooltip 
-              title={
-                <React.Fragment>
-                  <Typography variant="body2" style={{ fontSize: '11px' }}><b>Water:</b> Players can input an approximate percentage representing how much of their water goal for the day they hit. Their water goal will be something they decide outside of the application.</Typography>
-                  <Typography variant="body2" style={{ fontSize: '11px' }}><b>Sleep:</b> Players can input how many hours of sleep they got the night before.</Typography>
-                  <Typography variant="body2" style={{ fontSize: '11px' }}><b>Soreness:</b> Players can rate their current soreness on a scale of 1-5, 1 being No Soreness and 5 being Extremely Sore.</Typography>
-                  <Typography variant="body2" style={{ fontSize: '11px' }}><b>Energy:</b> Players can rate their current overall energy level on a scale of 1-5, 1 being low energy and 5 being high.</Typography>
-                  <Typography variant="body2" style={{ fontSize: '11px' }}><b>Stress:</b> Players can rate their current stress on a scale of 1-5, 1 being No Stress and 5 being Extremely Stressed.</Typography>
-                </React.Fragment>
-              }
-              arrow
-              PopperProps={{ style: { maxWidth: '400px' } }} // Set the maximum width of the tooltip box
-            >
-              <Icon>info</Icon>
-            </Tooltip>
-          </MDTypography>
+            <MDTypography display="block" variant="button" color="text" my={1}>
+              Select the wellness check-in activities that you want to assign your team.{" "}
+              <Tooltip
+                title={
+                  <React.Fragment>
+                    <Typography variant="body2" style={{ fontSize: "11px" }}>
+                      <b>Water:</b> Players can input an approximate percentage representing how
+                      much of their water goal for the day they hit. Their water goal will be
+                      something they decide outside of the application.
+                    </Typography>
+                    <Typography variant="body2" style={{ fontSize: "11px" }}>
+                      <b>Sleep:</b> Players can input how many hours of sleep they got the night
+                      before.
+                    </Typography>
+                    <Typography variant="body2" style={{ fontSize: "11px" }}>
+                      <b>Soreness:</b> Players can rate their current soreness on a scale of 1-5, 1
+                      being No Soreness and 5 being Extremely Sore.
+                    </Typography>
+                    <Typography variant="body2" style={{ fontSize: "11px" }}>
+                      <b>Energy:</b> Players can rate their current overall energy level on a scale
+                      of 1-5, 1 being low energy and 5 being high.
+                    </Typography>
+                    <Typography variant="body2" style={{ fontSize: "11px" }}>
+                      <b>Stress:</b> Players can rate their current stress on a scale of 1-5, 1
+                      being No Stress and 5 being Extremely Stressed.
+                    </Typography>
+                  </React.Fragment>
+                }
+                arrow
+                PopperProps={{ style: { maxWidth: "400px" } }} // Set the maximum width of the tooltip box
+              >
+                <Icon>info</Icon>
+              </Tooltip>
+            </MDTypography>
             <MDBox pt={1} pb={2} px={2}>
               <FormControl>
                 <MDBox display="flex" flexDirection="column">
@@ -231,13 +241,17 @@ function WellnessSetup() {
             <MDBox pt={1} pb={2} px={2}>
               <MDTypography display="block" variant="button" color="text" my={1}>
                 How often you want to check-in?{" "}
-                <Tooltip title={
-                  <React.Fragment>
-                    <Typography variant="body2" style={{ fontSize: '11px' }}>Here you can select days of the week. Players will only report their wellness metrics on the application on these days of the week.</Typography>
-                  </React.Fragment>
-                }
-                arrow
-                PopperProps={{ style: { maxWidth: '400px' } }}
+                <Tooltip
+                  title={
+                    <React.Fragment>
+                      <Typography variant="body2" style={{ fontSize: "11px" }}>
+                        Here you can select days of the week. Players will only report their
+                        wellness metrics on the application on these days of the week.
+                      </Typography>
+                    </React.Fragment>
+                  }
+                  arrow
+                  PopperProps={{ style: { maxWidth: "400px" } }}
                 >
                   <Icon>info</Icon>
                 </Tooltip>

@@ -38,7 +38,7 @@ const LoadingPageSignUp = () => {
             // User doesn't have a first name, redirect to authentication page
             window.location.href = "/authentication/coachorplayer/";
           }
-        } 
+        }
       } catch (error) {
         console.error("Error fetching user data:", error.message);
 
@@ -81,11 +81,8 @@ const LoadingPageSignUp = () => {
       />
       {/* Include the style tag to add the animation definition */}
       <style>{styles}</style>
-
     </div>
   );
 };
 
 export default LoadingPageSignUp;
-
-
