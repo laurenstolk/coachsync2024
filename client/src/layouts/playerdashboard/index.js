@@ -39,270 +39,165 @@ export default function PlayerDashboard() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const [assignedWorkoutNames, setAssignedWorkoutNames] = useState([]);
+  const [wellnessData, setWellnessData] = useState([]); //for chart will remove once new chart is in
   const [workoutData, setWorkoutData] = useState([]);
-  const [wellnessData, setWellnessData] = useState([]);
-  const [wellnessCompletionData, setWellnessCompletionData] = useState([]);
-  const [completedWorkoutData, setCompletedWorkoutData] = useState([]);
+  const [workoutCompleted, setWorkoutCompleted] = useState(false);
+  const [checkinCompleted, setCheckinCompleted] = useState(false);
+  const [checkinFrequency, setCheckinFrequency] = useState("");
+  const [nextCheckinDay, setNextCheckinDay] = useState("");
+  const [assignedWorkout, setAssignedWorkout] = useState(null);
   const [currentDate, setCurrentDate] = useState("");
-  const [playerIds, setPlayerIds] = useState([]);
 
-  const getWellnessChartData = async (endDate, playerIds) => {
-    const startDate = new Date(endDate);
-    startDate.setDate(startDate.getDate() - 6); // Adjust the start date to include 7 days, including today
-
-    const { data: wellnessCheckinData, error: wellnessError } = await supabase
-      .from("checkin")
-      .select("*")
-      .in("player_id", playerIds)
-      .gte("date", startDate.toISOString()) // Filter by start date
-      .lte("date", endDate.toISOString()); // Filter by end date
-
-    if (wellnessError) {
-      console.error("Error fetching wellness checkin data:", wellnessError.message);
-    } else {
-      // Initialize wellnessCountMap with all 7 days within the past week
-      const wellnessCountMap = new Map();
-      for (let i = 0; i <= 6; i++) {
-        // Change the loop condition to include today
-        const date = new Date(endDate);
-        date.setDate(date.getDate() - i);
-        wellnessCountMap.set(date.toISOString().split("T")[0], 0); // Set initial count to 0
-      }
-
-      // Update counts based on wellnessCheckinData
-      wellnessCheckinData.forEach((item) => {
-        const wDateCompleted = item.date;
-
-        if (wellnessCountMap.has(wDateCompleted)) {
-          wellnessCountMap.set(wDateCompleted, wellnessCountMap.get(wDateCompleted) + 1);
-        }
-      });
-
-      // Convert the map to an array for use in the chart
-      const wellnessChartData = Array.from(wellnessCountMap).map(([wDateCompleted, count]) => ({
-        wDateCompleted,
-        count: (count / 5 / playerIds.length) * 100,
-      }));
-
-      wellnessChartData.sort((a, b) => new Date(a.wDateCompleted) - new Date(b.wDateCompleted));
-
-      setWellnessData(wellnessChartData);
-    }
-  };
-
-  const getCheckinCompletionData = async (date, playerIds) => {
-    const formattedDate = date.toISOString().split("T")[0];
-
-    try {
-      const { data: wellnessCheckinData, error: wellnessError } = await supabase
-        .from("checkin")
-        .select("*")
-        .eq("date", formattedDate)
-        .in("player_id", playerIds);
-      console.log("wellnesscheckindata: ", wellnessCheckinData);
-
-      if (wellnessError) {
-        console.error("Error fetching wellness checkin data:", wellnessError.message);
-        return;
-      }
-
-      // Initialize wellnessCountMap with the current date
-      const wellnessCountMap = new Map([[formattedDate, wellnessCheckinData.length]]);
-      console.log("wellnessCountMap: ", wellnessCountMap);
-
-      // Calculate the completed wellness percentage
-      const totalWellnessExpected = playerIds.length * 5; // Assuming each person has 5 wellness check-ins
-      console.log("total wellness expected: ", totalWellnessExpected);
-      const totalWellnessCompleted = wellnessCountMap.get(formattedDate) || 0;
-      console.log("total wellness completed: ", totalWellnessCompleted);
-      const completedPercentage = Math.round(
-        (totalWellnessCompleted / totalWellnessExpected) * 100
-      );
-      console.log("completed wellness percentage: ", completedPercentage);
-
-      // Set wellnessData to an array containing the completed percentage
-      setWellnessCompletionData([{ wDateCompleted: formattedDate, count: completedPercentage }]);
-    } catch (error) {
-      console.error("Error fetching wellness checkin data:", error.message);
-    }
-  };
-
-  const getWorkoutChartData = async (endDate, playerIds) => {
-    const startDate = new Date(endDate);
-    startDate.setDate(startDate.getDate() - 6); // Adjust the start date to include 7 days, including today
-
-    // Initialize workoutCountMap with dates of the last 7 days
-    const workoutCountMap = new Map();
-    for (let i = 0; i <= 6; i++) {
-      const date = new Date(endDate);
-      date.setDate(date.getDate() - i);
-      workoutCountMap.set(date.toISOString().split("T")[0], 0);
-    }
-
-    const { data: workoutCompletionData, error: workoutError } = await supabase
-      .from("assignment")
-      .select("*")
-      .eq("completed", true) // Filter by completed workouts
-      .gte("date", startDate.toISOString()) // Filter by start date
-      .lte("date", endDate.toISOString()) // Filter by end date
-      .in("player_id", playerIds);
-    console.log("past week's workout completion data: ", workoutCompletionData);
-
-    if (workoutError) {
-      console.error("Error fetching exercise completion data:", workoutError.message);
-    } else {
-      // Populate counts in workoutCountMap
-      workoutCompletionData.forEach((item) => {
-        const dateCompleted = item.date; // Assuming "date" is the field for completion date
-
-        if (workoutCountMap.has(dateCompleted)) {
-          workoutCountMap.set(dateCompleted, workoutCountMap.get(dateCompleted) + 1);
-        }
-      });
-      console.log("workoutcountmap: ", workoutCountMap);
-
-      // Convert the map to an array for use in the chart
-      const workoutChartData = Array.from(workoutCountMap).map(([dateCompleted, count]) => ({
-        dateCompleted,
-        count: (count / playerIds.length) * 100,
-      }));
-
-      // Sort workoutData and wellnessData arrays by date in ascending order
-      workoutChartData.sort((a, b) => new Date(a.dateCompleted) - new Date(b.dateCompleted));
-      workoutChartData.sort((a, b) => new Date(a.wDateCompleted) - new Date(b.wDateCompleted));
-
-      setWorkoutData(workoutChartData);
-    }
-  };
-
-  const getWorkoutCompletionData = async (date, playerIds) => {
-    const formattedDate = date.toISOString().split("T")[0];
-
-    try {
-      // Fetch workout completion data for the specified date and players
-      const { data: completedWorkoutsData, error: workoutError } = await supabase
-        .from("assignment")
-        .select("*")
-        .eq("date", formattedDate)
-        .eq("completed", true)
-        .in("player_id", playerIds);
-      console.log("completedworkoustdata: ", completedWorkoutsData);
-
-      const { data: expectedWorkoutsData, error: expectedWorkoutError } = await supabase
-        .from("assignment")
-        .select("*")
-        .eq("date", formattedDate)
-        .in("player_id", playerIds);
-      console.log("expectedWorkoutsData: ", expectedWorkoutsData);
-
-      if (workoutError) {
-        console.error("Error fetching workout completion data:", workoutError.message);
-        return;
-      }
-
-      // Calculate the completed workout percentage
-      const totalWorkoutsExpected = expectedWorkoutsData.length; // Assuming each player has one workout assigned per day
-      const totalWorkoutsCompleted = completedWorkoutsData.length;
-      const completedPercentage = (totalWorkoutsCompleted / totalWorkoutsExpected) * 100;
-
-      // Set workoutData state to an array containing the completed percentage
-      setCompletedWorkoutData([{ dateCompleted: formattedDate, count: completedPercentage }]);
-    } catch (error) {
-      console.error("Error fetching workout completion data:", error.message);
-    }
-  };
-
-  const getAssignedWorkouts = async (date, playerIds) => {
-    try {
-      const { data: assignmentsData, error: assignmentsError } = await supabase
-        .from("assignment")
-        .select("*")
-        .in("player_id", playerIds)
-        .eq("date", today.toISOString().split("T")[0]);
-
-      if (assignmentsError) {
-        console.error("Error fetching assignments:", assignmentsError.message);
-        return;
-      }
-
-      // Extract unique workout_ids
-      const workoutIds = new Set();
-      assignmentsData.forEach((assignment) => {
-        workoutIds.add(assignment.workout_id);
-      });
-
-      // Convert workoutIds set to an array
-      const workoutIdsArray = Array.from(workoutIds);
-
-      // Fetch workout names corresponding to unique workout_ids
-      const { data: workoutData, error: workoutError } = await supabase
-        .from("workout") // Assuming the table name is "workouts"
-        .select("workout_name") // Assuming the column name is "name"
-        .in("id", workoutIdsArray); // Pass the array directly without converting again
-
-      if (workoutError) {
-        console.error("Error fetching workouts:", workoutError.message);
-        return;
-      }
-
-      if (workoutData && workoutData.length > 0) {
-        // Extract workout names from the data
-        const workoutNames = workoutData.map((workout) => workout.workout_name);
-
-        // Store workout names in assignedWorkoutNames state
-        setAssignedWorkoutNames(workoutNames);
-      }
-    } catch (error) {
-      console.error("Error fetching assigned workouts:", error.message);
-    }
-  };
+  const [assignments, setAssignments] = useState("");
+  const [user, setUser] = useState(null);
 
   const getFormattedDate = (date) => {
     const options = { weekday: "long", month: "long", day: "numeric" };
     return date.toLocaleDateString("en-US", options);
   };
 
+
   useEffect(() => {
     const fetchData = async () => {
-      let playerIds;
+      const data = await fetchUserProfile();
+      setUser(data);
 
-      // set the Current Date
       setCurrentDate(getFormattedDate(today));
 
-      try {
-        const profileData = await fetchUserProfile();
-
-        // grab the profiles of the players on my team
-        const { data: profilesData, error: profilesError } = await supabase
-          .from("profile")
-          .select("id")
-          .filter("player", "eq", true)
-          .filter("team_id", "eq", profileData.team_id);
-        console.log("profiles on my team: ", profilesData);
-
-        if (profilesError) {
-          console.error("Error fetching profiles:", profilesError.message);
-          return;
-        }
-
-        // make an array of the playerIds
-        if (profilesData && profilesData.length > 0) {
-          playerIds = profilesData.map((profile) => profile.id);
-          setPlayerIds(playerIds);
-        }
-
-        await getWellnessChartData(today, playerIds);
-        await getAssignedWorkouts(today, playerIds);
-        await getWorkoutChartData(today, playerIds);
-        await getCheckinCompletionData(today, playerIds);
-        await getWorkoutCompletionData(today, playerIds);
-      } catch (error) {
-        console.error("Error fetching data:", error.message);
-      }
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      fetchWorkoutCompletion();
+      fetchAssignedWorkout();
+      console.log("user info: ", user);
+    }
+
+    const fetchCheckinCompletion = async () => {
+      try {
+        // Fetch data from the checkin table to check if the check-in is completed for today
+        const { data: checkinData, error: checkinError } = await supabase
+          .from("checkin")
+          .select("player_id")
+          .eq("player_id", user.id)
+          .eq("date", today.toISOString().split("T")[0]);
+
+        if (checkinError) throw checkinError;
+
+        setCheckinCompleted(checkinData.length > 0);
+      } catch (error) {
+        console.error("Error fetching check-in completion:", error.message);
+      }
+    };
+
+    fetchCheckinCompletion(); // Call the check-in completion function
+
+      // Fetch checkin_frequency from the team table
+    const fetchTeamCheckinFrequency = async () => {
+      try {
+        const { data: teamData, error: teamError } = await supabase
+          .from("team")
+          .select("checkin_frequency")
+          .eq("id", user.team_id)
+          .single();
+
+        if (teamError) throw teamError;
+
+        setCheckinFrequency(teamData.checkin_frequency || ""); // Set default value if checkin_frequency is null
+      } catch (error) {
+        console.error("Error fetching team data:", error.message);
+      }
+    };
+
+    fetchTeamCheckinFrequency();
+
+    // Calculate and set the next check-in day
+    const getNextCheckinDay = () => {
+      const currentDayOfWeek = today.getDay();
+      const daysOfWeek = [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ];
+  
+      // Extract individual digits from the checkin_frequency
+      const frequencyDigits = checkinFrequency.split("").map(Number);
+  
+      // Find the next available check-in day
+      for (let i = 1; i <= 7; i++) {
+        const nextDayIndex = (currentDayOfWeek + i) % 7;
+        if (frequencyDigits.includes(nextDayIndex + 1)) {
+          return daysOfWeek[nextDayIndex];
+        }
+      }
+  
+      return null; // Return null if no scheduled check-in days found
+    };
+  
+    const nextCheckinDay = getNextCheckinDay();
+    setNextCheckinDay(nextCheckinDay);
+  
+    // ... (other code)
+  }, [user, today, checkinFrequency]);
+  
+
+  async function fetchWorkoutCompletion() {
+    try {
+      // Fetch data from the assignment table to check if the workout is completed for today
+      const { data: completionData, error: completionError } = await supabase
+        .from("assignment")
+        .select("completed")
+        .eq("player_id", user.id)
+        .eq("date", today.toISOString().split("T")[0]);
+      
+      if (completionError) throw completionError;
+
+      if (completionData.length > 0) {
+        setWorkoutCompleted(completionData[0].completed);
+      } else {
+        setWorkoutCompleted(false);
+      }
+    } catch (error) {
+      console.error("Error fetching workout completion:", error.message);
+    }
+  };
+
+  async function fetchAssignedWorkout() {
+    try {
+      // Fetch data from the assignment table to check if there is an assigned workout for today
+      const { data: assignmentData, error: assignmentError } = await supabase
+        .from("assignment")
+        .select("workout_id")
+        .eq("player_id", user.id)
+        .eq("date", today.toISOString().split("T")[0]);
+
+      if (assignmentError) throw assignmentError;
+
+      if (assignmentData.length > 0) {
+        const workoutId = assignmentData[0].workout_id;
+        const { data: workoutData, error: workoutError } = await supabase
+          .from("workout")
+          .select("workout_name")
+          .eq("id", workoutId)
+          .single();
+
+        if (workoutError) throw workoutError;
+
+        setAssignedWorkout(workoutData.workout_name);
+      } else {
+        setAssignedWorkout(null);
+      }
+    } catch (error) {
+      console.error("Error fetching assigned workout:", error.message);
+    }
+  };
+
 
   return (
     <DashboardLayout>
@@ -327,13 +222,7 @@ export default function PlayerDashboard() {
               <ComplexStatisticsCard
                 icon="check"
                 title="Assigned Workouts"
-                count={
-                  <Link to="/workoutlibrary" style={{ textDecoration: "none", color: "inherit" }}>
-                    {assignedWorkoutNames.length > 0
-                      ? assignedWorkoutNames.join(", ")
-                      : "No assigned workout today"}
-                  </Link>
-                }
+                count={assignedWorkout !== null ? assignedWorkout : "No assigned workout today."}
                 percentage={{
                   color: "success",
                   amount: "",
@@ -349,21 +238,19 @@ export default function PlayerDashboard() {
                 icon="person_add"
                 title="Completed Workouts"
                 count={
-                  completedWorkoutData.length > 0 ? (
-                    completedWorkoutData[0].count ? (
-                      "Your workout is complete."
-                    ) : (
-                      <Button
-                        style={{ border: "2px solid", color: "inherit" }}
-                        component={Link}
-                        to="/completeworkout"
-                      >
-                        No. Complete Workout?
-                      </Button>
-                    )
-                  ) : (
-                    "No data available"
-                  )
+                  assignedWorkout !== null
+                    ? workoutCompleted
+                      ? "Your workout is complete."
+                      : (
+                        <Button
+                          style={{ border: "2px solid", color: "inherit" }}
+                          component={Link}
+                          to="/completeworkout"
+                        >
+                          No. Complete Workout?
+                        </Button>
+                      )
+                    : "No assigned workout today."
                 }
                 percentage={{
                   color: "success",
@@ -380,9 +267,11 @@ export default function PlayerDashboard() {
                 icon={<PsychologyAlt>Wellness</PsychologyAlt>}
                 title="Completed Check-in?"
                 count={
-                  wellnessCompletionData.length > 0 ? (
-                    wellnessCompletionData[0].count ? (
-                      "Your check-in is complete."
+                  checkinCompleted ? (
+                    "Your check-in is complete."
+                  ) : (
+                    nextCheckinDay ? (
+                      `Next check-in: ${nextCheckinDay}`
                     ) : (
                       <Button
                         style={{ border: "2px solid", color: "inherit" }}
@@ -392,15 +281,10 @@ export default function PlayerDashboard() {
                         No. Complete Check-in?
                       </Button>
                     )
-                  ) : (
-                    "No data available"
                   )
                 }
                 percentage={{
-                  color:
-                    wellnessCompletionData.length > 0 && wellnessCompletionData[0].count
-                      ? "success"
-                      : "error",
+                  color: checkinCompleted ? "success" : "error",
                   amount: "",
                   label: "Just updated",
                 }}
