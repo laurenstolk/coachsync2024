@@ -262,7 +262,7 @@ export default function PlayerDashboard() {
               <ComplexStatisticsCard
                 color="success"
                 icon={<PsychologyAlt>Wellness</PsychologyAlt>}
-                title="Check In"
+                title="Check-in Status"
                 count={
                   !checkinCompleted ? (
                     <Button
@@ -294,8 +294,8 @@ export default function PlayerDashboard() {
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
-                  title="Wellness Completion"
-                  description="Percentage of players who completed a wellness checkin."
+                  title="Check-in History"
+                  description="Check-in results from the past week."
                   date="Updated Today"
                   chart={{
                     labels: wellnessData.map((item) => {
@@ -323,16 +323,6 @@ export default function PlayerDashboard() {
                   }}
                 />
               </MDBox>
-            </Grid>
-          </Grid>
-        </MDBox>
-        <MDBox>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
-              <AssignmentNotCompleted />
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <AssignmentCompleted />
             </Grid>
           </Grid>
         </MDBox>
