@@ -207,7 +207,7 @@ function AddWellness() {
         toast.success("Wellness added successfully!", {
           autoClose: 2000,
           onClose: () => {
-            navigate("/dashboard");
+            navigate("/playerdashboard");
           },
         });
       }
