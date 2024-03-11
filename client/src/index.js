@@ -21,15 +21,18 @@ import App from "App";
 // Material Dashboard 2 React Context Provider
 import { MaterialUIControllerProvider } from "context";
 import { ToastContainer } from "react-toastify";
-
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 const container = document.getElementById("app");
 const root = createRoot(container);
 
 root.render(
-  <BrowserRouter>
-    <MaterialUIControllerProvider>
-      <ToastContainer />
-      <App />
-    </MaterialUIControllerProvider>
-  </BrowserRouter>
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <BrowserRouter>
+      <MaterialUIControllerProvider>
+        <ToastContainer />
+        <App />
+      </MaterialUIControllerProvider>
+    </BrowserRouter>
+  </LocalizationProvider>
 );

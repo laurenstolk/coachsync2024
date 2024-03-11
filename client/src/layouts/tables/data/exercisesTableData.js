@@ -3,9 +3,6 @@
 import React, { useEffect, useState } from "react";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
-import { MenuItem, Select } from "@mui/material";
-import Icon from "@mui/material/Icon";
 import { supabase } from "../../../supabaseClient";
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
@@ -91,8 +88,8 @@ export default function ExercisesTableData() {
     { Header: "name", accessor: "name", width: "20%", align: "left" },
     { Header: "category", accessor: "category", width: "20%", align: "left" },
     { Header: "description", accessor: "description", width: "40%", align: "left" },
-    { Header: "Edit", accessor: "edit", width: "10%", align: "left" },
-    { Header: "Delete", accessor: "delete", width: "10%", align: "center" },
+    // { Header: "Edit", accessor: "edit", width: "10%", align: "left" },
+    // { Header: "Delete", accessor: "delete", width: "10%", align: "center" },
   ];
 
   const rows = filteredExercises.map((exercise, index) => ({
@@ -111,20 +108,20 @@ export default function ExercisesTableData() {
         {exercise.description}
       </MDTypography>
     ),
-    edit: (
-      <MDBox>
-        <MDButton variant="text" color="dark">
-          <Icon>edit</Icon>&nbsp;edit
-        </MDButton>
-      </MDBox>
-    ),
-    delete: (
-      <MDBox mr={1}>
-        <MDButton variant="text" color="error">
-          <Icon>delete</Icon>&nbsp;delete
-        </MDButton>
-      </MDBox>
-    ),
+    // edit: (
+    //   <MDBox>
+    //     <MDButton variant="text" color="dark">
+    //       <Icon>edit</Icon>&nbsp;edit
+    //     </MDButton>
+    //   </MDBox>
+    // ),
+    // delete: (
+    //   <MDBox mr={1}>
+    //     <MDButton variant="text" color="error">
+    //       <Icon>delete</Icon>&nbsp;delete
+    //     </MDButton>
+    //   </MDBox>
+    // ),
   }));
 
   return { columns, rows, handleCategoryFilter, categories, selectedCategory };

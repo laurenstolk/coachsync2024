@@ -96,13 +96,13 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // WHERE THE USER IS NULL ERROR ON SIGN IN IS HAPPENING - i need 
+  // WHERE THE USER IS NULL ERROR ON SIGN IN IS HAPPENING - i need
   useEffect(() => {
     if (session) {
       const fetchData = async () => {
         try {
           const userdata = await fetchUserProfile();
-          console.log(userdata)
+          console.log(userdata);
           setProfile(userdata);
           setLoading(false); // Set loading to false after fetching profile data
         } catch (error) {
@@ -116,7 +116,6 @@ export default function App() {
       setLoading(false); // No session, so set loading to false
     }
   }, [session]);
-  
 
   const [controller, dispatch] = useMaterialUIController();
   const {
