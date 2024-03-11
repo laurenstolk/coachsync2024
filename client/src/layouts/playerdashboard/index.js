@@ -236,7 +236,7 @@ export default function PlayerDashboard() {
               <ComplexStatisticsCard
                 color="primary"
                 icon="person_add"
-                title="Completed Workouts"
+                title="Workout Complete?"
                 count={
                   assignedWorkout !== null
                     ? workoutCompleted
@@ -253,7 +253,6 @@ export default function PlayerDashboard() {
                     : "No assigned workout today."
                 }
                 percentage={{
-                  color: "success",
                   amount: "",
                   label: "Just updated",
                 }}
@@ -265,13 +264,13 @@ export default function PlayerDashboard() {
               <ComplexStatisticsCard
                 color="success"
                 icon={<PsychologyAlt>Wellness</PsychologyAlt>}
-                title="Completed Check-in?"
+                title="Check In"
                 count={
                   checkinCompleted ? (
                     "Your check-in is complete."
                   ) : (
                     nextCheckinDay ? (
-                      `Next check-in: ${nextCheckinDay}`
+                      `Next Check-in: ${nextCheckinDay}`
                     ) : (
                       <Button
                         style={{ border: "2px solid", color: "inherit" }}
@@ -292,41 +291,9 @@ export default function PlayerDashboard() {
             </MDBox>
           </Grid>
         </Grid>
-        <MDBox mt={4.5}>
+        <MDBox mt={4.5} mb={9}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={6}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="info"
-                  title="Workout Completion"
-                  description="Percentage of players who completed their assigned workout."
-                  date="Updated Today"
-                  chart={{
-                    labels: workoutData.map((item) => {
-                      const date = new Date(item.dateCompleted);
-                      return `${date.toLocaleString("en-US", {
-                        month: "long",
-                      })} ${date.getUTCDate()}`;
-                    }),
-                    datasets: {
-                      label: "Percentage of Players Completed Workouts",
-                      data: workoutData.map((item) => {
-                        return item.count.toFixed(2);
-                      }),
-                    },
-                    options: {
-                      scales: {
-                        y: {
-                          beginAtZero: true,
-                          suggestedMax: 100,
-                        },
-                      },
-                    },
-                  }}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={6}>
+            <Grid item xs={12} md={12} lg={12}>
               <MDBox mb={3}>
                 <ReportsLineChart
                   color="success"
