@@ -20,6 +20,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
 // import { fetchUserProfile } from '../../../fetchUserProfile';
+import { fetchUserProfile } from "../../../fetchUserProfile";
 
 function AddGroup() {
   const [profiles, setProfiles] = useState([]);
@@ -29,54 +30,131 @@ function AddGroup() {
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [groupName, setGroupName] = useState("");
   const { id } = useParams();
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        // //fetch user profile
-        // const userProfile = await fetchUserProfile();
-        // console.log("User Profile:", userProfile); // Add this console log
-        // const currentUserTeamId = userProfile.team_id;
-
-        // Fetch profiles
-        const { data: profilesData, error: profilesError } = await supabase
-          .from("profile")
-          .select("*");
-        if (profilesError) throw profilesError;
-        setProfiles(profilesData);
-
-        // Fetch memberships
-        const { data: membershipData, error: membershipError } = await supabase
-          .from("team_group_membership")
-          .select("*");
-        if (membershipError) throw membershipError;
-        setMemberships(membershipData);
-
-        // Fetch groups
-        const { data: teamData, error: teamError } = await supabase.from("team_group").select("*");
-        if (teamError) throw teamError;
-        setGroups(teamData);
-      } catch (error) {
-        alert(error.message);
-      }
-    }
-
+    const fetchData = async () => {
+      const data = await fetchUserProfile();
+      setUser(data);
+    };
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      getGroups(); // Call getProfiles when user changes
+      console.log("user info: ", user);
+    }
+  }, [user]); // Add user as a dependency
+
+  async function getGroups() {
+    try {
+      if (!user) {
+        return; // Exit early if user is null
+      }
+      const { data: profilesData, error: profilesError } = await supabase
+        .from("profile")
+        .select("*")
+        .eq("team_id", user.team_id)
+        .eq("player", true);
+      if (profilesError) throw profilesError;
+      if (profilesData != null) {
+        setProfiles(profilesData);
+      }
+      // const { data: profilesData, error: profilesError } = await supabase
+      //   .from("profile")
+      //   .select("*");
+      // if (profilesError) throw profilesError;
+
+      const { data: membershipData, error: membershipError } = await supabase
+        .from("team_group_membership")
+        .select("*");
+      if (membershipError) throw membershipError;
+
+      const { data: teamData, error: teamError } = await supabase
+        .from("team_group")
+        .select("*")
+        .eq("team_id", user.team_id);
+      if (teamError) throw teamError;
+
+      const groupsWithMembership = teamData
+        .map((team) => {
+          const groupMembers = membershipData.filter(
+            (membership) => membership.team_group_id === team.id
+          );
+          const players = groupMembers.map((membership) => {
+            const player = profilesData.find((profile) => profile.id === membership.player_user_id);
+
+            return player;
+          });
+          return { ...team, players };
+        })
+        .filter((group) => group.players.length > 0);
+
+      setGroups(groupsWithMembership);
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+  useEffect(() => {
+    getGroups();
+  }, []);
+
   const handleGroupNameChange = (event) => {
-    setGroupName(event.target.value);
+    setGroupName(event.target.value.toLowerCase()); // Convert to lowercase
   };
 
   const handleCreateGroup = async () => {
-    const groupName = document.getElementById("group-name").value;
-    const groupData = {
-      name: groupName,
-      team_id: 6, // Assuming team_id is a constant or retrieved from somewhere else
-      coach_user_id: "7a67e500-aa25-4306-9d53-d204623ec00d", // Assuming coach_user_id is a constant or retrieved from somewhere else
-    };
-
+    const groupName = document.getElementById("group-name").value.toLowerCase(); // Convert to lowercase
     try {
+      // Check if the group name already exists
+      const { data: existingGroups, error: existingGroupsError } = await supabase
+        .from("team_group")
+        .select("name")
+        .eq("team_id", user.team_id);
+
+      if (existingGroupsError) {
+        console.error("Error checking existing groups:", existingGroupsError);
+        // Handle the error here
+        return;
+      }
+
+      // Check if the entered groupName already exists
+      const groupNames = existingGroups.map((group) => group.name.toLowerCase());
+      if (groupNames.includes(groupName)) {
+        alert("Group name already exists.");
+        // Handle the error here (e.g., display a message to the user)
+        return;
+      }
+      // Query the profile table to find the coach's user ID
+      const { data: coachProfile, error: coachError } = await supabase
+        .from("profile")
+        .select("id")
+        .eq("team_id", user.team_id)
+        .eq("player", false)
+        .single();
+
+      if (coachError) {
+        console.error("Error retrieving coach information:", coachError);
+        // Handle the error here
+        return;
+      }
+
+      // Ensure that coachProfile is not null
+      if (!coachProfile) {
+        console.error("Coach information not found.");
+        // Handle the error here
+        return;
+      }
+
+      // Construct group data with the coach's user ID
+      const groupData = {
+        name: groupName,
+        team_id: user.team_id,
+        coach_user_id: coachProfile.id,
+      };
+
       // Insert group data into the team_group table
       const { data: newGroup, error: groupError } = await supabase
         .from("team_group")
@@ -107,11 +185,11 @@ function AddGroup() {
         return;
       }
 
-      console.log("Group membership added successfully!");
-      toast.success("Group and membership added successfully!", {
+      console.log("Group successfully added!");
+      toast.success("Group successfully added!", {
         autoClose: 2000,
         onClose: () => {
-          // Redirect to a relevant page
+          navigate("/tables");
         },
       });
     } catch (error) {
@@ -124,7 +202,7 @@ function AddGroup() {
     <Card id="group-form">
       <MDBox pt={3} px={2}>
         <MDTypography variant="h4" fontWeight="medium">
-          Create Group
+          Add Group
         </MDTypography>
       </MDBox>
 
@@ -155,6 +233,7 @@ function AddGroup() {
               onChange={(event, newValue) =>
                 setSelectedPlayers(newValue.map((player) => player.id))
               } // Map selected options to their IDs
+              sx={{ width: "50%" }} //change the size of the box
               renderInput={(params) => (
                 <TextField {...params} label="Search for players here" placeholder="Assign to:" />
               )}
@@ -167,7 +246,7 @@ function AddGroup() {
       <MDBox px={2} pb={2}>
         <Button variant="contained" color="primary" onClick={handleCreateGroup}>
           <MDTypography variant="caption" color="white" fontWeight="bold" textTransform="uppercase">
-            Create Group
+            Add Group
           </MDTypography>
         </Button>
       </MDBox>

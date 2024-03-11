@@ -16,8 +16,10 @@ import React, { useState } from "react";
 import { supabase } from "../../../../supabaseClient";
 import { useNavigate } from "react-router-dom";
 
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { fetchUserProfile } from "../../../../fetchUserProfile";
 
 function AddExercise() {
   const navigate = useNavigate();
@@ -28,11 +30,24 @@ function AddExercise() {
   };
 
   const handleSubmit = async () => {
+    const profileData = await fetchUserProfile();
+    console.log("my profile data: ", profileData);
+
+    const { data: teamData, error } = await supabase
+      .from("team")
+      .select("*")
+      .eq("id", profileData.team_id)
+      .single();
+    console.log("team data: ", teamData);
+    console.log("my sport id: ", teamData.sport_id);
+
     const exerciseData = {
       name: document.getElementById("exercise-name").value,
       category: selectedCategory, // use the selectedCategory state variable
       description: document.getElementById("exercise-description").value,
+      sport: selectedCategory === "14" ? teamData.sport_id : null, // Set sport_id based on the category
     };
+    console.log("here's what I'm sending up: ", exerciseData);
 
     try {
       // Use supabase client's api.post method to add data
@@ -85,6 +100,11 @@ function AddExercise() {
                 variant="outlined"
                 value={selectedCategory}
                 onChange={handleCategoryChange}
+                IconComponent={() => (
+                  <span style={{ fontSize: 24, marginLeft: -5 }}>
+                    <ArrowDropDownIcon style={{ color: "rgba(0, 0, 0, 0.54)" }} />
+                  </span>
+                )}
                 sx={{ width: "30%", minHeight: "46px" }}
               >
                 <MenuItem value="14">Training</MenuItem>
@@ -101,7 +121,12 @@ function AddExercise() {
       </MDBox>
       <MDBox pt={1} pb={2} px={2}>
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          <TextField id="exercise-description" label="Description" variant="outlined" />
+          <TextField
+            id="exercise-description"
+            label="Description"
+            variant="outlined"
+            sx={{ width: "50%" }}
+          />
         </MDBox>
       </MDBox>
       <MDBox px={2} pb={2}>

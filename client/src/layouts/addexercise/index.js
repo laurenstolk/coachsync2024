@@ -29,8 +29,8 @@ import AddExercise from "layouts/addexercise/components/AddExercise";
 function AddingExercise() {
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle="Add Exercise" absolute isMini />
-      <MDBox mt={8} justifyContent="center" alignItems="center">
+      <DashboardNavbar pageTitle="Add Exercise" />
+      <MDBox justifyContent="center" alignItems="center">
         <MDBox mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={12}>

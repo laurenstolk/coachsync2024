@@ -44,26 +44,26 @@ export default function data() {
     getExercises();
   }, []);
 
-  const Author = ({ image, name, email }) => (
-    <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDAvatar src={image} name={name} size="sm" />
-      <MDBox ml={2} lineHeight={1}>
-        <MDTypography display="block" variant="button" fontWeight="medium">
-          {name}
-        </MDTypography>
-        <MDTypography variant="caption">{email}</MDTypography>
-      </MDBox>
-    </MDBox>
-  );
+  // const Author = ({ image, name, email }) => (
+  //   <MDBox display="flex" alignItems="center" lineHeight={1}>
+  //     <MDAvatar src={image} name={name} size="sm" />
+  //     <MDBox ml={2} lineHeight={1}>
+  //       <MDTypography display="block" variant="button" fontWeight="medium">
+  //         {name}
+  //       </MDTypography>
+  //       <MDTypography variant="caption">{email}</MDTypography>
+  //     </MDBox>
+  //   </MDBox>
+  // );
 
-  const Job = ({ title, description }) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {title}
-      </MDTypography>
-      <MDTypography variant="caption">{description}</MDTypography>
-    </MDBox>
-  );
+  // const Job = ({ title, description }) => (
+  //   <MDBox lineHeight={1} textAlign="left">
+  //     <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+  //       {title}
+  //     </MDTypography>
+  //     <MDTypography variant="caption">{description}</MDTypography>
+  //   </MDBox>
+  // );
 
   return {
     columns: [

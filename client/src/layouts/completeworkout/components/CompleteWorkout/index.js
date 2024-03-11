@@ -9,7 +9,7 @@ import MDTypography from "components/MDTypography";
 
 import { FormControl, FormControlLabel, InputLabel } from "@mui/material";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 // Add supabase connection
 import { supabase } from "../../../../supabaseClient";
@@ -51,12 +51,14 @@ async function getCustomizedExercise(assignmentData) {
 async function getAssignment(profile) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  console.log("today: ", today.toISOString().split("T")[0]);
   const { data: assignmentData } = await supabase
     .from("assignment")
     .select("*")
     .eq("player_id", profile.id)
     .eq("date", today.toISOString().split("T")[0])
     .single();
+  console.log("assignments: ", assignmentData);
 
   return assignmentData;
 }
@@ -102,6 +104,11 @@ function CompleteWorkout() {
     };
     fetchData();
   }, []);
+
+  // Add a useMemo hook to calculate whether all exercises are completed
+  const allExercisesCompleted = useMemo(() => {
+    return customizedExercises.length === completedExercises.length;
+  }, [customizedExercises, completedExercises]);
 
   // Function to handle checkbox change for completed exercises
   // Function to handle checkbox change for completed exercises
@@ -326,7 +333,12 @@ function CompleteWorkout() {
         </MDBox>
 
         {/* Submit button */}
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          disabled={!allExercisesCompleted} // Disable the button if not all exercises are completed
+        >
           Submit
         </Button>
       </Card>

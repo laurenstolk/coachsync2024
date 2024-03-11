@@ -30,7 +30,6 @@ import Icon from "@mui/material/Icon";
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
 
 // Material Dashboard 2 React example components
 import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
@@ -39,6 +38,8 @@ import SidenavCollapse from "examples/Sidenav/SidenavCollapse";
 import SidenavRoot from "examples/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "examples/Sidenav/styles/sidenav";
 
+import { fetchUserProfile } from "../../fetchUserProfile";
+
 // Material Dashboard 2 React context
 import {
   useMaterialUIController,
@@ -46,13 +47,22 @@ import {
   setTransparentSidenav,
   setWhiteSidenav,
 } from "context";
-import { supabase } from "../../supabaseClient";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
   const collapseName = location.pathname.replace("/", "");
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchUserProfile();
+
+      setProfile(data);
+    };
+    fetchData();
+  }, []);
 
   let textColor = "white";
 
@@ -85,61 +95,78 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   }, [dispatch, location]);
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
-  const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
-    let returnValue;
+  const renderRoutes = routes
+    .filter((route) => {
+      // Include the route if it doesn't have player or coach attribute
+      if (!route.player && !route.coach) {
+        return true;
+      }
+      // Include the route if it matches the user's role
+      if (profile) {
+        if (profile.player && route.player) {
+          return true;
+        }
+        if (!profile.player && route.coach) {
+          return true;
+        }
+      }
+      return false;
+    })
+    .map(({ type, name, icon, title, noCollapse, key, href, route }) => {
+      let returnValue;
 
-    if (type === "collapse") {
-      returnValue = href ? (
-        <Link
-          href={href}
-          key={key}
-          target="_blank"
-          rel="noreferrer"
-          sx={{ textDecoration: "none" }}
-        >
-          <SidenavCollapse
-            name={name}
-            icon={icon}
-            active={key === collapseName}
-            noCollapse={noCollapse}
+      if (type === "collapse") {
+        returnValue = href ? (
+          <Link
+            href={href}
+            key={key}
+            target="_blank"
+            rel="noreferrer"
+            sx={{ textDecoration: "none" }}
+          >
+            <SidenavCollapse
+              name={name}
+              icon={icon}
+              active={key === collapseName}
+              noCollapse={noCollapse}
+            />
+          </Link>
+        ) : (
+          <NavLink key={key} to={route}>
+            <SidenavCollapse name={name} icon={icon} active={key === collapseName} />
+          </NavLink>
+        );
+      } else if (type === "title") {
+        returnValue = (
+          <MDTypography
+            key={key}
+            color={textColor}
+            display="block"
+            variant="caption"
+            fontWeight="bold"
+            textTransform="uppercase"
+            pl={3}
+            mt={2}
+            mb={1}
+            ml={1}
+          >
+            {title}
+          </MDTypography>
+        );
+      } else if (type === "divider") {
+        returnValue = (
+          <Divider
+            key={key}
+            light={
+              (!darkMode && !whiteSidenav && !transparentSidenav) ||
+              (darkMode && !transparentSidenav && whiteSidenav)
+            }
           />
-        </Link>
-      ) : (
-        <NavLink key={key} to={route}>
-          <SidenavCollapse name={name} icon={icon} active={key === collapseName} />
-        </NavLink>
-      );
-    } else if (type === "title") {
-      returnValue = (
-        <MDTypography
-          key={key}
-          color={textColor}
-          display="block"
-          variant="caption"
-          fontWeight="bold"
-          textTransform="uppercase"
-          pl={3}
-          mt={2}
-          mb={1}
-          ml={1}
-        >
-          {title}
-        </MDTypography>
-      );
-    } else if (type === "divider") {
-      returnValue = (
-        <Divider
-          key={key}
-          light={
-            (!darkMode && !whiteSidenav && !transparentSidenav) ||
-            (darkMode && !transparentSidenav && whiteSidenav)
-          }
-        />
-      );
-    }
+        );
+      }
 
-    return returnValue;
-  });
+      return returnValue;
+    });
 
   return (
     <SidenavRoot
@@ -181,7 +208,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       />
       <List>{renderRoutes}</List>
       <MDBox p={2} mt="auto">
-        <MDButton
+        {/* <MDButton
           component="a"
           href="https://www.creative-tim.com/product/material-dashboard-pro-react"
           target="_blank"
@@ -191,7 +218,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           fullWidth
         >
           Hey there
-        </MDButton>
+        </MDButton> */}
       </MDBox>
     </SidenavRoot>
   );

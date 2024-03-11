@@ -11,7 +11,6 @@ import Card from "@mui/material/Card";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
@@ -69,11 +68,15 @@ function ViewCalendar() {
           "player_id",
           profileData.map((profile) => profile.id)
         ); // Filter assignments by player IDs belonging to the user's team
-      if (assignmentError) throw assignmentError;
 
+      if (assignmentError) throw assignmentError;
+      // Filter assignments by player IDs belonging to the current user
+      const assignmentsForCurrentUser = assignmentData.filter(
+        (assignment) => assignment.player_id === user.id
+      );
       // Group assignments by date, notes, and workout_id
       const groupedAssignments = {};
-      assignmentData.forEach((assignment) => {
+      assignmentsForCurrentUser.forEach((assignment) => {
         const key = `${assignment.date}-${assignment.notes}-${assignment.workout_id}`;
         if (!groupedAssignments[key]) {
           groupedAssignments[key] = { ...assignment, player_ids: [assignment.player_id] };
@@ -134,9 +137,9 @@ function ViewCalendar() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle="Team Calendar" />
-      <MDBox pt={4} pb={3}>
-        <Grid container spacing={2}>
+      <DashboardNavbar pageTitle="My Calendar" />
+      <MDBox pt={6} pb={3}>
+        <Grid container spacing={6}>
           <Grid item xs={12}>
             <Card>
               <MDBox
@@ -152,20 +155,15 @@ function ViewCalendar() {
                 <MDTypography variant="h6" color="white">
                   Team Calendar
                 </MDTypography>
-                <MDButton
+                {/* <Button
                   variant="outlined"
                   component={Link}
                   to="/addassignment"
-                  style={{
-                    position: "absolute",
-                    top: -7,
-                    right: 40,
-                    backgroundColor: "rgba(255, 255, 255, 0.5)",
-                    color: "rgba(0, 0, 0, 0.6)",
-                  }}
+                  color="inherit"
+                  style={{ position: "absolute", top: -7, right: 20 }}
                 >
                   Add Assignment
-                </MDButton>
+                </Button> */}
               </MDBox>
               <MDBox pt={3} pl={2} pr={2} pb={2}>
                 {" "}

@@ -8,7 +8,7 @@ import AddGroup from "./data/index";
 function AddingGroup() {
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle="Create Group" absolute isMini />
+      <DashboardNavbar pageTitle="Add Group" />
       <MDBox mt={8}>
         <MDBox mb={3}>
           <Grid container spacing={3}>

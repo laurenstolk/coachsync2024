@@ -1,36 +1,16 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-import { useEffect, useState } from "react";
-
-// Material Dashboard 2 React components
+import React, { useEffect, useState } from "react";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton";
-import Icon from "@mui/material/Icon";
-
-// Add supabase connection
 import { supabase } from "../../../supabaseClient";
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
-export default function data() {
+export default function ExercisesTableData() {
   const [exercises, setExercises] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filteredExercises, setFilteredExercises] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   async function getExercises() {
     try {
@@ -95,6 +75,7 @@ export default function data() {
 
   // Function to handle category filter
   const handleCategoryFilter = (category) => {
+    setSelectedCategory(category);
     if (category === "All") {
       setFilteredExercises(exercises); // Show all exercises
     } else {
@@ -107,8 +88,8 @@ export default function data() {
     { Header: "name", accessor: "name", width: "20%", align: "left" },
     { Header: "category", accessor: "category", width: "20%", align: "left" },
     { Header: "description", accessor: "description", width: "40%", align: "left" },
-    { Header: "Edit", accessor: "edit", width: "10%", align: "left" },
-    { Header: "Delete", accessor: "delete", width: "10%", align: "center" },
+    // { Header: "Edit", accessor: "edit", width: "10%", align: "left" },
+    // { Header: "Delete", accessor: "delete", width: "10%", align: "center" },
   ];
 
   const rows = filteredExercises.map((exercise, index) => ({
@@ -127,39 +108,21 @@ export default function data() {
         {exercise.description}
       </MDTypography>
     ),
-    edit: (
-      <MDBox>
-        <MDButton variant="text" color="dark">
-          <Icon>edit</Icon>&nbsp;edit
-        </MDButton>
-      </MDBox>
-    ),
-    delete: (
-      <MDBox mr={1}>
-        <MDButton variant="text" color="error">
-          <Icon>delete</Icon>&nbsp;delete
-        </MDButton>
-      </MDBox>
-    ),
+    // edit: (
+    //   <MDBox>
+    //     <MDButton variant="text" color="dark">
+    //       <Icon>edit</Icon>&nbsp;edit
+    //     </MDButton>
+    //   </MDBox>
+    // ),
+    // delete: (
+    //   <MDBox mr={1}>
+    //     <MDButton variant="text" color="error">
+    //       <Icon>delete</Icon>&nbsp;delete
+    //     </MDButton>
+    //   </MDBox>
+    // ),
   }));
 
-  const filterButton = (
-    <MDBox mb={2}>
-      <MDButton variant="outlined" color="white" onClick={() => handleCategoryFilter("All")}>
-        Show All
-      </MDButton>
-      {categories.map((category, index) => (
-        <MDButton
-          key={index}
-          variant="outlined"
-          color="white"
-          onClick={() => handleCategoryFilter(category)}
-        >
-          {category}
-        </MDButton>
-      ))}
-    </MDBox>
-  );
-
-  return { columns, rows, handleCategoryFilter, filterButton };
+  return { columns, rows, handleCategoryFilter, categories, selectedCategory };
 }

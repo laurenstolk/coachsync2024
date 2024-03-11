@@ -1,5 +1,7 @@
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
+import { ToastContainer } from "react-toastify";
+
 import { useState, useEffect, useMemo, Component, Suspense } from "react";
 
 // react-router components
@@ -10,6 +12,7 @@ import { BrowserRouter as Router, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
+import MenuIcon from "@mui/icons-material/Menu";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -93,15 +96,26 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  //THIS IS WHERE THE USER IS NULL ERROR ON SIGN IN IS HAPPENING
+  // WHERE THE USER IS NULL ERROR ON SIGN IN IS HAPPENING - i need
   useEffect(() => {
-    const fetchData = async () => {
-      const userdata = await fetchUserProfile();
-      setProfile(userdata);
-      setLoading(false); // Set loading to false after fetching profile data
-    };
-    fetchData();
-  }, []);
+    if (session) {
+      const fetchData = async () => {
+        try {
+          const userdata = await fetchUserProfile();
+          console.log(userdata);
+          setProfile(userdata);
+          setLoading(false); // Set loading to false after fetching profile data
+        } catch (error) {
+          console.error("Error fetching user profile:", error.message);
+          // Handle error, e.g., set loading to false or show an error message
+          setLoading(false);
+        }
+      };
+      fetchData();
+    } else {
+      setLoading(false); // No session, so set loading to false
+    }
+  }, [session]);
 
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -145,7 +159,8 @@ export default function App() {
   };
 
   // Change the openConfigurator state
-  const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
+  const handleConfiguratorOpen = () => setMiniSidenav(dispatch, !miniSidenav);
+  // setOpenConfigurator(dispatch, !openConfigurator);
 
   // Setting the dir attribute for the body element
   useEffect(() => {
@@ -191,9 +206,16 @@ export default function App() {
       sx={{ cursor: "pointer" }}
       onClick={handleConfiguratorOpen}
     >
-      <Icon fontSize="small" color="inherit">
+      {miniSidenav ? (
+        <Icon sx={{ fontSize: "2rem" }}>menu_open</Icon>
+      ) : (
+        <Icon sx={{ fontSize: "2rem" }}>menu</Icon>
+      )}
+      {/* <MenuIcon fontSize="small" color="inherit" /> */}
+
+      {/* <Icon fontSize="small" color="inherit">
         settings
-      </Icon>
+      </Icon> */}
     </MDBox>
   );
 
@@ -293,6 +315,7 @@ export default function App() {
             {getRoutes(routes)}
             <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>
+          <ToastContainer />
         </ThemeProvider>
       </CacheProvider>
     ) : (

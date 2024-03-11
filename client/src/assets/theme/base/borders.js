@@ -46,6 +46,7 @@ const borders = {
     lg: pxToRem(8),
     xl: pxToRem(12),
     xxl: pxToRem(16),
+    xxxl: pxToRem(50),
     section: pxToRem(160),
   },
 };

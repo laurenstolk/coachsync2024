@@ -33,6 +33,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
+import SignOut from "layouts/authentication/sign-out";
 
 // Custom styles for the Configurator
 import ConfiguratorRoot from "examples/Configurator/ConfiguratorRoot";
@@ -267,6 +268,29 @@ function Configurator() {
             </MDButton>
           </MDBox>
         </MDBox>
+        <br></br>
+        <br></br>
+        <MDBox>
+          <MDTypography variant="h5">User Settings</MDTypography>
+          <Divider />
+
+          {/*           <MDTypography variant="body2" color="text">
+            See our dashboard options.
+          </MDTypography> */}
+        </MDBox>
+        <MDBox mt={3} mb={2}>
+          <MDTypography variant="h6">Sign Out</MDTypography>
+          <MDButton
+            component={Link}
+            href="/authentication/sign-out"
+            color="info"
+            // color={darkMode ? "light" : "dark"}
+            // variant="outlined"
+            fullWidth
+          >
+            Sign Out
+          </MDButton>
+        </MDBox>
         {/*         <MDBox
           display="flex"
           justifyContent="space-between"
@@ -278,13 +302,13 @@ function Configurator() {
 
           <Switch checked={fixedNavbar} onChange={handleFixedNavbar} />
         </MDBox> */}
-        <Divider />
+        {/* <Divider />
         <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
           <MDTypography variant="h6">Dark Mode</MDTypography>
 
           <Switch checked={darkMode} onChange={handleDarkMode} />
         </MDBox>
-        <Divider />
+        <Divider /> */}
         {/* <MDBox mt={3} mb={2}>
           <MDButton
             component={Link}

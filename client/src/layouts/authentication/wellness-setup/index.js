@@ -6,33 +6,31 @@ import { Link } from "react-router-dom";
 // @mui material components
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
+import Typography from "@mui/material/Typography";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
-
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 // Authentication layout components
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 
 // Images
 import bgImage from "assets/images/grass2.jpg";
-import { FormControl, FormControlLabel, InputLabel, Select } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
+import { FormControl, FormControlLabel } from "@mui/material";
 
 import { supabase } from "../../../supabaseClient";
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import Tooltip from "@mui/material/Tooltip";
 
 const daysOfWeekMap = [
   { id: 1, name: "Sunday" },
@@ -50,16 +48,6 @@ function WellnessSetup() {
   const [selectedDays, setSelectedDays] = useState(daysOfWeekMap.map((day) => day.id));
   const [selectedWellnessOptions, setSelectedWellnessOptions] = useState(wellnessOptions);
   const [profile, setProfile] = useState(null);
-
-  const handleWellnessOptionChange = (option) => {
-    setSelectedWellnessOptions((prevSelected) => {
-      if (prevSelected.includes(option)) {
-        return prevSelected.filter((item) => item !== option);
-      } else {
-        return [...prevSelected, option];
-      }
-    });
-  };
 
   useEffect(() => {
     // Fetch wellness options from Supabase
@@ -102,13 +90,25 @@ function WellnessSetup() {
     });
   };
 
-  const waterCheckinValue = selectedWellnessOptions.includes("water");
-  const sleepCheckinValue = selectedWellnessOptions.includes("sleep");
-  const stressCheckinValue = selectedWellnessOptions.includes("soreness");
-  const sorenessCheckinValue = selectedWellnessOptions.includes("energy");
-  const energyCheckinValue = selectedWellnessOptions.includes("stress");
+  const handleWellnessOptionChange = (option) => {
+    setSelectedWellnessOptions((prevSelected) => {
+      if (prevSelected.includes(option)) {
+        return prevSelected.filter((item) => item !== option);
+      } else {
+        return [...prevSelected, option];
+      }
+    });
+    console.log("Selected wellness options:", selectedWellnessOptions);
+  };
+
+  const waterCheckinValue = selectedWellnessOptions.includes("Water");
+  const sleepCheckinValue = selectedWellnessOptions.includes("Sleep");
+  const stressCheckinValue = selectedWellnessOptions.includes("Soreness");
+  const sorenessCheckinValue = selectedWellnessOptions.includes("Energy");
+  const energyCheckinValue = selectedWellnessOptions.includes("Stress");
 
   const handleSubmit = async () => {
+    console.log("Selected wellness options:", selectedWellnessOptions);
     const teamWellnessData = {
       checkin_frequency: selectedDays.sort((a, b) => a - b).join(""),
       water_checkin: waterCheckinValue,
@@ -117,6 +117,8 @@ function WellnessSetup() {
       soreness_checkin: sorenessCheckinValue,
       energy_checkin: energyCheckinValue,
     };
+
+    console.log(teamWellnessData);
 
     try {
       // Fetch profile data to get user's team ID
@@ -184,7 +186,38 @@ function WellnessSetup() {
         <MDBox pt={2} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDTypography display="block" variant="button" color="text" my={1}>
-              Select the wellness check-in activities that you want to assign your team.
+              Select the wellness check-in activities that you want to assign your team.{" "}
+              <Tooltip
+                title={
+                  <React.Fragment>
+                    <Typography variant="body2" style={{ fontSize: "11px" }}>
+                      <b>Water:</b> Players can input an approximate percentage representing how
+                      much of their water goal for the day they hit. Their water goal will be
+                      something they decide outside of the application.
+                    </Typography>
+                    <Typography variant="body2" style={{ fontSize: "11px" }}>
+                      <b>Sleep:</b> Players can input how many hours of sleep they got the night
+                      before.
+                    </Typography>
+                    <Typography variant="body2" style={{ fontSize: "11px" }}>
+                      <b>Soreness:</b> Players can rate their current soreness on a scale of 1-5, 1
+                      being No Soreness and 5 being Extremely Sore.
+                    </Typography>
+                    <Typography variant="body2" style={{ fontSize: "11px" }}>
+                      <b>Energy:</b> Players can rate their current overall energy level on a scale
+                      of 1-5, 1 being low energy and 5 being high.
+                    </Typography>
+                    <Typography variant="body2" style={{ fontSize: "11px" }}>
+                      <b>Stress:</b> Players can rate their current stress on a scale of 1-5, 1
+                      being No Stress and 5 being Extremely Stressed.
+                    </Typography>
+                  </React.Fragment>
+                }
+                arrow
+                PopperProps={{ style: { maxWidth: "400px" } }} // Set the maximum width of the tooltip box
+              >
+                <Icon>info</Icon>
+              </Tooltip>
             </MDTypography>
             <MDBox pt={1} pb={2} px={2}>
               <FormControl>
@@ -207,7 +240,21 @@ function WellnessSetup() {
             </MDBox>
             <MDBox pt={1} pb={2} px={2}>
               <MDTypography display="block" variant="button" color="text" my={1}>
-                How often you want to check-in?
+                How often you want to check-in?{" "}
+                <Tooltip
+                  title={
+                    <React.Fragment>
+                      <Typography variant="body2" style={{ fontSize: "11px" }}>
+                        Here you can select days of the week. Players will only report their
+                        wellness metrics on the application on these days of the week.
+                      </Typography>
+                    </React.Fragment>
+                  }
+                  arrow
+                  PopperProps={{ style: { maxWidth: "400px" } }}
+                >
+                  <Icon>info</Icon>
+                </Tooltip>
               </MDTypography>
 
               <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>

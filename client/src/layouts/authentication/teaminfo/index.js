@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Checkbox from "@mui/material/Checkbox";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -14,11 +13,6 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 
-// @mui icons
-import Icon from "@mui/material/Icon";
-
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import logo from "assets/images/logo-ct.png";
 
 // Authentication layout components
@@ -39,6 +33,7 @@ function TeamInfoUpdate() {
   const [teamid, setTeamID] = useState([]);
   const [profile, setProfile] = useState(null);
   const [formValid, setFormValid] = useState(false);
+  const randomNumber = Math.floor(100000 + Math.random() * 900000);
 
   const onLogoDrop = useCallback((acceptedFiles) => {
     // Do something with the uploaded file (e.g., store it in state)
@@ -94,11 +89,20 @@ function TeamInfoUpdate() {
   const handleSubmit = async () => {
     const currentDate = new Date().toISOString();
     const teamName = document.getElementById("team-name").value;
+    const teamNameWithoutSpaces = teamName.replace(/\s/g, "");
+
+    let logoPicture = `${teamName}_logo_${selectedSport}`; // Default logo picture value
+
+    // Check if teamLogo is null and assign GenericLogo if it is
+    if (!teamLogo) {
+      logoPicture = "GenericLogo";
+    }
 
     const teamData = {
       name: teamName,
       sport_id: selectedSport, // use the selectedSport state variable
-      logo_picture: `${teamName}_logo_${selectedSport}`, // Construct the profile picture string
+      logo_picture: logoPicture, // Assign the logo_picture value
+      signup_code: `${teamNameWithoutSpaces}${randomNumber}`, // Construct signup code
     };
     console.log(teamData);
 

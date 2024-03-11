@@ -22,6 +22,11 @@ export async function fetchTeamInfo() {
       .eq("id", userTeamId)
       .single();
 
+    // Check if logo_picture is null and set it to GenericLogo
+    if (!teamData.logo_picture) {
+      teamData.logo_picture = "GenericLogo";
+    }
+
     return teamData;
   } catch (error) {
     alert(error.message);
