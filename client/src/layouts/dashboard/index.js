@@ -38,13 +38,13 @@ export default function Dashboard() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  yesterday.setHours(0, 0, 0, 0);
-
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(0, 0, 0, 0);
+  // const yesterday = new Date();
+  // yesterday.setDate(yesterday.getDate() - 1);
+  // yesterday.setHours(0, 0, 0, 0);
+  //
+  // const tomorrow = new Date();
+  // tomorrow.setDate(tomorrow.getDate() + 1);
+  // tomorrow.setHours(0, 0, 0, 0);
 
   const [assignedWorkoutNames, setAssignedWorkoutNames] = useState([]);
   const [workoutData, setWorkoutData] = useState([]);
@@ -108,7 +108,6 @@ export default function Dashboard() {
         .select("*")
         .eq("date", formattedDate)
         .in("player_id", playerIds);
-      console.log("wellnesscheckindata: ", wellnessCheckinData);
 
       if (wellnessError) {
         console.error("Error fetching wellness checkin data:", wellnessError.message);
@@ -117,17 +116,13 @@ export default function Dashboard() {
 
       // Initialize wellnessCountMap with the current date
       const wellnessCountMap = new Map([[formattedDate, wellnessCheckinData.length]]);
-      console.log("wellnessCountMap: ", wellnessCountMap);
 
       // Calculate the completed wellness percentage
       const totalWellnessExpected = playerIds.length * checkinCount;
-      console.log("total wellness expected: ", totalWellnessExpected);
       const totalWellnessCompleted = wellnessCountMap.get(formattedDate) || 0;
-      console.log("total wellness completed: ", totalWellnessCompleted);
       const completedPercentage = Math.round(
         (totalWellnessCompleted / totalWellnessExpected) * 100
       );
-      console.log("completed wellness percentage: ", completedPercentage);
 
       // Set wellnessData to an array containing the completed percentage
       setWellnessCompletionData([{ wDateCompleted: formattedDate, count: completedPercentage }]);
@@ -155,7 +150,6 @@ export default function Dashboard() {
       .gte("date", startDate.toISOString()) // Filter by start date
       .lte("date", endDate.toISOString()) // Filter by end date
       .in("player_id", playerIds);
-    console.log("past week's workout completion data: ", workoutCompletionData);
 
     if (workoutError) {
       console.error("Error fetching exercise completion data:", workoutError.message);
@@ -168,7 +162,6 @@ export default function Dashboard() {
           workoutCountMap.set(dateCompleted, workoutCountMap.get(dateCompleted) + 1);
         }
       });
-      console.log("workoutcountmap: ", workoutCountMap);
 
       // Convert the map to an array for use in the chart
       const workoutChartData = Array.from(workoutCountMap).map(([dateCompleted, count]) => ({
@@ -195,14 +188,12 @@ export default function Dashboard() {
         .eq("date", formattedDate)
         .eq("completed", true)
         .in("player_id", playerIds);
-      console.log("completedworkoustdata: ", completedWorkoutsData);
 
       const { data: expectedWorkoutsData, error: expectedWorkoutError } = await supabase
         .from("assignment")
         .select("*")
         .eq("date", formattedDate)
         .in("player_id", playerIds);
-      console.log("expectedWorkoutsData: ", expectedWorkoutsData);
 
       if (workoutError) {
         console.error("Error fetching workout completion data:", workoutError.message);
@@ -276,8 +267,6 @@ export default function Dashboard() {
         .in("player_id", playerIds)
         .eq("date", date.toISOString().split("T")[0]);
 
-      console.log("wellness data: ", wellnessData);
-
       if (wellnessError) {
         console.error("Error fetching wellness data:", wellnessError.message);
         return;
@@ -301,8 +290,6 @@ export default function Dashboard() {
       const { data: wellnessNames, error: namesError } = await supabase
         .from("wellness")
         .select("id, name");
-      // .in("id", Object.keys(groupedWellnessData).map(Number));
-      console.log("wellnessNames: ", wellnessNames);
 
       if (namesError) {
         console.error("Error fetching wellness names:", namesError.message);
@@ -315,9 +302,6 @@ export default function Dashboard() {
         wellness_name: wellnessNames.find((name) => name.id === parseInt(key)).name,
         average_value: groupedWellnessData[key].sum / groupedWellnessData[key].count,
       }));
-
-      // Log the wellness average data
-      console.log("Wellness average data:", wellnessAverageData);
 
       // Set wellness average data state
       setWellnessAverageData(wellnessAverageData);
@@ -345,7 +329,6 @@ export default function Dashboard() {
           .from("team")
           .select("*")
           .filter("id", "eq", profileData.team_id);
-        console.log("checkin count data: ", checkinCountData);
 
         const checkinData = checkinCountData[0]; // Assuming checkinCountData contains the check-in data object
 
@@ -357,15 +340,12 @@ export default function Dashboard() {
           }
         }
 
-        console.log("Number of true check-in values:", trueCount);
-
         // grab the profiles of the players on my team
         const { data: profilesData, error: profilesError } = await supabase
           .from("profile")
           .select("id")
           .filter("player", "eq", true)
           .filter("team_id", "eq", profileData.team_id);
-        console.log("profiles on my team: ", profilesData);
 
         if (profilesError) {
           console.error("Error fetching profiles:", profilesError.message);
@@ -377,7 +357,6 @@ export default function Dashboard() {
           playerIds = profilesData.map((profile) => profile.id);
           setPlayerIds(playerIds);
         }
-        console.log(tomorrow);
 
         await getWellnessChartData(today, playerIds, trueCount);
         await getAssignedWorkouts(today, playerIds);

@@ -35,7 +35,6 @@ export default function data() {
       const userProfile = await fetchUserProfile();
       console.log(userProfile);
       setUser(userProfile);
-
     };
     fetchData();
   }, []);

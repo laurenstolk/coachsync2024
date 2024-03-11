@@ -56,14 +56,12 @@ export default function PlayerDashboard() {
     return date.toLocaleDateString("en-US", options);
   };
 
-
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchUserProfile();
       setUser(data);
 
       setCurrentDate(getFormattedDate(today));
-
     };
     fetchData();
   }, []);
@@ -94,7 +92,7 @@ export default function PlayerDashboard() {
 
     fetchCheckinCompletion(); // Call the check-in completion function
 
-      // Fetch checkin_frequency from the team table
+    // Fetch checkin_frequency from the team table
     const fetchTeamCheckinFrequency = async () => {
       try {
         const { data: teamData, error: teamError } = await supabase
@@ -125,10 +123,10 @@ export default function PlayerDashboard() {
         "Friday",
         "Saturday",
       ];
-  
+
       // Extract individual digits from the checkin_frequency
       const frequencyDigits = checkinFrequency.split("").map(Number);
-  
+
       // Find the next available check-in day
       for (let i = 1; i <= 7; i++) {
         const nextDayIndex = (currentDayOfWeek + i) % 7;
@@ -136,16 +134,15 @@ export default function PlayerDashboard() {
           return daysOfWeek[nextDayIndex];
         }
       }
-  
+
       return null; // Return null if no scheduled check-in days found
     };
-  
+
     const nextCheckinDay = getNextCheckinDay();
     setNextCheckinDay(nextCheckinDay);
-  
+
     // ... (other code)
   }, [user, today, checkinFrequency]);
-  
 
   async function fetchWorkoutCompletion() {
     try {
@@ -155,7 +152,7 @@ export default function PlayerDashboard() {
         .select("completed")
         .eq("player_id", user.id)
         .eq("date", today.toISOString().split("T")[0]);
-      
+
       if (completionError) throw completionError;
 
       if (completionData.length > 0) {
@@ -166,7 +163,7 @@ export default function PlayerDashboard() {
     } catch (error) {
       console.error("Error fetching workout completion:", error.message);
     }
-  };
+  }
 
   async function fetchAssignedWorkout() {
     try {
@@ -196,8 +193,7 @@ export default function PlayerDashboard() {
     } catch (error) {
       console.error("Error fetching assigned workout:", error.message);
     }
-  };
-
+  }
 
   return (
     <DashboardLayout>
@@ -238,19 +234,21 @@ export default function PlayerDashboard() {
                 icon="person_add"
                 title="Completed Workouts"
                 count={
-                  assignedWorkout !== null
-                    ? workoutCompleted
-                      ? "Your workout is complete."
-                      : (
-                        <Button
-                          style={{ border: "2px solid", color: "inherit" }}
-                          component={Link}
-                          to="/completeworkout"
-                        >
-                          No. Complete Workout?
-                        </Button>
-                      )
-                    : "No assigned workout today."
+                  assignedWorkout !== null ? (
+                    workoutCompleted ? (
+                      "Your workout is complete."
+                    ) : (
+                      <Button
+                        style={{ border: "2px solid", color: "inherit" }}
+                        component={Link}
+                        to="/completeworkout"
+                      >
+                        No. Complete Workout?
+                      </Button>
+                    )
+                  ) : (
+                    "No assigned workout today."
+                  )
                 }
                 percentage={{
                   color: "success",
@@ -269,18 +267,16 @@ export default function PlayerDashboard() {
                 count={
                   checkinCompleted ? (
                     "Your check-in is complete."
+                  ) : nextCheckinDay ? (
+                    `Next check-in: ${nextCheckinDay}`
                   ) : (
-                    nextCheckinDay ? (
-                      `Next check-in: ${nextCheckinDay}`
-                    ) : (
-                      <Button
-                        style={{ border: "2px solid", color: "inherit" }}
-                        component={Link}
-                        to="/completecheckin"
-                      >
-                        No. Complete Check-in?
-                      </Button>
-                    )
+                    <Button
+                      style={{ border: "2px solid", color: "inherit" }}
+                      component={Link}
+                      to="/completecheckin"
+                    >
+                      No. Complete Check-in?
+                    </Button>
                   )
                 }
                 percentage={{

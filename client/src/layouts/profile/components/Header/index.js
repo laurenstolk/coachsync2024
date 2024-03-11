@@ -18,7 +18,6 @@ import { useState, useEffect } from "react";
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
 
-
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 // Material Dashboard 2 React base styles
