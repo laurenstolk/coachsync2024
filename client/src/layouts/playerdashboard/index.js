@@ -266,20 +266,19 @@ export default function PlayerDashboard() {
                 icon={<PsychologyAlt>Wellness</PsychologyAlt>}
                 title="Check In"
                 count={
-                  checkinCompleted ? (
-                    "Your check-in is complete."
+                  !checkinCompleted ? (
+                    <Button
+                      style={{ border: "2px solid", color: "inherit" }}
+                      component={Link}
+                      to="/completecheckin"
+                    >
+                      No. Complete Check-in?
+                    </Button>
                   ) : (
-                    nextCheckinDay ? (
-                      `Next Check-in: ${nextCheckinDay}`
-                    ) : (
-                      <Button
-                        style={{ border: "2px solid", color: "inherit" }}
-                        component={Link}
-                        to="/completecheckin"
-                      >
-                        No. Complete Check-in?
-                      </Button>
-                    )
+                    <>
+                      <p style={{ fontSize: '15px' }}>Your check-in is complete.</p>
+                      {nextCheckinDay && <p style={{ fontSize: '15px' }}>Next check-in: {nextCheckinDay}</p>}
+                    </>
                   )
                 }
                 percentage={{
