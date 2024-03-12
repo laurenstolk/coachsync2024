@@ -95,16 +95,13 @@ function AddWellness() {
   const getNextCheckInDay = () => {
     const daysOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday",];
     const currentDayOfWeek = daysOfWeek.indexOf(dayjs(startDate).format("dddd"));
-    console.log("Current Day of the Wekk:", currentDayOfWeek)
 
     // Extract individual digits from the checkin_frequency
     const frequencyDigits = checkinFrequency.split("").map(Number);
-    console.log("Frequency Digits:", frequencyDigits)
 
     // Find the next available check-in day
     for (let i = 1; i <= 7; i++) {
       const nextDayIndex = (currentDayOfWeek + i) % 7;
-      console.log("Next Day Index:", nextDayIndex)
       if (frequencyDigits.includes(nextDayIndex + 1)) {
         return daysOfWeek[nextDayIndex];
       }
