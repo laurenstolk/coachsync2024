@@ -18,12 +18,12 @@ import MDTypography from "components/MDTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import DataTable from "examples/Tables/DataTable";
 import { Link } from "react-router-dom";
-import Button from "@mui/material/Button"; // Import Button component
+
 
 function ViewCalendar() {
   const [assignments, setAssignments] = useState([]);
+  const [wellness, setWellness] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [user, setUser] = useState(null);
 
@@ -45,42 +45,77 @@ function ViewCalendar() {
     getGroups();
   }, []);
 
-  async function getWellnessCheckins(teamCheckinFrequency) {
-    console.log("Team Checkin Frequency:", teamCheckinFrequency);
+// async function getWellnessCheckins(teamCheckinFrequency) {
+//   console.log("Team Checkin Frequency:", teamCheckinFrequency);
 
-    const today = new Date();
-    const currentDayOfWeek = (today.getDay() + 6) % 7; // Get the current day of the week (0: Sunday, 1: Monday, ...)
+//   const today = new Date();
+//   const currentDayOfWeek = (today.getDay() === 0) ? 1 : today.getDay(); // Adjusting Sunday to be day 7
 
-    const checkinDays = teamCheckinFrequency.split("").map(Number);
-    console.log("checkin dates split", checkinDays)
-    const checkinDates = [];
+//   const checkinDays = teamCheckinFrequency.split("").map(Number);
+//   console.log("checkin dates split", checkinDays)
+//   const checkinDates = [];
+//   checkinDays.forEach(day => {
+//     console.log("day of week", day)
+//     // Convert the day of the week number to the $W format
+//     const formattedDay = day;
+//     const daysToAdd = (formattedDay >= currentDayOfWeek) ? formattedDay - currentDayOfWeek : formattedDay + (7 - currentDayOfWeek);
+//     const date = new Date(today); // Create a new Date object based on today's date
+//     date.setDate(date.getDate() + daysToAdd); // Set the date to the next check-in day
+//     checkinDates.push(date);
+//   });
+//   console.log("Check-in Dates:", checkinDates);
+//   return checkinDates;
+// }
+async function getWellnessCheckins(teamCheckinFrequency) {
+  console.log("Team Checkin Frequency:", teamCheckinFrequency);
+
+  const today = new Date();
+  const currentDayOfWeek = (today.getDay() === 0) ? 7 : today.getDay(); // Adjusting Sunday to be day 7
+
+  const checkinDays = teamCheckinFrequency.split("").map(Number);
+  console.log("checkin dates split", checkinDays);
+  const checkinDates = [];
+
+  // Get check-in dates for the past 6 weeks (including last week)
+  for (let i = -6; i <= -1; i++) {
+    const pastDate = new Date(today); // Create a new Date object based on today's date
+    pastDate.setDate(pastDate.getDate() + 7 * i); // Move to the past week
+    const pastDayOfWeek = (pastDate.getDay() === 0) ? 7 : pastDate.getDay(); // Adjusting Sunday to be day 7
+
     checkinDays.forEach(day => {
-      console.log("day of week", day)
-        // Convert the day of the week number to the $W format
-        const dayOfWeek = (day -1); // Adjust the day of the week to match JavaScript's numbering
-        console.log("day of the week:", dayOfWeek)
-        const formattedDay = dayOfWeek === 0 ? 7 : dayOfWeek; // Convert Sunday (0) to 7
-        const date = new Date(today); // Create a new Date object based on today's date
-        date.setDate(date.getDate() + (formattedDay + 6 - currentDayOfWeek) % 7); // Set the date to the next check-in day
-        checkinDates.push(date);
-      });
-    console.log("Check-in Dates:", checkinDates);
-    return checkinDates;
+      const formattedDay = day;
+      const daysToSubtract = pastDayOfWeek - formattedDay;
+      const date = new Date(pastDate); // Create a new Date object based on the past date
+      date.setDate(date.getDate() - daysToSubtract); // Set the date to the previous check-in day
+      checkinDates.push(date);
+    });
+  }
+
+  // Get check-in dates for the current week
+  checkinDays.forEach(day => {
+    const formattedDay = day;
+    const daysToAdd = (formattedDay >= currentDayOfWeek) ? formattedDay - currentDayOfWeek : formattedDay + (7 - currentDayOfWeek);
+    const date = new Date(today); // Create a new Date object based on today's date
+    date.setDate(date.getDate() + daysToAdd); // Set the date to the next check-in day
+    checkinDates.push(date);
+  });
+
+  // Get check-in dates for the next 12 weeks
+  for (let i = 1; i <= 12; i++) {
+    checkinDays.forEach(day => {
+      const formattedDay = day;
+      const daysToAdd = formattedDay - currentDayOfWeek + 7 * i;
+      const date = new Date(today); // Create a new Date object based on today's date
+      date.setDate(date.getDate() + daysToAdd); // Set the date to the next check-in day
+      checkinDates.push(date);
+    });
+  }
+
+  console.log("Check-in Dates:", checkinDates);
+  return checkinDates;
 }
-  // async function getWellnessCheckins(teamCheckinFrequency, selectedDate) {
-  //   const checkinDays = teamCheckinFrequency.split(",").map(Number);
-  //   const selectedDayOfWeek = selectedDate.getDay(); // Get the day of the week (0: Sunday, 1: Monday, ...)
 
-  //   const wellnessCheckinDates = checkinDays.map(day => {
-  //       const daysToAdd = (day - selectedDayOfWeek + 7) % 7; // Calculate the number of days until the next check-in day
-  //       const date = new Date(selectedDate); // Create a new Date object based on the selected date
-  //       date.setDate(date.getDate() + daysToAdd); // Set the date to the next check-in day
-  //       return date;
-  //   });
 
-  //   console.log("Wellness Check-in Dates:", wellnessCheckinDates);
-  //   return wellnessCheckinDates;
-  // }
 
   async function getGroups() {
     try {
@@ -110,13 +145,6 @@ function ViewCalendar() {
       const team = teamData[0];
       const wellnessCheckinDates = await getWellnessCheckins(team.checkin_frequency);
       console.log("Wellness Check-in Dates:", wellnessCheckinDates);
-  
-      // const wellnessCheckins = wellnessCheckinDates.map(date => ({
-      //   date: new Date(date), // Use the Date object directly
-      //   workout_name: "Wellness Assigned", // Indicate wellness check-in
-      //   player_ids: "All Players" // Indicate all players
-      // }));
-      // console.log("Wellness Check-ins:", wellnessCheckins);
   
       // Create a map to store team data by team id for easy lookup
       const teamMap = {};
@@ -191,28 +219,24 @@ function ViewCalendar() {
       }));
   
       // Concatenate wellness check-ins with assignments
-      const allAssignments = [...assignmentsWithWorkouts, ...wellnessCheckins];
+      //const allAssignments = [...assignmentsWithWorkouts, ...wellnessCheckins];
   
       // Sort all assignments by date (closest to farthest)
-      allAssignments.sort((a, b) => new Date(a.date) - new Date(b.date));
+      // allAssignments.sort((a, b) => new Date(a.date) - new Date(b.date));
+      assignmentsWithWorkouts.sort((a, b) => new Date(a.date) - new Date(b.date));
   
       // Set the fetched assignments data to state
-      setAssignments(allAssignments);
-      console.log("break it", allAssignments)
+      setAssignments(assignmentsWithWorkouts);
+      setWellness(wellnessCheckins)
+      console.log("workouts", assignmentsWithWorkouts)
+      console.log("wellness", wellnessCheckins)
+
 
     } catch (error) {
       console.error("Error fetching assignments:", error.message);
     }
   }
-      // Sort assignments by date (closest to farthest)
-     // assignmentsWithWorkouts.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-
-      // Set the fetched assignments data to state
-  //     setAssignments(assignmentsWithWorkouts);    } catch (error) {
-  //     console.error("Error fetching assignments:", error.message);
-  //   }
-  // }
   const handleDateChange = (newValue) => {
     setSelectedDate(newValue);
     console.log("Selected Date:", newValue);
@@ -259,15 +283,15 @@ function ViewCalendar() {
                                 <div style={{ display: "flex", flexDirection: "column" }}>
                                     <div style={{ marginBottom: "20px" }}>
                                         <DateCalendar
-                                            assignments={assignments}
+                                            wellness={wellness}
                                             onChange={handleDateChange}
                                             style={{ width: "100%", height: "100%" }}
                                         />
                                     </div>
                                     {selectedDate && (
-                                      <div style={{ padding: "20px", border: "1px solid #ccc", borderRadius: "5px" }}>
+                                      <div >
                                           {/* Display assigned wellness check-in if the selected date is a wellness check-in date */}
-                                          {assignments.some((assignment) => {
+                                          {wellness.some((assignment) => {
                                               const assignmentDate = new Date(assignment.date);
                                               const selectedDateObject = new Date(selectedDate);
 
@@ -275,18 +299,15 @@ function ViewCalendar() {
                                                   assignment.workout_name === "Wellness Assigned" &&
                                                   assignmentDate.getFullYear() === selectedDateObject.getFullYear() &&
                                                   assignmentDate.getMonth() === selectedDateObject.getMonth() &&
-                                                  assignmentDate.getDate() === (selectedDateObject.getDate() -1)
+                                                  assignmentDate.getDate() === (selectedDateObject.getDate())
 
                                               );
                                           }) && (
-                                              <div>
-                                                  {console.log("Selected WD:", selectedDate)}
-                                                  {/* <p>Date: {selectedDate.todate()}</p> */}
-                                                  <p>Wellness Assigned</p>
-                                                  <p>Assigned to: All Players</p>
-                                              </div>
+                                            <div style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "5px", marginBottom: "2px" }}>
+                                              <h4>Wellness Assigned</h4>
+                                            </div>
                                           )}
-                                          
+                                        
 
                                           {/* Display other assignment details for the selected date */}
                                           {/* Filter assignments for the selected date */}
@@ -307,23 +328,17 @@ function ViewCalendar() {
                                               })
                                               .map((assignment, index, array) => {
                                                   // Check if this assignment is not a wellness check-in
-                                                  if (assignment.workout_name !== "Wellness Assigned") {
+                                                  
                                                       // Check if there are multiple assignments with the same date but different notes
                                                       const differentNotes = array.filter(
                                                           (item) =>
                                                               item.date === assignment.date && item.notes !== assignment.notes
                                                       );
-
+                                                      
                                                       // If there are assignments with different notes, display a new row for each one
                                                       if (differentNotes.length > 0) {
                                                           return (
-                                                              <div
-                                                                  style={{
-                                                                      padding: "20px",
-                                                                      border: "1px solid #ccc",
-                                                                      borderRadius: "5px",
-                                                                  }}
-                                                                  key={assignment.id}
+                                                              <div style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "5px", marginBottom: "2px"}} key={assignment.id}
                                                               >
                                                                   <p>Date: {assignment.date}</p>
                                                                   <p>Workout Name: {assignment.workout_name}</p>
@@ -335,18 +350,17 @@ function ViewCalendar() {
 
                                                       // Otherwise, display the assignment details
                                                       return (
-                                                          <div key={assignment.id}>
-                                                              <p>Date: {assignment.date}</p>
-                                                              <p>Workout Name: {assignment.workout_name}</p>
-                                                              <p>Notes: {assignment.notes}</p>
-                                                              <p>Assigned to: {assignment.player_ids}</p>
+                                                          <div style={{ padding: "10px", border: "1px solid #ccc", borderRadius: "5px", marginBottom: "2px"}} key={assignment.id}>
+                                                              <h4>Workout Assigned</h4>
+                                                              {/* <p style={{ textIndent: "25px"}}>Date: {assignment.date}</p> */}
+                                                              <p style={{ textIndent: "25px"}}>Workout Name: {assignment.workout_name}</p>
+                                                              <p style={{ textIndent: "25px"}}>Notes: {assignment.notes}</p>
+                                                              <p style={{ textIndent: "25px"}}>Assigned to: {assignment.player_ids}</p>
                                                           </div>
                                                       );
-                                                  }
-                                                  return null; // Skip wellness check-ins as they were already displayed above
-                                              })}
-                                          {/* If no assignments are found, display a message */}
-                                          {assignments.filter((assignment) => {
+                                                   })}
+                                           {/* If no assignments or wellness assignments are found, display a message */}
+                                          {/* {assignments.filter((assignment) && wellness.filter((well)) => {
                                               // Convert assignment date to a Date object for comparison
                                               const assignmentDate = new Date(assignment.date);
                                               assignmentDate.setDate(assignmentDate.getDate() + 1);
@@ -359,11 +373,12 @@ function ViewCalendar() {
                                                   assignmentDate.getMonth() === selectedDateObject.getMonth() &&
                                                   assignmentDate.getDate() === selectedDateObject.getDate()
                                               );
-                                          }).length === 0 && (
+                                          })
+                                          .length === 0 && (
                                               <div>
                                                   <p>No Workout Assigned</p>
                                               </div>
-                                          )}
+                                          )}  */}
                                       </div>
                                   )}
                                 </div>
