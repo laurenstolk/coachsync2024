@@ -45,27 +45,6 @@ function ViewCalendar() {
     getGroups();
   }, []);
 
-// async function getWellnessCheckins(teamCheckinFrequency) {
-//   console.log("Team Checkin Frequency:", teamCheckinFrequency);
-
-//   const today = new Date();
-//   const currentDayOfWeek = (today.getDay() === 0) ? 1 : today.getDay(); // Adjusting Sunday to be day 7
-
-//   const checkinDays = teamCheckinFrequency.split("").map(Number);
-//   console.log("checkin dates split", checkinDays)
-//   const checkinDates = [];
-//   checkinDays.forEach(day => {
-//     console.log("day of week", day)
-//     // Convert the day of the week number to the $W format
-//     const formattedDay = day;
-//     const daysToAdd = (formattedDay >= currentDayOfWeek) ? formattedDay - currentDayOfWeek : formattedDay + (7 - currentDayOfWeek);
-//     const date = new Date(today); // Create a new Date object based on today's date
-//     date.setDate(date.getDate() + daysToAdd); // Set the date to the next check-in day
-//     checkinDates.push(date);
-//   });
-//   console.log("Check-in Dates:", checkinDates);
-//   return checkinDates;
-// }
 async function getWellnessCheckins(teamCheckinFrequency) {
   console.log("Team Checkin Frequency:", teamCheckinFrequency);
 
