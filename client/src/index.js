@@ -22,7 +22,7 @@ import App from "App";
 import { MaterialUIControllerProvider } from "context";
 import { ToastContainer } from "react-toastify";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 const container = document.getElementById("app");
 const root = createRoot(container);
 

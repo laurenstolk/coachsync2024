@@ -32,8 +32,6 @@ import Button from "@mui/material/Button"; // Import Button component
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
-import AssignmentCompleted from "./components/AssignmentCompleted";
-import AssignmentNotCompleted from "./components/AssignmentNotCompleted";
 import { fetchUserProfile } from "../../fetchUserProfile";
 import PsychologyAlt from "@mui/icons-material/PsychologyAlt";
 

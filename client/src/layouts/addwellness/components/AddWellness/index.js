@@ -5,7 +5,6 @@ import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import InfoIcon from "@mui/icons-material/Info";
 
-
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
 import MDTypography from "../../../../components/MDTypography";
@@ -88,7 +87,7 @@ function AddWellness() {
   }, []);
 
   const isWellnessRequired = () => {
-    const currentDayOfWeek = startDate.day()
+    const currentDayOfWeek = startDate.day();
     return checkinFrequency.includes((currentDayOfWeek + 1).toString());
   };
 
@@ -118,9 +117,10 @@ function AddWellness() {
   };
 
   const handleSubmit = async () => {
-    console.log('startDate',startDate)
+    console.log("startDate", startDate);
     const selectedDate = dayjs(startDate).format("YYYY-MM-DD");
-    console.log('selectedDate',selectedDate)
+
+    console.log("selectedDate", selectedDate);
 
     const { data: existingEntries, error: existingEntriesError } = await supabase
       .from("checkin")
@@ -183,17 +183,17 @@ function AddWellness() {
         <MDTypography variant="h4" fontWeight="medium">
           Complete Check-in
         </MDTypography>
-          <DatePicker
-            label="Select Date"
-            slotProps={{
-              textField: {
-                helperText: "MM/DD/YYYY",
-              },
-            }}
-            onChange={(date) => setStartDate(date)}
-            value={dayjs(startDate)}
-          />
-          {/*<DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />*/}
+        <DatePicker
+          label="Select Date"
+          slotProps={{
+            textField: {
+              helperText: "MM/DD/YYYY",
+            },
+          }}
+          onChange={(date) => setStartDate(date)}
+          value={dayjs(startDate)}
+        />
+        {/*<DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />*/}
       </MDBox>
 
       {isWellnessRequired() ? (
