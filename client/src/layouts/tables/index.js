@@ -172,30 +172,32 @@ function Tables() {
         </Card>
       </Box>
       {/* Render groups or "No groups assigned" message */}
-      <Grid container spacing={1} justifyContent="center">
-        {gRows.length === 0 ? (
-          <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
-            <Box
-              sx={{
-                width: "100%",
-                backgroundColor: "#fff",
-                borderRadius: "10px",
-                padding: "20px",
-                textAlign: "center",
-                marginTop: "5px",
-              }}
-            >
-              <Typography variant="subtitle1" fontSize="15px">No Groups Assigned</Typography>
-            </Box>
+      {/* <Grid container spacing={1} justifyContent="center"> */}
+      {gRows.length === 0 ? (
+        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            sx={{
+              width: "100%",
+              backgroundColor: "#fff",
+              borderRadius: "10px",
+              padding: "20px",
+              textAlign: "center",
+              marginTop: "5px",
+            }}
+          >
+            <Typography variant="subtitle1" fontSize="15px">
+              No Groups Assigned
+            </Typography>
+          </Box>
+        </Grid>
+      ) : (
+        gRows.map((row, index) => (
+          <Grid item xs={12} key={index}>
+            {/* Accordion for each group */}
           </Grid>
-        ) : (
-          gRows.map((row, index) => (
-            <Grid item xs={12} key={index}>
-              {/* Accordion for each group */}
-            </Grid>
-          ))
-        )}
-      </Grid>
+        ))
+      )}
+      {/* </Grid> */}
       <Grid container spacing={1} sx={{ marginBottom: 5 }}>
         {gRows.map((row, index) => (
           <Grid item xs={12} key={index}>

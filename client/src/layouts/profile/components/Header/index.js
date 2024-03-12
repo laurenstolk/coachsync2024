@@ -14,21 +14,12 @@ Coded by www.creative-tim.com
 */
 
 import { useState, useEffect } from "react";
-import { Link } from 'react-router-dom';
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
 
-// @mui material components
-import Card from "@mui/material/Card";
-import Grid from "@mui/material/Grid";
-
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
-import MDAvatar from "components/MDAvatar";
-import { AppBar, Tabs, Tab, Icon } from '@mui/material'; // Import Material-UI components
-
 // Material Dashboard 2 React base styles
 import breakpoints from "assets/theme/base/breakpoints";
 
@@ -122,7 +113,7 @@ function Header({ children }) {
   const handleSetTabValue = (event, newValue) => setTabValue(newValue);
 
   return (
-    <MDBox position="relative" mb={5}>
+    <MDBox position="relative" mb={2}>
       <MDBox
         display="flex"
         alignItems="center"
@@ -140,7 +131,7 @@ function Header({ children }) {
           overflow: "hidden",
         }}
       />
-      <Card
+      {/* <Card
         sx={{
           position: "relative",
           mt: -8,
@@ -162,6 +153,7 @@ function Header({ children }) {
                 {profile ? (profile.player ? profile.position : profile.coach_role) : ""}
               </MDTypography>
             </MDBox>
+
           </Grid>
           <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
           <AppBar position="static">
@@ -186,7 +178,7 @@ function Header({ children }) {
           </Grid>
         </Grid>
         {children}
-      </Card>
+      </Card> */}
     </MDBox>
   );
 }

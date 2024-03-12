@@ -360,6 +360,7 @@ async function getWellnessCheckins(teamCheckinFrequency) {
                                           )}  */}
                                       </div>
                                   )}
+
                                 </div>
                             </LocalizationProvider>
                         </MDBox>

@@ -96,15 +96,26 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // WHERE THE USER IS NULL ERROR ON SIGN IN IS HAPPENING
+  // WHERE THE USER IS NULL ERROR ON SIGN IN IS HAPPENING - i need
   useEffect(() => {
-    const fetchData = async () => {
-      const userdata = await fetchUserProfile();
-      setProfile(userdata);
-      setLoading(false); // Set loading to false after fetching profile data
-    };
-    fetchData();
-  }, []);
+    if (session) {
+      const fetchData = async () => {
+        try {
+          const userdata = await fetchUserProfile();
+          console.log(userdata);
+          setProfile(userdata);
+          setLoading(false); // Set loading to false after fetching profile data
+        } catch (error) {
+          console.error("Error fetching user profile:", error.message);
+          // Handle error, e.g., set loading to false or show an error message
+          setLoading(false);
+        }
+      };
+      fetchData();
+    } else {
+      setLoading(false); // No session, so set loading to false
+    }
+  }, [session]);
 
   const [controller, dispatch] = useMaterialUIController();
   const {

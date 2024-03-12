@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Checkbox from "@mui/material/Checkbox";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -14,11 +13,6 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 
-// @mui icons
-import Icon from "@mui/material/Icon";
-
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import logo from "assets/images/logo-ct.png";
 
 // Authentication layout components
@@ -31,7 +25,6 @@ import { supabase } from "../../../supabaseClient";
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
 import MenuItem from "@mui/material/MenuItem";
-import { random } from "chroma-js";
 
 function TeamInfoUpdate() {
   const [selectedSport, setSelectedSport] = useState(""); // new state for selected sport
@@ -98,10 +91,17 @@ function TeamInfoUpdate() {
     const teamName = document.getElementById("team-name").value;
     const teamNameWithoutSpaces = teamName.replace(/\s/g, "");
 
+    let logoPicture = `${teamName}_logo_${selectedSport}`; // Default logo picture value
+
+    // Check if teamLogo is null and assign GenericLogo if it is
+    if (!teamLogo) {
+      logoPicture = "GenericLogo";
+    }
+
     const teamData = {
       name: teamName,
       sport_id: selectedSport, // use the selectedSport state variable
-      logo_picture: `${teamName}_logo_${selectedSport}`, // Construct the profile picture string
+      logo_picture: logoPicture, // Assign the logo_picture value
       signup_code: `${teamNameWithoutSpaces}${randomNumber}`, // Construct signup code
     };
     console.log(teamData);
