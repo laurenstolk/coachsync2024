@@ -131,7 +131,7 @@ function AddWorkout() {
 
     // Check if each selected exercise has data in sets, reps, coach notes, or duration
     const hasMissingData = selectedExercises.some((exercise) => {
-      return !exercise.sets && !exercise.reps && !exercise.duration && !exercise.notes;
+      return !(exercise.sets || exercise.reps || exercise.duration || exercise.notes);
     });
 
     if (hasMissingData) {
