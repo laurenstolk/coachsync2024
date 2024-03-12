@@ -92,16 +92,8 @@ function AddWellness() {
   };
 
   const getNextCheckInDay = () => {
-    const currentDayOfWeek = dayjs(startDate).format("dddd");
-    const daysOfWeek = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
+    const daysOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday",];
+    const currentDayOfWeek = daysOfWeek.indexOf(dayjs(startDate).format("dddd"));
 
     // Extract individual digits from the checkin_frequency
     const frequencyDigits = checkinFrequency.split("").map(Number);
@@ -117,36 +109,6 @@ function AddWellness() {
     return "No scheduled check-in days found";
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const data = await fetchUserProfile();
-
-  //     setProfile(data);
-  //   };
-  //   fetchData();
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchCompletedWellness = async () => {
-  //     const selectedDate = startDate.toISOString();
-  //     const { data, error } = await supabase
-  //       .from("checkin")
-  //       .select()
-  //       .eq("player_id", profile.id)
-  //       .eq("date", selectedDate);
-
-  //     if (error) {
-  //       console.error("Error fetching completed wellness data:", error);
-  //       // Handle the error here
-  //     } else {
-  //       // Set the completed wellness data in state
-  //       setCompletedWellnessData(data);
-  //     }
-  //   };
-
-  //   fetchCompletedWellness();
-  // }, [profile.id, startDate]);
-
   const handleSliderChange = (type, value) => {
     setWellnessData((prevData) => ({
       ...prevData,
@@ -157,6 +119,7 @@ function AddWellness() {
   const handleSubmit = async () => {
     console.log("startDate", startDate);
     const selectedDate = dayjs(startDate).format("YYYY-MM-DD");
+
     console.log("selectedDate", selectedDate);
 
     const { data: existingEntries, error: existingEntriesError } = await supabase
