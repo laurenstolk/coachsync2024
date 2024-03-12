@@ -23,7 +23,7 @@ import bgImage from "assets/images/grass2.jpg";
 import { supabase } from "../../../supabaseClient";
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
-function CoachEdit() {
+function PlayerEdit() {
   const [profilePic, setProfilePic] = useState("");
   const [profile, setProfile] = useState(null);
 
@@ -54,7 +54,8 @@ function CoachEdit() {
     const lastName = document.getElementById("last-name").value;
     const phoneNumber = document.getElementById("phone-number").value;
     const birthDate = document.getElementById("birth-date").value;
-    const coachRole = document.getElementById("coach-role").value;
+    const position = document.getElementById("player-position").value;
+    const jerseyNum = document.getElementById("jersey-number").value;
   };
 
   const handleSubmit = async () => {
@@ -72,15 +73,16 @@ function CoachEdit() {
         profilePicture = "GenericUser";
       }
 
-      const coachRoleData = {
-        coach_role: document.getElementById("coach-role").value,
+      const playerRoleData = {
+        position: document.getElementById("player-position").value,
+        jersey_number: document.getElementById("jersey-number").value,
         first_name: firstName,
         last_name: lastName,
         profile_picture: profilePicture, // Construct the profile picture string
         phone_number: document.getElementById("phone-number").value,
         birth_date: document.getElementById("birth-date").value,
       };
-      console.log(coachRoleData);
+      console.log(playerRoleData);
 
       try {
         if (profilePic) {
@@ -100,14 +102,14 @@ function CoachEdit() {
         // Use supabase client's api.post method to add data
         const { data, error } = await supabase
           .from("profile")
-          .update([coachRoleData])
+          .update([playerRoleData])
           .eq("id", profile.id);
 
         if (error) {
-          console.error("Error updating coach role:", error);
+          console.error("Error updating player role:", error);
           // Handle the error here
         } else {
-          console.log("Coach Role updated successfully!");
+          console.log("Player Role updated successfully!");
         }
       } catch (error) {
         console.error("Error:", error);
@@ -146,74 +148,86 @@ function CoachEdit() {
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
-          <MDBox mb={2}>
             <MDBox mb={2}>
-              <MDInput
-                type="text"
-                id="first-name"
-                label="First Name"
-                variant="outlined"
-                fullWidth
-                required
-                value={profile ? profile.first_name : ''}
-                onChange={e => setProfile(prevState => ({ ...prevState, first_name: e.target.value }))}
-              />
-            </MDBox>
-            <MDBox mb={2}>
-              <MDInput
-                type="text"
-                id="last-name"
-                label="Last Name"
-                variant="outlined"
-                fullWidth
-                required
-                value={profile ? profile.last_name : ''}
-                onChange={e => setProfile(prevState => ({ ...prevState, last_name: e.target.value }))}
-              />
-            </MDBox>
-            <MDBox mb={3}>
-              <MDInput
-                type="tel"
-                id="phone-number"
-                label="Phone Number"
-                variant="outlined"
-                fullWidth
-                required
-                value={profile ? profile.phone_number : ''}
-                onChange={e => setProfile(prevState => ({ ...prevState, phone_number: e.target.value }))}
-              />
-            </MDBox>
-            <MDBox mb={3}>
+              <MDBox mb={2}>
+                <MDInput
+                  type="text"
+                  id="first-name"
+                  label="First Name"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  value={profile ? profile.first_name : ''}
+                  onChange={e => setProfile(prevState => ({ ...prevState, first_name: e.target.value }))}                />
+              </MDBox>
+              <MDBox mb={2}>
+                <MDInput
+                  type="text"
+                  id="last-name"
+                  label="Last Name"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  value={profile ? profile.last_name : ''}
+                  onChange={e => setProfile(prevState => ({ ...prevState, last_name: e.target.value }))}
+                  />
+              </MDBox>
+              <MDBox mb={3}>
+                <MDInput
+                  type="tel"
+                  id="phone-number"
+                  label="Phone Number"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  value={profile ? profile.phone_number : ''}
+                  onChange={e => setProfile(prevState => ({ ...prevState, phone_number: e.target.value }))}
+                  />
+              </MDBox>
+              <MDBox mb={3}>
+                <MDTypography display="block" variant="button" color="text" my={1}>
+                  Birthdate
+                </MDTypography>
+                <MDInput
+                  type="date"
+                  id="birth-date"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  value={profile ? profile.birth_date : ''}
+                  onChange={e => setProfile(prevState => ({ ...prevState, birth_date: e.target.value }))}
+                  />
+              </MDBox>
               <MDTypography display="block" variant="button" color="text" my={1}>
-                Birthdate
+                What is your position in your sport? (Quarterback, Goalie, 1st Doubles, etc...)
               </MDTypography>
-              <MDInput
-                type="date"
-                id="birth-date"
-                variant="outlined"
-                fullWidth
-                required
-                value={profile ? profile.birth_date : ''}
-                onChange={e => setProfile(prevState => ({ ...prevState, birth_date: e.target.value }))}
-              />
+              <MDBox mb={5}>
+                <MDInput
+                  type="text"
+                  id="player-position"
+                  label="Player Role"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  value={profile ? profile.position : ''}
+                  onChange={e => setProfile(prevState => ({ ...prevState, position: e.target.value }))}
+                  />
+              </MDBox>
+              <MDTypography display="block" variant="button" color="text" my={1}>
+                If applicable, what is your jersey number?
+              </MDTypography>
+              <MDBox mb={5}>
+                <MDInput
+                  type="text"
+                  id="jersey-number"
+                  label="Jersey Number"
+                  variant="outlined"
+                  fullWidth
+                  value={profile ? profile.jersey_number : ''}
+                  onChange={e => setProfile(prevState => ({ ...prevState, jersey_number: e.target.value }))}
+                />
+              </MDBox>
             </MDBox>
-            <MDTypography display="block" variant="button" color="text" my={1}>
-              What type of coach are you? (Head, Assistant, etc...)
-            </MDTypography>
-            <MDBox mb={5}>
-              <MDInput
-                type="text"
-                id="coach-role"
-                label="Coach Role"
-                variant="outlined"
-                fullWidth
-                required
-                value={profile ? profile.coach_role : ''}
-                onChange={e => setProfile(prevState => ({ ...prevState, coach_role: e.target.value }))}
-              />
-            </MDBox>
-          </MDBox>
-
             <MDBox mb={2} {...getRootProps()} style={{ cursor: "pointer" }}>
               <input {...getInputProps()} />
               <MDTypography display="block" variant="button" color="text" my={1}>
@@ -258,7 +272,7 @@ function CoachEdit() {
                 component={Link}
                 to="/profile"
                 variant="gradient"
-                color="info"
+                color="info" // Change color based on selectionMade
                 fullWidth
                 onClick={handleSubmit}
               >
@@ -277,4 +291,4 @@ function CoachEdit() {
   );
 }
 
-export default CoachEdit;
+export default PlayerEdit;

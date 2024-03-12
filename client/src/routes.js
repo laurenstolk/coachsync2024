@@ -51,6 +51,7 @@ import SignOut from "layouts/authentication/sign-out";
 import CoachOrPlayer from "layouts/authentication/coachorplayer";
 import CoachInfo from "layouts/authentication/coachinfo";
 import CoachEdit from "layouts/authentication/coachedit";
+import PlayerEdit from "layouts/authentication/playeredit";
 import PlayerInfo from "layouts/authentication/playerinfo";
 import TeamInfo from "layouts/authentication/teaminfo";
 import PlayerTeam from "layouts/authentication/playerteam";
@@ -334,11 +335,19 @@ const routes = [
   },
   {
     // type: "collapse",
-    // name: "Coach Info",
+    // name: "Coach Edit",
     key: "coachedit",
     icon: <Icon fontSize="small"></Icon>,
     route: "/authentication/coachedit",
     component: <CoachEdit />,
+  },
+  {
+    // type: "collapse",
+    // name: "Player Edit",
+    key: "playeredit",
+    icon: <Icon fontSize="small"></Icon>,
+    route: "/authentication/playeredit",
+    component: <PlayerEdit />,
   },
   {
     // type: "collapse",
