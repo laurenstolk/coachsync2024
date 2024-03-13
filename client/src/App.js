@@ -1,18 +1,15 @@
-import bgImage from "assets/images/bg-sign-in-basic.jpeg";
-
 import { ToastContainer } from "react-toastify";
 
 import { useState, useEffect, useMemo, Component, Suspense } from "react";
 
 // react-router components
 import { Routes, useLocation } from "react-router-dom";
-import { BrowserRouter as Router, Route, Navigate } from "react-router-dom";
+import { Route, Navigate } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Icon from "@mui/material/Icon";
-import MenuIcon from "@mui/icons-material/Menu";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -38,7 +35,7 @@ import createCache from "@emotion/cache";
 import routes from "routes";
 
 // Material Dashboard 2 React contexts
-import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
+import { useMaterialUIController, setMiniSidenav } from "context";
 
 import LoadingPage from "layouts/loadingpage.js";
 
@@ -102,7 +99,6 @@ export default function App() {
       const fetchData = async () => {
         try {
           const userdata = await fetchUserProfile();
-          console.log(userdata);
           setProfile(userdata);
           setLoading(false); // Set loading to false after fetching profile data
         } catch (error) {
@@ -122,7 +118,6 @@ export default function App() {
     miniSidenav,
     direction,
     layout,
-    openConfigurator,
     sidenavColor,
     transparentSidenav,
     whiteSidenav,

@@ -31,7 +31,6 @@ async function getWorkoutName(workoutId) {
       .select("workout_name")
       .eq("id", workoutId)
       .single();
-    console.log("here: ", workoutData);
 
     return workoutData.workout_name;
   } catch (workoutError) {
@@ -77,8 +76,6 @@ function AssignmentNotCompleted() {
           };
         })
       );
-
-      console.log("merged ya: ", mergedPlayerandAssignment);
 
       setPlayers(mergedPlayerandAssignment);
     };

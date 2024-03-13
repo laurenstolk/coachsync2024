@@ -18,8 +18,6 @@ import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-import Typography from "@mui/material/Typography";
-
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
@@ -40,15 +38,12 @@ export default function PlayerDashboard() {
   today.setHours(0, 0, 0, 0);
 
   const [wellnessData, setWellnessData] = useState([]); //for chart will remove once new chart is in
-  const [workoutData, setWorkoutData] = useState([]);
   const [workoutCompleted, setWorkoutCompleted] = useState(false);
   const [checkinCompleted, setCheckinCompleted] = useState(false);
   const [checkinFrequency, setCheckinFrequency] = useState("");
   const [nextCheckinDay, setNextCheckinDay] = useState("");
   const [assignedWorkout, setAssignedWorkout] = useState(null);
   const [currentDate, setCurrentDate] = useState("");
-
-  const [assignments, setAssignments] = useState("");
   const [user, setUser] = useState(null);
 
   const getFormattedDate = (date) => {
@@ -144,7 +139,6 @@ export default function PlayerDashboard() {
     // ... (other code)
   }, [user, today, checkinFrequency]);
 
-
   // Determine if check-in is required for today
   const isCheckinRequired = () => {
     const currentDayOfWeek = today.getDay();
@@ -153,8 +147,6 @@ export default function PlayerDashboard() {
   };
 
   const checkinRequired = isCheckinRequired();
-
-
 
   async function fetchWorkoutCompletion() {
     try {
@@ -270,16 +262,15 @@ export default function PlayerDashboard() {
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
-          <MDBox mb={1.5}>
-          <ComplexStatisticsCard
-            color="success"
-            icon={<PsychologyAlt>Wellness</PsychologyAlt>}
-            title="Check-in Status"
-            count={
-              checkinCompleted && currentDate === getFormattedDate(today)
-                ? "Check-in complete."
-                : checkinRequired
-                ? (
+            <MDBox mb={1.5}>
+              <ComplexStatisticsCard
+                color="success"
+                icon={<PsychologyAlt>Wellness</PsychologyAlt>}
+                title="Check-in Status"
+                count={
+                  checkinCompleted && currentDate === getFormattedDate(today) ? (
+                    "Check-in complete."
+                  ) : checkinRequired ? (
                     <Button
                       style={{ border: "2px solid", color: "inherit" }}
                       component={Link}
@@ -287,16 +278,19 @@ export default function PlayerDashboard() {
                     >
                       No. Complete Check-in?
                     </Button>
+                  ) : (
+                    "No check-in required."
                   )
-                : "No check-in required."
-            }
-            percentage={{
-              color: checkinCompleted ? "success" : "error",
-              amount: "",
-              label: nextCheckinDay ? `Next check-in: ${nextCheckinDay}` : "No scheduled check-in",
-            }}
-          />
-          </MDBox>
+                }
+                percentage={{
+                  color: checkinCompleted ? "success" : "error",
+                  amount: "",
+                  label: nextCheckinDay
+                    ? `Next check-in: ${nextCheckinDay}`
+                    : "No scheduled check-in",
+                }}
+              />
+            </MDBox>
           </Grid>
         </Grid>
         <MDBox mt={4.5} mb={9}>
