@@ -36,7 +36,6 @@ function AddWellness() {
   const [profile, setProfile] = useState(null);
   const [startDate, setStartDate] = useState(dayjs());
   const [checkinFrequency, setCheckinFrequency] = useState("");
-  const [completedWellnessData, setCompletedWellnessData] = useState(null);
   const [wellnessData, setWellnessData] = useState({
     water: { id: 1, value: 3 }, //make sure to update to percent
     sleep: { id: 2, value: 3 },
@@ -92,7 +91,15 @@ function AddWellness() {
   };
 
   const getNextCheckInDay = () => {
-    const daysOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday",];
+    const daysOfWeek = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
     const currentDayOfWeek = daysOfWeek.indexOf(dayjs(startDate).format("dddd"));
 
     // Extract individual digits from the checkin_frequency
