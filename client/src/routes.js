@@ -86,6 +86,7 @@ import ViewCalendar from "./layouts/viewcalendar";
 import MyCalendar from "./layouts/mycalendar";
 import { useEffect, useState } from "react";
 import { Route } from "react-router-dom"; // Add this import statement
+import { layouts } from "chart.js";
 
 const routes = [
   //COACH
@@ -241,6 +242,7 @@ const routes = [
     route: "/viewassignment",
     component: <ViewAssignment />,
   },
+
   //COACH
   {
     type: "divider",
