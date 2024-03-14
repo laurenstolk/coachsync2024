@@ -32,6 +32,8 @@ import { Link } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import { fetchUserProfile } from "../../fetchUserProfile";
 import PsychologyAlt from "@mui/icons-material/PsychologyAlt";
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
 export default function PlayerDashboard() {
   const today = new Date();
@@ -220,7 +222,7 @@ export default function PlayerDashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon="check"
+                icon={<AssignmentTurnedInIcon>assigned</AssignmentTurnedInIcon>}
                 title="Assigned Workouts"
                 count={assignedWorkout !== null ? assignedWorkout : "No assigned workout."}
                 percentage={{
@@ -235,7 +237,7 @@ export default function PlayerDashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
-                icon="person_add"
+                icon={<FitnessCenterIcon>Workout</FitnessCenterIcon>}
                 title="Workout Complete?"
                 count={
                   assignedWorkout !== null ? (

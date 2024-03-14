@@ -217,7 +217,7 @@ const routes = [
     type: "collapse",
     name: "Complete Workout",
     key: "completeworkout",
-    icon: <Icon fontSize="small">person</Icon>,
+    icon: <FitnessCenterIcon fontSize="small">workout</FitnessCenterIcon>,
     route: "/completeworkout",
     component: <CompleteWorkout />,
     player: true,
