@@ -173,26 +173,30 @@ export default function PlayerDashboard() {
 
   async function fetchAssignedWorkout() {
     try {
-      // Fetch data from the assignment table to check if there is an assigned workout for today
+      // Fetch data from the assignment table to check if there are assigned workouts for today
       const { data: assignmentData, error: assignmentError } = await supabase
         .from("assignment")
         .select("workout_id")
         .eq("player_id", user.id)
         .eq("date", today.toISOString().split("T")[0]);
-
+  
       if (assignmentError) throw assignmentError;
-
+  
       if (assignmentData.length > 0) {
-        const workoutId = assignmentData[0].workout_id;
+        const workoutIds = assignmentData.map((assignment) => assignment.workout_id);
+        
+        // Fetching workout names for the fetched workout ids
         const { data: workoutData, error: workoutError } = await supabase
           .from("workout")
           .select("workout_name")
-          .eq("id", workoutId)
-          .single();
-
+          .in("id", workoutIds);
+  
         if (workoutError) throw workoutError;
-
-        setAssignedWorkout(workoutData.workout_name);
+  
+        const workoutNames = workoutData.map((workout) => workout.workout_name);
+        
+        // Set the assignedWorkout state to the array of workout names
+        setAssignedWorkout(workoutNames);
       } else {
         setAssignedWorkout(null);
       }
@@ -200,6 +204,28 @@ export default function PlayerDashboard() {
       console.error("Error fetching assigned workout:", error.message);
     }
   }
+  
+  // Calculate the font size based on the number of assigned workouts
+ // Calculate the font size based on the number of assigned workouts
+ let fontSize;
+ console.log("Assigned workouts:", assignedWorkout);
+ if (assignedWorkout !== null) {
+   if (Array.isArray(assignedWorkout)) {
+     const numAssignedWorkouts = assignedWorkout.length;
+     if (numAssignedWorkouts === 1 || numAssignedWorkouts === 0) {
+       fontSize = 25;
+     } else if (numAssignedWorkouts === 2) {
+       fontSize = 18;
+     } else {
+       fontSize = 13; // Adjusted font size for multiple workouts
+     }
+   } else {
+     fontSize = 25; // Default font size if assignedWorkout is not an array
+   }
+ } else {
+   fontSize = 25; // Default font size if assignedWorkout is null or undefined
+ }
+ console.log("Font size:", fontSize);
 
   return (
     <DashboardLayout>
@@ -220,18 +246,29 @@ export default function PlayerDashboard() {
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                icon={<AssignmentTurnedInIcon>assigned</AssignmentTurnedInIcon>}
-                title="Assigned Workouts"
-                count={assignedWorkout !== null ? assignedWorkout : "No assigned workout."}
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "Just updated",
-                }}
-              />
-            </MDBox>
+          <MDBox mb={1.5} >
+            <ComplexStatisticsCard
+              icon={<AssignmentTurnedInIcon>Workout</AssignmentTurnedInIcon>}
+              title="Assigned Workouts"
+              count={
+                assignedWorkout !== null && Array.isArray(assignedWorkout) ? (
+                  assignedWorkout.map((workout, index) => (
+                    <div key={index} style={{ display: "inline-block" }}>
+                     <span style={{ fontSize: `${fontSize}px` }}>{workout}</span>
+                      {index !== assignedWorkout.length - 1 && <span style={{ fontSize: `${fontSize}px` }}>, </span>}
+                    </div>
+                  ))
+                ) : (
+                  assignedWorkout || "No assigned workout."
+                )
+              }
+              percentage={{
+                color: "success",
+                amount: "",
+                label: "Just updated",
+              }}
+            />
+          </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
