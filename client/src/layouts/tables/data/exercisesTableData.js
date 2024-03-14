@@ -11,6 +11,7 @@ export default function ExercisesTableData() {
   const [categories, setCategories] = useState([]);
   const [filteredExercises, setFilteredExercises] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [sportName, setSportName] = useState("");
 
   async function getExercises() {
     try {
@@ -21,6 +22,14 @@ export default function ExercisesTableData() {
         .select("*")
         .eq("id", profileData.team_id)
         .single();
+
+      let { data: sportData, erorr } = await supabase
+          .from("sport")
+          .select("*")
+          .eq("id", teamData.sport_id)
+          .single();
+
+      setSportName(sportData.name);
 
       let { data: trainingExercisesData, error: trainingExercisesError } = await supabase
         .from("exercise")
@@ -88,8 +97,6 @@ export default function ExercisesTableData() {
     { Header: "name", accessor: "name", width: "20%", align: "left" },
     { Header: "category", accessor: "category", width: "20%", align: "left" },
     { Header: "description", accessor: "description", width: "40%", align: "left" },
-    // { Header: "Edit", accessor: "edit", width: "10%", align: "left" },
-    // { Header: "Delete", accessor: "delete", width: "10%", align: "center" },
   ];
 
   const rows = filteredExercises.map((exercise, index) => ({
@@ -99,29 +106,15 @@ export default function ExercisesTableData() {
       </MDBox>
     ),
     category: (
-      <MDBox display="flex" py={1}>
-        {exercise.category}
-      </MDBox>
+        <MDBox display="flex" py={1}>
+          {exercise.category === "Training" ? sportName : exercise.category}
+        </MDBox>
     ),
     description: (
       <MDTypography variant="caption" color="text" fontWeight="medium">
         {exercise.description}
       </MDTypography>
     ),
-    // edit: (
-    //   <MDBox>
-    //     <MDButton variant="text" color="dark">
-    //       <Icon>edit</Icon>&nbsp;edit
-    //     </MDButton>
-    //   </MDBox>
-    // ),
-    // delete: (
-    //   <MDBox mr={1}>
-    //     <MDButton variant="text" color="error">
-    //       <Icon>delete</Icon>&nbsp;delete
-    //     </MDButton>
-    //   </MDBox>
-    // ),
   }));
 
   return { columns, rows, handleCategoryFilter, categories, selectedCategory };

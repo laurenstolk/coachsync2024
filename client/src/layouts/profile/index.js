@@ -140,7 +140,6 @@ function Overview() {
         }
       }
     }
-
     fetchSportName();
   }, [teamData]); // Fetch sport name whenever teamData changes
 
