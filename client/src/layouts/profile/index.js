@@ -233,8 +233,14 @@ function Overview() {
                           component={Link}
                           to={
                             profile && profile.player
-                            ? { pathname: "/authentication/playeredit", state: { profile: profile } }
-                            : { pathname: "/authentication/coachedit", state: { profile: profile } }
+                              ? {
+                                  pathname: "/authentication/playeredit",
+                                  state: { profile: profile },
+                                }
+                              : {
+                                  pathname: "/authentication/coachedit",
+                                  state: { profile: profile },
+                                }
                           }
                           icon={
                             <Icon fontSize="small" sx={{ mt: -0.25 }}>

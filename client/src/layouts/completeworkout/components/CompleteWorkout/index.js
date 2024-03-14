@@ -294,14 +294,19 @@ function CompleteWorkout() {
                           <MDTypography variant="body1" fontWeight="medium">
                             {customizedExercise.name}
                           </MDTypography>
-                          {(customizedExercise.reps || customizedExercise.sets || customizedExercise.duration) && (
-                              <MDTypography variant="body2">
-                                {customizedExercise.reps && `Reps: ${customizedExercise.reps}`}
-                                {customizedExercise.reps && (customizedExercise.sets || customizedExercise.duration) && " | "}
-                                {customizedExercise.sets && `Sets: ${customizedExercise.sets}`}
-                                {customizedExercise.sets && customizedExercise.duration && " | "}
-                                {customizedExercise.duration && `Duration: ${customizedExercise.duration}`}
-                              </MDTypography>
+                          {(customizedExercise.reps ||
+                            customizedExercise.sets ||
+                            customizedExercise.duration) && (
+                            <MDTypography variant="body2">
+                              {customizedExercise.reps && `Reps: ${customizedExercise.reps}`}
+                              {customizedExercise.reps &&
+                                (customizedExercise.sets || customizedExercise.duration) &&
+                                " | "}
+                              {customizedExercise.sets && `Sets: ${customizedExercise.sets}`}
+                              {customizedExercise.sets && customizedExercise.duration && " | "}
+                              {customizedExercise.duration &&
+                                `Duration: ${customizedExercise.duration}`}
+                            </MDTypography>
                           )}
 
                           <MDTypography variant="body2" color="text">
