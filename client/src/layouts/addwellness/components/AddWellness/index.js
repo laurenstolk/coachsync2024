@@ -124,6 +124,10 @@ function AddWellness() {
   };
 
   const handleSubmit = async () => {
+    if (!isWellnessRequired()) {
+      return;
+    }
+    
     console.log("startDate", startDate);
     const selectedDate = dayjs(startDate).format("YYYY-MM-DD");
 
