@@ -45,6 +45,7 @@ export default function PlayerDashboard() {
   const [assignedWorkout, setAssignedWorkout] = useState(null);
   const [currentDate, setCurrentDate] = useState("");
   const [user, setUser] = useState(null);
+  const [playerIds, setPlayerIds] = useState([]);
 
   const getFormattedDate = (date) => {
     const options = { weekday: "long", month: "long", day: "numeric" };
@@ -70,15 +71,17 @@ export default function PlayerDashboard() {
 
     const fetchCheckinCompletion = async () => {
       try {
+        if (!user || !user.id) return; // Add null check here
+    
         // Fetch data from the checkin table to check if the check-in is completed for today
         const { data: checkinData, error: checkinError } = await supabase
           .from("checkin")
           .select("player_id")
           .eq("player_id", user.id)
           .eq("date", today.toISOString().split("T")[0]);
-
+    
         if (checkinError) throw checkinError;
-
+    
         setCheckinCompleted(checkinData.length > 0);
       } catch (error) {
         console.error("Error fetching check-in completion:", error.message);
@@ -90,14 +93,16 @@ export default function PlayerDashboard() {
     // Fetch checkin_frequency from the team table
     const fetchTeamCheckinFrequency = async () => {
       try {
+        if (!user || !user.team_id) return; // Add null check here
+    
         const { data: teamData, error: teamError } = await supabase
           .from("team")
           .select("checkin_frequency")
           .eq("id", user.team_id)
           .single();
-
+    
         if (teamError) throw teamError;
-
+    
         setCheckinFrequency(teamData.checkin_frequency || ""); // Set default value if checkin_frequency is null
       } catch (error) {
         console.error("Error fetching team data:", error.message);
@@ -197,7 +202,8 @@ export default function PlayerDashboard() {
     } catch (error) {
       console.error("Error fetching assigned workout:", error.message);
     }
-  }
+  };
+
 
   return (
     <DashboardLayout>
@@ -298,35 +304,36 @@ export default function PlayerDashboard() {
             <Grid item xs={12} md={12} lg={12}>
               <MDBox mb={3}>
                 <ReportsLineChart
-                  color="success"
-                  title="Check-in History"
-                  description="Check-in results from the past week."
-                  date="Updated Today"
-                  chart={{
-                    labels: wellnessData.map((item) => {
-                      const date = new Date(item.wDateCompleted);
-                      date.setUTCHours(0, 0, 0, 0); // Set the time to midnight UTC to ensure consistency
-                      return `${date.toLocaleString("en-US", {
-                        month: "long",
-                      })} ${date.getUTCDate()}`;
-                    }),
-                    datasets: {
-                      label: "Percentage of Players Completed Wellness",
-                      data: wellnessData.map((item) => {
-                        const percentage = item.count; // Assuming item.count is already in the range of 0 to 100
-                        return percentage.toFixed(2); // Round to two decimal places
+                    color="success"
+                    title="Wellness Completion"
+                    description="Percentage of players who completed a wellness checkin."
+                    date="Updated Today"
+                    chart={{
+                      labels: wellnessData.map((item) => {
+                        console.log("This is my wellnessData " & wellnessData)
+                        const date = new Date(item.wDateCompleted);
+                        date.setUTCHours(0, 0, 0, 0); // Set the time to midnight UTC to ensure consistency
+                        return `${date.toLocaleString("en-US", {
+                          month: "long",
+                        })} ${date.getUTCDate()}`;
                       }),
-                    },
-                    options: {
-                      scales: {
-                        y: {
-                          beginAtZero: true,
-                          suggestedMax: 100, // Ensure the maximum value on the y-axis is 100
+                      datasets: {
+                        label: "Percentage of Players Completed Wellness",
+                        data: wellnessData.map((item) => {
+                          const percentage = item.count; // Assuming item.count is already in the range of 0 to 100
+                          return percentage.toFixed(2); // Round to two decimal places
+                        }),
+                      },
+                      options: {
+                        scales: {
+                          y: {
+                            beginAtZero: true,
+                            suggestedMax: 100, // Ensure the maximum value on the y-axis is 100
+                          },
                         },
                       },
-                    },
-                  }}
-                />
+                    }}
+                  />  
               </MDBox>
             </Grid>
           </Grid>
