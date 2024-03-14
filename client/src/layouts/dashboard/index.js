@@ -37,6 +37,8 @@ import WellnessFlags from "./components/WellnessFlags";
 import PsychologyAlt from "@mui/icons-material/PsychologyAlt";
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import BirthdaysThisWeek from "./components/Birthdays"; // Import BirthdaysThisWeek component
+
 
 export default function Dashboard() {
   const today = new Date();
@@ -375,6 +377,16 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
+   // Determine the font size based on the number of assigned workouts
+   let fontSize;
+   if (assignedWorkoutNames.length === 1 || assignedWorkoutNames.length === 0) {
+     fontSize = 25;
+   } else if (assignedWorkoutNames.length === 2) {
+     fontSize = 20;
+   } else {
+     fontSize = 15;
+   }
+
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Dashboard" />
@@ -399,11 +411,18 @@ export default function Dashboard() {
                 icon={<AssignmentTurnedInIcon>assigned</AssignmentTurnedInIcon>}
                 title="Assigned Workouts"
                 count={
-                  <Link to="/workoutlibrary" style={{ textDecoration: "none", color: "inherit" }}>
-                    {assignedWorkoutNames.length > 0
-                      ? assignedWorkoutNames.join(", ")
-                      : "No assigned workout today"}
-                  </Link>
+                  <Link
+                  to="/workoutlibrary"
+                  style={{
+                    fontSize: `${fontSize}px`,
+                    textDecoration: "none",
+                    color: "inherit"
+                  }}
+                >
+                  {assignedWorkoutNames.length > 0
+                    ? assignedWorkoutNames.join(", ")
+                    : "No assigned workout today"}
+                </Link>
                 }
               />
             </MDBox>
@@ -557,6 +576,9 @@ export default function Dashboard() {
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
               <AssignmentCompleted />
+            </Grid>
+            <Grid item xs={12} md={6} lg={6}>
+              <BirthdaysThisWeek />
             </Grid>
           </Grid>
         </MDBox>
