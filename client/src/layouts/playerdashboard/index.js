@@ -30,8 +30,6 @@ import Button from "@mui/material/Button"; // Import Button component
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
-import AssignmentCompleted from "./components/AssignmentCompleted";
-import AssignmentNotCompleted from "./components/AssignmentNotCompleted";
 import { fetchUserProfile } from "../../fetchUserProfile";
 import PsychologyAlt from "@mui/icons-material/PsychologyAlt";
 
@@ -40,15 +38,12 @@ export default function PlayerDashboard() {
   today.setHours(0, 0, 0, 0);
 
   const [wellnessData, setWellnessData] = useState([]); //for chart will remove once new chart is in
-  const [workoutData, setWorkoutData] = useState([]);
   const [workoutCompleted, setWorkoutCompleted] = useState(false);
   const [checkinCompleted, setCheckinCompleted] = useState(false);
   const [checkinFrequency, setCheckinFrequency] = useState("");
   const [nextCheckinDay, setNextCheckinDay] = useState("");
   const [assignedWorkout, setAssignedWorkout] = useState(null);
   const [currentDate, setCurrentDate] = useState("");
-
-  const [assignments, setAssignments] = useState("");
   const [user, setUser] = useState(null);
 
   const getFormattedDate = (date) => {
@@ -144,6 +139,15 @@ export default function PlayerDashboard() {
     // ... (other code)
   }, [user, today, checkinFrequency]);
 
+  // Determine if check-in is required for today
+  const isCheckinRequired = () => {
+    const currentDayOfWeek = today.getDay();
+    const frequencyDigits = checkinFrequency.split("").map(Number);
+    return frequencyDigits.includes(currentDayOfWeek + 1);
+  };
+
+  const checkinRequired = isCheckinRequired();
+
   async function fetchWorkoutCompletion() {
     try {
       // Fetch data from the assignment table to check if the workout is completed for today
@@ -218,11 +222,11 @@ export default function PlayerDashboard() {
               <ComplexStatisticsCard
                 icon="check"
                 title="Assigned Workouts"
-                count={assignedWorkout !== null ? assignedWorkout : "No assigned workout today."}
+                count={assignedWorkout !== null ? assignedWorkout : "No assigned workout."}
                 percentage={{
                   color: "success",
                   amount: "",
-                  label: "Assigned today",
+                  label: "Just updated",
                 }}
               />
             </MDBox>
@@ -247,7 +251,7 @@ export default function PlayerDashboard() {
                       </Button>
                     )
                   ) : (
-                    "No assigned workout today."
+                    "No assigned workout."
                   )
                 }
                 percentage={{
@@ -264,7 +268,9 @@ export default function PlayerDashboard() {
                 icon={<PsychologyAlt>Wellness</PsychologyAlt>}
                 title="Check-in Status"
                 count={
-                  !checkinCompleted ? (
+                  checkinCompleted && currentDate === getFormattedDate(today) ? (
+                    "Check-in complete."
+                  ) : checkinRequired ? (
                     <Button
                       style={{ border: "2px solid", color: "inherit" }}
                       component={Link}
@@ -273,18 +279,17 @@ export default function PlayerDashboard() {
                       No. Complete Check-in?
                     </Button>
                   ) : (
-                    <>
-                      <p style={{ fontSize: '15px' }}>Your check-in is complete.</p>
-                      {nextCheckinDay && <p style={{ fontSize: '15px' }}>Next check-in: {nextCheckinDay}</p>}
-                    </>
+                    "No check-in required."
                   )
                 }
                 percentage={{
                   color: checkinCompleted ? "success" : "error",
                   amount: "",
-                  label: "Just updated",
+                  label: nextCheckinDay
+                    ? `Next check-in: ${nextCheckinDay}`
+                    : "No scheduled check-in",
                 }}
-              ></ComplexStatisticsCard>
+              />
             </MDBox>
           </Grid>
         </Grid>

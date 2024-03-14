@@ -33,6 +33,7 @@ import AssignmentCompleted from "./components/AssignmentCompleted";
 import AssignmentNotCompleted from "./components/AssignmentNotCompleted";
 import { fetchUserProfile } from "../../fetchUserProfile";
 import VerticalBarChart from "../../examples/Charts/BarCharts/VerticalBarChart";
+import WellnessFlags from "./components/WellnessFlags";
 
 export default function Dashboard() {
   const today = new Date();
@@ -540,10 +541,18 @@ export default function Dashboard() {
         </MDBox>
         <MDBox>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={6}>
+              <WellnessFlags />
+            </Grid>
+          </Grid>
+        </MDBox>
+        <br />
+        <MDBox>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6} lg={6}>
               <AssignmentNotCompleted />
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12} md={6} lg={6}>
               <AssignmentCompleted />
             </Grid>
           </Grid>

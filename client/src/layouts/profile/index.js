@@ -233,8 +233,8 @@ function Overview() {
                           component={Link}
                           to={
                             profile && profile.player
-                              ? "/authentication/playerinfo"
-                              : "/authentication/coachinfo"
+                            ? { pathname: "/authentication/playeredit", state: { profile: profile } }
+                            : { pathname: "/authentication/coachedit", state: { profile: profile } }
                           }
                           icon={
                             <Icon fontSize="small" sx={{ mt: -0.25 }}>
@@ -250,7 +250,7 @@ function Overview() {
             )}
           </Grid>
           {/* Right half for MDAvatar and Typography */}
-          <Grid item xs={12} md={6} mt={-15}>
+          <Grid item xs={12} md={6} mt={window.innerWidth <= 768 ? 0 : -15}>
             <Card
               sx={{
                 position: "relative",

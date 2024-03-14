@@ -5,7 +5,6 @@ import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import InfoIcon from "@mui/icons-material/Info";
 
-
 // Material Dashboard 2 React components
 import MDBox from "../../../../components/MDBox";
 import MDTypography from "../../../../components/MDTypography";
@@ -37,7 +36,6 @@ function AddWellness() {
   const [profile, setProfile] = useState(null);
   const [startDate, setStartDate] = useState(dayjs());
   const [checkinFrequency, setCheckinFrequency] = useState("");
-  const [completedWellnessData, setCompletedWellnessData] = useState(null);
   const [wellnessData, setWellnessData] = useState({
     water: { id: 1, value: 3 }, //make sure to update to percent
     sleep: { id: 2, value: 3 },
@@ -88,12 +86,11 @@ function AddWellness() {
   }, []);
 
   const isWellnessRequired = () => {
-    const currentDayOfWeek = startDate.day()
+    const currentDayOfWeek = startDate.day();
     return checkinFrequency.includes((currentDayOfWeek + 1).toString());
   };
 
   const getNextCheckInDay = () => {
-    const currentDayOfWeek = dayjs(startDate).format("dddd");
     const daysOfWeek = [
       "Sunday",
       "Monday",
@@ -103,6 +100,7 @@ function AddWellness() {
       "Friday",
       "Saturday",
     ];
+    const currentDayOfWeek = daysOfWeek.indexOf(dayjs(startDate).format("dddd"));
 
     // Extract individual digits from the checkin_frequency
     const frequencyDigits = checkinFrequency.split("").map(Number);
@@ -118,36 +116,6 @@ function AddWellness() {
     return "No scheduled check-in days found";
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const data = await fetchUserProfile();
-
-  //     setProfile(data);
-  //   };
-  //   fetchData();
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchCompletedWellness = async () => {
-  //     const selectedDate = startDate.toISOString();
-  //     const { data, error } = await supabase
-  //       .from("checkin")
-  //       .select()
-  //       .eq("player_id", profile.id)
-  //       .eq("date", selectedDate);
-
-  //     if (error) {
-  //       console.error("Error fetching completed wellness data:", error);
-  //       // Handle the error here
-  //     } else {
-  //       // Set the completed wellness data in state
-  //       setCompletedWellnessData(data);
-  //     }
-  //   };
-
-  //   fetchCompletedWellness();
-  // }, [profile.id, startDate]);
-
   const handleSliderChange = (type, value) => {
     setWellnessData((prevData) => ({
       ...prevData,
@@ -156,11 +124,10 @@ function AddWellness() {
   };
 
   const handleSubmit = async () => {
-    console.log('startDate',startDate)
+    console.log("startDate", startDate);
     const selectedDate = dayjs(startDate).format("YYYY-MM-DD");
-    console.log('selectedDate',selectedDate)
 
-
+    console.log("selectedDate", selectedDate);
 
     const { data: existingEntries, error: existingEntriesError } = await supabase
       .from("checkin")
@@ -223,17 +190,17 @@ function AddWellness() {
         <MDTypography variant="h4" fontWeight="medium">
           Complete Check-in
         </MDTypography>
-          <DatePicker
-            label="Select Date"
-            slotProps={{
-              textField: {
-                helperText: "MM/DD/YYYY",
-              },
-            }}
-            onChange={(date) => setStartDate(date)}
-            value={dayjs(startDate)}
-          />
-          {/*<DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />*/}
+        <DatePicker
+          label="Select Date"
+          slotProps={{
+            textField: {
+              helperText: "MM/DD/YYYY",
+            },
+          }}
+          onChange={(date) => setStartDate(date)}
+          value={dayjs(startDate)}
+        />
+        {/*<DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />*/}
       </MDBox>
 
       {isWellnessRequired() ? (
