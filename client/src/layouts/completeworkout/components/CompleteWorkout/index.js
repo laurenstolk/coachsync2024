@@ -187,7 +187,7 @@ function CompleteWorkout() {
       toast.success("Workout completed and notes added successfully!", {
         autoClose: 2000,
         onClose: () => {
-          navigate("/exerciselibrary");
+          navigate("/playerdashboard");
         },
       });
     } catch (error) {
