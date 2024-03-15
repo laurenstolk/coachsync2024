@@ -43,6 +43,7 @@ export default function PlayerDashboard() {
   const [checkinFrequency, setCheckinFrequency] = useState("");
   const [nextCheckinDay, setNextCheckinDay] = useState("");
   const [assignedWorkout, setAssignedWorkout] = useState(null);
+  const [assignedWorkouts, setAssignedWorkouts] = useState([]);
   const [currentDate, setCurrentDate] = useState("");
   const [user, setUser] = useState(null);
   const [playerIds, setPlayerIds] = useState([]);
@@ -65,8 +66,7 @@ export default function PlayerDashboard() {
   useEffect(() => {
     if (user) {
       fetchWorkoutCompletion();
-      fetchAssignedWorkout();
-      console.log("user info: ", user);
+      fetchAssignedWorkouts();
     }
 
     const fetchCheckinCompletion = async () => {
@@ -174,9 +174,8 @@ export default function PlayerDashboard() {
     }
   }
 
-  async function fetchAssignedWorkout() {
+  async function fetchAssignedWorkouts() {
     try {
-      // Fetch data from the assignment table to check if there is an assigned workout for today
       const { data: assignmentData, error: assignmentError } = await supabase
         .from("assignment")
         .select("workout_id")
@@ -185,20 +184,37 @@ export default function PlayerDashboard() {
 
       if (assignmentError) throw assignmentError;
 
-      if (assignmentData.length > 0) {
-        const workoutId = assignmentData[0].workout_id;
-        const { data: workoutData, error: workoutError } = await supabase
+      const fetchedWorkouts = [];
+
+      for (const assignment of assignmentData) {
+        const workoutId = assignment.workout_id;
+        const {data: workoutData, error: workoutError } = await supabase
           .from("workout")
           .select("workout_name")
           .eq("id", workoutId)
           .single();
 
-        if (workoutError) throw workoutError;
+          if (workoutError) throw workoutError;
 
-        setAssignedWorkout(workoutData.workout_name);
-      } else {
-        setAssignedWorkout(null);
+          fetchedWorkouts.push(workoutData.workout_name);
       }
+
+      setAssignedWorkouts(fetchedWorkouts);
+
+      // if (assignmentData.length > 0) {
+      //   const workoutId = assignmentData[0].workout_id;
+      //   const { data: workoutData, error: workoutError } = await supabase
+      //     .from("workout")
+      //     .select("workout_name")
+      //     .eq("id", workoutId)
+      //     .single();
+
+      //   if (workoutError) throw workoutError;
+
+      //   setAssignedWorkout(workoutData.workout_name);
+      // } else {
+      //   setAssignedWorkout(null);
+      //}
     } catch (error) {
       console.error("Error fetching assigned workout:", error.message);
     }
@@ -226,11 +242,23 @@ export default function PlayerDashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon="check"
-                title="Assigned Workouts"
-                count={assignedWorkout !== null ? assignedWorkout : "No assigned workout."}
+                color="primary"
+                icon="person_add"
+                title="Workouts Assigned"
+                count={
+                  assignedWorkouts.length > 0 ? (
+                    <div>
+                      {assignedWorkouts.map((workout, index) => (
+                        <p key={index}>
+                          {workout}
+                        </p>
+                      ))}
+                    </div>
+                  ) : (
+                    "No assigned workouts."
+                  )
+                }
                 percentage={{
-                  color: "success",
                   amount: "",
                   label: "Just updated",
                 }}
@@ -244,7 +272,7 @@ export default function PlayerDashboard() {
                 icon="person_add"
                 title="Workout Complete?"
                 count={
-                  assignedWorkout !== null ? (
+                  assignedWorkouts.length > 0 ? (
                     workoutCompleted ? (
                       "Your workout is complete."
                     ) : (
