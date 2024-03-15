@@ -55,6 +55,7 @@ import PlayerEdit from "layouts/authentication/playeredit";
 import PlayerInfo from "layouts/authentication/playerinfo";
 import TeamInfo from "layouts/authentication/teaminfo";
 import PlayerTeam from "layouts/authentication/playerteam";
+import Cover from "layouts/authentication/reset-password/cover";
 import WellnessSetup from "layouts/authentication/wellness-setup";
 import WorkoutLibrary from "layouts/workoutlibrary";
 // import WorkoutLibraryTest from "layouts/workoutlibrarytest";
@@ -393,6 +394,11 @@ const routes = [
     key: "loadingpageSignUp",
     route: "/loadingpageSignUp",
     component: <LoadingPageSignUp />,
+  },
+  {
+    key: "reset-password",
+    route: "/authentication/reset-password",
+    component: <Cover />,
   },
 ];
 

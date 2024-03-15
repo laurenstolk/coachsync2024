@@ -227,6 +227,10 @@ function PlayerEdit() {
                   onChange={e => setProfile(prevState => ({ ...prevState, jersey_number: e.target.value }))}
                 />
               </MDBox>
+              {/* Add the line below */}
+              <MDTypography display="block" variant="button" color="info" my={1} component={Link} to="/authentication/reset-password">
+                Change your password
+              </MDTypography>
             </MDBox>
             <MDBox mb={2} {...getRootProps()} style={{ cursor: "pointer" }}>
               <input {...getInputProps()} />
