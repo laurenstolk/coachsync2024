@@ -17,14 +17,13 @@ import MDTypography from "../../../components/MDTypography";
 
 import { FormControl, InputLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 import { useParams } from "react-router-dom";
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
@@ -68,6 +67,9 @@ function AddAssignment() {
       if (error) {
         throw error;
       }
+      // Sort workouts by workout name
+      workoutsData.sort((a, b) => a.workout_name.localeCompare(b.workout_name));
+
       setWorkouts(workoutsData || []);
 
       const { data: profilesData, error: profilesError } = await supabase

@@ -104,6 +104,9 @@ export default function data() {
         })
         .filter((group) => group.players.length > 0);
 
+      // Sort exercises by exercise name
+      groupsWithMembership.sort((a, b) => a.name.localeCompare(b.name));
+
       setGroups(groupsWithMembership);
     } catch (error) {
       alert(error.message);
