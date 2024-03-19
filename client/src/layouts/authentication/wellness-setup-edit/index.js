@@ -46,7 +46,7 @@ function WellnessSetup() {
   const navigate = useNavigate();
   const [wellnessOptions, setWellnessOptions] = useState([]);
   const [selectedDays, setSelectedDays] = useState(daysOfWeekMap.map((day) => day.id));
-  const [selectedWellnessOptions, setSelectedWellnessOptions] = useState([]);
+  const [selectedWellnessOptions, setSelectedWellnessOptions] = useState(wellnessOptions);
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
@@ -58,10 +58,8 @@ function WellnessSetup() {
           throw error;
         }
         if (data != null) {
-          // Initialize an object with all options set to true initially
-          const initialOptions = Object.fromEntries(data.map((wellness) => [wellness.name, true]));
           setWellnessOptions(data.map((wellness) => wellness.name));
-          setSelectedWellnessOptions(initialOptions);
+          setSelectedWellnessOptions(data.map((wellness) => wellness.name));
         }
       } catch (error) {
         alert(error.message);
@@ -88,63 +86,65 @@ function WellnessSetup() {
           .from("team")
           .select("checkin_frequency")
           .eq("id", profile.team_id); // Assuming you have a field named "team_id" to identify the team
-
+  
         if (error) {
           throw error;
         }
-
+  
         if (data && data.length > 0) {
           const checkinFrequency = data[0].checkin_frequency;
-
+  
           // Decode the checkin_frequency and set the selected days
           const selectedDays = checkinFrequency.split("").map((dayIdString) => parseInt(dayIdString));
-
+  
           setSelectedDays(selectedDays);
         }
       } catch (error) {
         console.error("Error fetching team checkin frequency:", error);
       }
     }
-
+  
     if (profile && profile.team_id) {
       fetchTeamCheckinFrequency();
     }
   }, [profile]);
 
   useEffect(() => {
-    async function fetchTeamWellnessOptions() {
+    async function fetchTeamCheckinOptions() {
       try {
-        // Fetch team wellness options from Supabase
+        // Fetch team checkin options from Supabase
         const { data, error } = await supabase
           .from("team")
-          .select("water_checkin, sleep_checkin, stress_checkin, soreness_checkin, energy_checkin")
+          .select("water_checkin, sleep_checkin, soreness_checkin, energy_checkin, stress_checkin")
           .eq("id", profile.team_id); // Assuming you have a field named "team_id" to identify the team
-
+  
         if (error) {
           throw error;
         }
-
+  
         if (data && data.length > 0) {
-          const wellnessData = data[0];
-          // Set the selected wellness options based on the fetched data
-          setSelectedWellnessOptions({
-            water: wellnessData.water_checkin,
-            sleep: wellnessData.sleep_checkin,
-            stress: wellnessData.stress_checkin,
-            soreness: wellnessData.soreness_checkin,
-            energy: wellnessData.energy_checkin,
-          });
+          const teamCheckinOptions = data[0];
+          
+          // Update selected wellness options based on fetched data
+          const selectedWellnessOptions = [];
+          if (teamCheckinOptions.water_checkin) selectedWellnessOptions.push("Water");
+          if (teamCheckinOptions.sleep_checkin) selectedWellnessOptions.push("Sleep");
+          if (teamCheckinOptions.soreness_checkin) selectedWellnessOptions.push("Soreness");
+          if (teamCheckinOptions.energy_checkin) selectedWellnessOptions.push("Energy");
+          if (teamCheckinOptions.stress_checkin) selectedWellnessOptions.push("Stress");
+  
+          setSelectedWellnessOptions(selectedWellnessOptions);
         }
       } catch (error) {
-        console.error("Error fetching team wellness options:", error);
+        console.error("Error fetching team checkin options:", error);
       }
     }
-
+  
     if (profile && profile.team_id) {
-      fetchTeamWellnessOptions();
+      fetchTeamCheckinOptions();
     }
   }, [profile]);
-
+  
   const handleDayChange = (day) => {
     setSelectedDays((prevSelectedDays) => {
       const newSelectedDays = prevSelectedDays.includes(day)
@@ -158,22 +158,31 @@ function WellnessSetup() {
   };
 
   const handleWellnessOptionChange = (option) => {
-    setSelectedWellnessOptions((prevSelected) => ({
-      ...prevSelected,
-      [option]: !prevSelected[option], // Toggle the option value
-    }));
+    setSelectedWellnessOptions((prevSelected) => {
+      if (prevSelected.includes(option)) {
+        return prevSelected.filter((item) => item !== option);
+      } else {
+        return [...prevSelected, option];
+      }
+    });
     console.log("Selected wellness options:", selectedWellnessOptions);
   };
+
+  const waterCheckinValue = selectedWellnessOptions.includes("Water");
+  const sleepCheckinValue = selectedWellnessOptions.includes("Sleep");
+  const stressCheckinValue = selectedWellnessOptions.includes("Soreness");
+  const sorenessCheckinValue = selectedWellnessOptions.includes("Energy");
+  const energyCheckinValue = selectedWellnessOptions.includes("Stress");
 
   const handleSubmit = async () => {
     console.log("Selected wellness options:", selectedWellnessOptions);
     const teamWellnessData = {
       checkin_frequency: selectedDays.sort((a, b) => a - b).join(""),
-      water_checkin: selectedWellnessOptions.water,
-      sleep_checkin: selectedWellnessOptions.sleep,
-      stress_checkin: selectedWellnessOptions.stress,
-      soreness_checkin: selectedWellnessOptions.soreness,
-      energy_checkin: selectedWellnessOptions.energy,
+      water_checkin: waterCheckinValue,
+      sleep_checkin: sleepCheckinValue,
+      stress_checkin: stressCheckinValue,
+      soreness_checkin: sorenessCheckinValue,
+      energy_checkin: energyCheckinValue,
     };
 
     console.log(teamWellnessData);
@@ -285,7 +294,7 @@ function WellnessSetup() {
                       key={index}
                       control={
                         <Checkbox
-                          checked={selectedWellnessOptions[option]}
+                          checked={selectedWellnessOptions.includes(option)}
                           onChange={() => handleWellnessOptionChange(option)}
                           name={option}
                         />
