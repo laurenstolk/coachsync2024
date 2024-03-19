@@ -107,13 +107,13 @@ function AddExercise() {
                 )}
                 sx={{ width: "30%", minHeight: "46px" }}
               >
-                <MenuItem value="14">Training</MenuItem>
                 <MenuItem value="8">Arms</MenuItem>
-                <MenuItem value="9">Legs</MenuItem>
-                <MenuItem value="10">Core</MenuItem>
                 <MenuItem value="11">Back</MenuItem>
                 <MenuItem value="12">Chest</MenuItem>
+                <MenuItem value="10">Core</MenuItem>
                 <MenuItem value="13">Endurance</MenuItem>
+                <MenuItem value="9">Legs</MenuItem>
+                <MenuItem value="14">Training</MenuItem>
               </Select>
             </FormControl>
           </MDBox>
