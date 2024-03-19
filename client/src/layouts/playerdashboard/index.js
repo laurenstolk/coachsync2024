@@ -166,10 +166,14 @@ export default function PlayerDashboard() {
 
       if (completionError) throw completionError;
 
+      console.log("completion data ", completionData)
+
       if (completionData.length > 0) {
         setWorkoutCompleted(completionData[0].completed);
+        console.log("Workout completion: ", workoutCompleted)
       } else {
         setWorkoutCompleted(false);
+        console.log("Workout completion: ", workoutCompleted)
       }
     } catch (error) {
       console.error("Error fetching workout completion:", error.message);
@@ -204,10 +208,11 @@ export default function PlayerDashboard() {
         // Set the assignedWorkout state to the array of workout names
         setAssignedWorkout(workoutNames);
       } else {
-        setAssignedWorkout(null);
+        setAssignedWorkout([]);
+
       }
 
-      setAssignedWorkouts(fetchedWorkouts);
+      //setAssignedWorkouts(fetchedWorkouts);
 
       // if (assignmentData.length > 0) {
       //   const workoutId = assignmentData[0].workout_id;
@@ -295,32 +300,42 @@ export default function PlayerDashboard() {
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="primary"
-                icon={<FitnessCenterIcon>Workout</FitnessCenterIcon>}
-                title="Workout Complete?"
-                count={
-                  assignedWorkouts.length > 0 ? (
-                    workoutCompleted ? (
-                      "Your workout is complete."
-                    ) : (
-                      <Button
-                        style={{ border: "2px solid", color: "inherit" }}
-                        component={Link}
-                        to="/completeworkout"
-                      >
-                        No. Complete Workout?
-                      </Button>
-                    )
+            <ComplexStatisticsCard
+              color="primary"
+              icon={<FitnessCenterIcon>Workout</FitnessCenterIcon>}
+              title="Workout Complete?"
+              count={
+                assignedWorkouts.length > 0 ? (
+                  workoutCompleted ? (
+                    "Your workout is complete."
                   ) : (
-                    "No assigned workout."
+                    <Button
+                      style={{ border: "2px solid", color: "inherit" }}
+                      component={Link}
+                      to="/completeworkout"
+                    >
+                      No. Complete Workout?
+                    </Button>
                   )
-                }
-                percentage={{
-                  amount: "",
-                  label: "Just updated",
-                }}
-              />
+                ) : (
+                  workoutCompleted ? (
+                    "No assigned workout."
+                  ) : (
+                    <Button
+                      style={{ border: "2px solid", color: "inherit" }}
+                      component={Link}
+                      to="/completeworkout"
+                    >
+                      No assigned workout. Complete Workout?
+                    </Button>
+                  )
+                )
+              }
+              percentage={{
+                amount: "",
+                label: "Next Workout:",
+              }}
+            />
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
