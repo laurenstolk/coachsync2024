@@ -91,8 +91,7 @@ function AddWorkout() {
           exercisesGroupedByCategory[categoryName].push(exercise);
         });
 
-
-        console.log("here: ", exercisesGroupedByCategory)
+        console.log("here: ", exercisesGroupedByCategory);
 
         setExercises(exerciseData);
         setExercisesByCategory(exercisesGroupedByCategory);
