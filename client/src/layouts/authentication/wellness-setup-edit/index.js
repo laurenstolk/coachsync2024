@@ -46,13 +46,7 @@ function WellnessSetup() {
   const navigate = useNavigate();
   const [wellnessOptions, setWellnessOptions] = useState([]);
   const [selectedDays, setSelectedDays] = useState(daysOfWeekMap.map((day) => day.id));
-  const [selectedWellnessOptions, setSelectedWellnessOptions] = useState({
-    water: false,
-    sleep: false,
-    stress: false,
-    soreness: false,
-    energy: false,
-  });
+  const [selectedWellnessOptions, setSelectedWellnessOptions] = useState([]);
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
