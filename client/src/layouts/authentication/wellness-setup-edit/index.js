@@ -46,7 +46,13 @@ function WellnessSetup() {
   const navigate = useNavigate();
   const [wellnessOptions, setWellnessOptions] = useState([]);
   const [selectedDays, setSelectedDays] = useState(daysOfWeekMap.map((day) => day.id));
-  const [selectedWellnessOptions, setSelectedWellnessOptions] = useState(wellnessOptions);
+  const [selectedWellnessOptions, setSelectedWellnessOptions] = useState({
+    water: false,
+    sleep: false,
+    stress: false,
+    soreness: false,
+    energy: false,
+  });
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
@@ -58,8 +64,10 @@ function WellnessSetup() {
           throw error;
         }
         if (data != null) {
+          // Initialize an object with all options set to true initially
+          const initialOptions = Object.fromEntries(data.map((wellness) => [wellness.name, true]));
           setWellnessOptions(data.map((wellness) => wellness.name));
-          setSelectedWellnessOptions(data.map((wellness) => wellness.name));
+          setSelectedWellnessOptions(initialOptions);
         }
       } catch (error) {
         alert(error.message);
@@ -78,6 +86,71 @@ function WellnessSetup() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    async function fetchTeamCheckinFrequency() {
+      try {
+        // Fetch team checkin frequency from Supabase
+        const { data, error } = await supabase
+          .from("team")
+          .select("checkin_frequency")
+          .eq("id", profile.team_id); // Assuming you have a field named "team_id" to identify the team
+
+        if (error) {
+          throw error;
+        }
+
+        if (data && data.length > 0) {
+          const checkinFrequency = data[0].checkin_frequency;
+
+          // Decode the checkin_frequency and set the selected days
+          const selectedDays = checkinFrequency.split("").map((dayIdString) => parseInt(dayIdString));
+
+          setSelectedDays(selectedDays);
+        }
+      } catch (error) {
+        console.error("Error fetching team checkin frequency:", error);
+      }
+    }
+
+    if (profile && profile.team_id) {
+      fetchTeamCheckinFrequency();
+    }
+  }, [profile]);
+
+  useEffect(() => {
+    async function fetchTeamWellnessOptions() {
+      try {
+        // Fetch team wellness options from Supabase
+        const { data, error } = await supabase
+          .from("team")
+          .select("water_checkin, sleep_checkin, stress_checkin, soreness_checkin, energy_checkin")
+          .eq("id", profile.team_id); // Assuming you have a field named "team_id" to identify the team
+
+        if (error) {
+          throw error;
+        }
+
+        if (data && data.length > 0) {
+          const wellnessData = data[0];
+          // Set the selected wellness options based on the fetched data
+          setSelectedWellnessOptions({
+            water: wellnessData.water_checkin,
+            sleep: wellnessData.sleep_checkin,
+            stress: wellnessData.stress_checkin,
+            soreness: wellnessData.soreness_checkin,
+            energy: wellnessData.energy_checkin,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching team wellness options:", error);
+      }
+    }
+
+    if (profile && profile.team_id) {
+      fetchTeamWellnessOptions();
+    }
+  }, [profile]);
+
   const handleDayChange = (day) => {
     setSelectedDays((prevSelectedDays) => {
       const newSelectedDays = prevSelectedDays.includes(day)
@@ -91,31 +164,22 @@ function WellnessSetup() {
   };
 
   const handleWellnessOptionChange = (option) => {
-    setSelectedWellnessOptions((prevSelected) => {
-      if (prevSelected.includes(option)) {
-        return prevSelected.filter((item) => item !== option);
-      } else {
-        return [...prevSelected, option];
-      }
-    });
+    setSelectedWellnessOptions((prevSelected) => ({
+      ...prevSelected,
+      [option]: !prevSelected[option], // Toggle the option value
+    }));
     console.log("Selected wellness options:", selectedWellnessOptions);
   };
-
-  const waterCheckinValue = selectedWellnessOptions.includes("Water");
-  const sleepCheckinValue = selectedWellnessOptions.includes("Sleep");
-  const stressCheckinValue = selectedWellnessOptions.includes("Soreness");
-  const sorenessCheckinValue = selectedWellnessOptions.includes("Energy");
-  const energyCheckinValue = selectedWellnessOptions.includes("Stress");
 
   const handleSubmit = async () => {
     console.log("Selected wellness options:", selectedWellnessOptions);
     const teamWellnessData = {
       checkin_frequency: selectedDays.sort((a, b) => a - b).join(""),
-      water_checkin: waterCheckinValue,
-      sleep_checkin: sleepCheckinValue,
-      stress_checkin: stressCheckinValue,
-      soreness_checkin: sorenessCheckinValue,
-      energy_checkin: energyCheckinValue,
+      water_checkin: selectedWellnessOptions.water,
+      sleep_checkin: selectedWellnessOptions.sleep,
+      stress_checkin: selectedWellnessOptions.stress,
+      soreness_checkin: selectedWellnessOptions.soreness,
+      energy_checkin: selectedWellnessOptions.energy,
     };
 
     console.log(teamWellnessData);
@@ -177,7 +241,7 @@ function WellnessSetup() {
           textAlign="center"
         >
           <MDTypography variant="h4" fontWeight="medium" color="white" mt={1}>
-            Wellness Check-ins
+            Edit Wellness Check-ins
           </MDTypography>
           <MDTypography display="block" variant="button" color="white" my={1}>
             CoachSync allows you to regularly check in on the wellness of your players
@@ -227,7 +291,7 @@ function WellnessSetup() {
                       key={index}
                       control={
                         <Checkbox
-                          checked={selectedWellnessOptions.includes(option)}
+                          checked={selectedWellnessOptions[option]}
                           onChange={() => handleWellnessOptionChange(option)}
                           name={option}
                         />
@@ -290,7 +354,7 @@ function WellnessSetup() {
               </MDButton>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton component={Link} to="/authentication/teaminfo" color="white" fullWidth>
+              <MDButton component={Link} to="/profile" color="white" fullWidth>
                 Go Back
               </MDButton>
             </MDBox>

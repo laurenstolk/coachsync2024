@@ -56,6 +56,7 @@ import PlayerInfo from "layouts/authentication/playerinfo";
 import TeamInfo from "layouts/authentication/teaminfo";
 import PlayerTeam from "layouts/authentication/playerteam";
 import WellnessSetup from "layouts/authentication/wellness-setup";
+import WellnessSetupEdit from "layouts/authentication/wellness-setup-edit";
 import WorkoutLibrary from "layouts/workoutlibrary";
 // import WorkoutLibraryTest from "layouts/workoutlibrarytest";
 import ViewWorkout from "layouts/viewworkout";
@@ -232,7 +233,7 @@ const routes = [
     component: <AddAssignment />,
     coach: true,
   },
-  //BOTH
+  //COACH
   {
     type: "collapse",
     name: "View Assigned Workouts",
@@ -240,6 +241,7 @@ const routes = [
     icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
     route: "/viewassignment",
     component: <ViewAssignment />,
+    coach: true,
   },
   //COACH
   {
@@ -380,6 +382,14 @@ const routes = [
     icon: <Icon fontSize="small"></Icon>,
     route: "/authentication/wellness-setup",
     component: <WellnessSetup />,
+  },
+  {
+    // type: "collapse",
+    // name: "Wellness Setup",
+    key: "wellness-setup-edit",
+    icon: <Icon fontSize="small"></Icon>,
+    route: "/authentication/wellness-setup-edit",
+    component: <WellnessSetupEdit />,
   },
   {
     // type: "collapse",
