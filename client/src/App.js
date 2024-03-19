@@ -312,7 +312,7 @@ export default function App() {
                 },
               }}
               providers={["google"]}
-              redirectTo="http://localhost:3000/authentication/reset-password"
+              redirectTo="https://coachsync.pro/authentication/reset-password"
               theme="default"
               onResetPassword={sendResetPasswordEmail}
             />
