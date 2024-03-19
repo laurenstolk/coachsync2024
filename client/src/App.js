@@ -3,8 +3,9 @@ import { ToastContainer } from "react-toastify";
 import { useState, useEffect, useMemo, Component, Suspense } from "react";
 
 // react-router components
-import { Routes, useLocation } from "react-router-dom";
-import { Route, Navigate } from "react-router-dom";
+
+import { Routes, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Navigate } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -47,6 +48,7 @@ import { supabase } from "./supabaseClient";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { fetchUserProfile } from "./fetchUserProfile";
+import Cover from "layouts/authentication/reset-password/cover";
 
 const WelcomeBox = () => (
   <div
@@ -72,29 +74,63 @@ const WelcomeBox = () => (
   </div>
 );
 
+const sendResetPasswordEmail = async (email) => {
+  try {
+    const { error } = await supabase.auth.api.resetPasswordForEmail(email, {
+      redirectTo: "/authentication/reset-password",
+    });
+    if (error) {
+      throw error;
+    }
+    // Handle success (optional)
+    console.log("Reset password email sent successfully");
+  } catch (error) {
+    // Handle error (optional)
+    console.error("Error sending reset password email:", error.message);
+  }
+};
+
+
 export default function App() {
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true); // Introduce a loading state
+  const location = useLocation();
+  const navigate = useNavigate();
+
 
   const hasFirstName = profile && profile.first_name !== null;
 
   useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get("token");
+    const redirectTo = queryParams.get("redirect_to");
+  
+    if (token && redirectTo) {
+      navigate(`/authentication/reset-password?token=${token}&redirect_to=${redirectTo}`);
+    }
+  }, [location.search, navigate]);
+  
+
+  useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      console.log("Session:", session);
     });
-
+  
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      console.log("Session:", session);
     });
-
+  
     return () => subscription.unsubscribe();
-  }, []);
+  }, []);  
 
   // WHERE THE USER IS NULL ERROR ON SIGN IN IS HAPPENING - i need
   useEffect(() => {
+    console.log("Location pathname:", location.pathname);
     if (session) {
       const fetchData = async () => {
         try {
@@ -112,6 +148,7 @@ export default function App() {
       setLoading(false); // No session, so set loading to false
     }
   }, [session]);
+  
 
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -217,7 +254,7 @@ export default function App() {
   if (loading) {
     // Render loading UI
     return <LoadingPage />;
-  } else if (!session) {
+  } else if (!session && location.pathname !== "/authentication/reset-password") {
     return (
       <div>
         <div
@@ -279,7 +316,9 @@ export default function App() {
                 },
               }}
               providers={["google"]}
+              redirectTo="http://localhost:3000/authentication/reset-password"
               theme="default"
+              onResetPassword={sendResetPasswordEmail}
             />
           </div>
         </div>
@@ -307,6 +346,7 @@ export default function App() {
           )}
           {layout === "vr" && <Configurator />}
           <Routes>
+            <Route path="/authentication/reset-password" element={<Cover />} />
             {getRoutes(routes)}
             <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>
