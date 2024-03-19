@@ -143,6 +143,41 @@ function Overview() {
     fetchSportName();
   }, [teamData]); // Fetch sport name whenever teamData changes
 
+  useEffect(() => {
+    async function fetchTeamWellnessOptions() {
+      try {
+        // Fetch team wellness options from Supabase
+        const { data, error } = await supabase
+          .from("team")
+          .select("water_checkin, sleep_checkin, stress_checkin, soreness_checkin, energy_checkin")
+          .eq("id", profile.team_id); // Assuming you have a field named "team_id" to identify the team
+  
+        if (error) {
+          throw error;
+        }
+  
+        if (data && data.length > 0) {
+          const wellnessData = data[0];
+          // Set the selected wellness options based on the fetched data
+          setSelectedWellnessOptions({
+            water: wellnessData.water_checkin,
+            sleep: wellnessData.sleep_checkin,
+            stress: wellnessData.stress_checkin,
+            soreness: wellnessData.soreness_checkin,
+            energy: wellnessData.energy_checkin,
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching team wellness options:", error);
+      }
+    }
+  
+    if (profile && profile.team_id) {
+      fetchTeamWellnessOptions();
+    }
+  }, [profile]);
+  
+
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
 
@@ -318,11 +353,17 @@ function Overview() {
                                     : ""}
                                 </MDTypography>
                               </Grid>
+                              <Grid item xs={12}>
+                                <MDTypography variant="button" color="text" fontWeight="regular">
+                                  <strong>Options:</strong>{" "}
+                                  {/* {teamData.water_checkin} */}
+                                </MDTypography>
+                              </Grid>
                               <Grid item>
                                 <Button
                                   variant="outlined"
                                   component={Link}
-                                  to="/authentication/wellness-setup"
+                                  to="/authentication/wellness-setup-edit"
                                   sx={{
                                     borderColor: "#1A73E8", // Set border color to blue on hover
                                     backgroundColor: "#1A73E8", // Set background color to blue on hover
