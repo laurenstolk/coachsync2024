@@ -180,9 +180,16 @@ import bgImage from "assets/images/grass2.jpg";
 import { supabase } from "../../../supabaseClient";
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
+
 function CoachInfoUpdate() {
   const [profilePic, setProfilePic] = useState("");
   const [profile, setProfile] = useState(null);
+  // Add error state variables
+  const [firstNameError, setFirstNameError] = useState(false);
+  const [lastNameError, setLastNameError] = useState(false);
+  const [phoneNumberError, setPhoneNumberError] = useState(false);
+  const [birthDateError, setBirthDateError] = useState(false);
+  const [coachRoleError, setCoachRoleError] = useState(false);
 
   const [formValid, setFormValid] = useState(false);
 
@@ -208,21 +215,46 @@ function CoachInfoUpdate() {
     fetchData();
   }, []);
 
-  const handleInputChange = () => {
-    const firstName = document.getElementById("first-name").value;
-    const lastName = document.getElementById("last-name").value;
-    const phoneNumber = document.getElementById("phone-number").value;
-    const birthDate = document.getElementById("birth-date").value;
-    const coachRole = document.getElementById("coach-role").value;
+  // const handleInputChange = () => {
+  
 
-    const isValid =
-      firstName !== "" &&
-      lastName !== "" &&
-      phoneNumber !== "" &&
-      birthDate !== "" &&
-      coachRole !== "";
-    setFormValid(isValid);
-    console.log(firstName, lastName, phoneNumber, birthDate, coachRole);
+  // };
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    let isValid = true;
+  
+    switch (id) {
+      case "first-name":
+        isValid = /^[A-Za-z]+$/.test(value.trim());
+        setFirstNameError(!isValid);
+        break;
+      case "last-name":
+        isValid = /^[A-Za-z]+$/.test(value.trim());
+        setLastNameError(!isValid);
+        break;
+      case "phone-number":
+        isValid = /^\d{1,13}$/.test(value.trim());
+        setPhoneNumberError(!isValid);
+        break;
+      case "birth-date":
+        const inputDate = new Date(value.trim());
+        isValid = inputDate <= new Date(); // Check if birth date is in the past or today
+        setBirthDateError(!isValid);
+        break;
+      case "coach-role":
+        isValid = value.trim().length > 0;
+        setCoachRoleError(!isValid);
+        break;
+      default:
+        break;
+    }
+  
+      // Check if both birth-date and coach-role are not empty
+      const birthDateValue = document.getElementById("birth-date").value;
+      const coachRoleValue = document.getElementById("coach-role").value;
+      const bothNotEmpty = birthDateValue.trim().length > 0 && coachRoleValue.trim().length > 0;
+
+    setFormValid(isValid && !firstNameError && !lastNameError && !phoneNumberError && !birthDateError && !coachRoleError && bothNotEmpty);
   };
 
   const handleSubmit = async () => {
@@ -248,7 +280,7 @@ function CoachInfoUpdate() {
         phone_number: document.getElementById("phone-number").value,
         birth_date: document.getElementById("birth-date").value,
       };
-      console.log(coachRoleData);
+      console.log("coach info on submit", coachRoleData);
 
       try {
         if (profilePic) {
@@ -324,6 +356,8 @@ function CoachInfoUpdate() {
                   fullWidth
                   required
                   onChange={handleInputChange}
+                  error={firstNameError}
+                  helperText={firstNameError && "Please enter a valid first name"}
                 />
               </MDBox>
               <MDBox mb={2}>
@@ -335,6 +369,8 @@ function CoachInfoUpdate() {
                   fullWidth
                   required
                   onChange={handleInputChange}
+                  error={lastNameError}
+                  helperText={lastNameError && "Please enter a valid last name"}
                 />
               </MDBox>
               <MDBox mb={3}>
@@ -346,6 +382,8 @@ function CoachInfoUpdate() {
                   fullWidth
                   required
                   onChange={handleInputChange}
+                  error={phoneNumberError}
+                  helperText={phoneNumberError && "Please enter a valid phone number"}
                 />
               </MDBox>
               <MDBox mb={3}>
@@ -359,6 +397,8 @@ function CoachInfoUpdate() {
                   fullWidth
                   required
                   onChange={handleInputChange}
+                  error={birthDateError}
+                  helperText={birthDateError && "Please enter a valid birthdate"}
                 />
               </MDBox>
               <MDTypography display="block" variant="button" color="text" my={1}>
@@ -373,6 +413,8 @@ function CoachInfoUpdate() {
                   fullWidth
                   required
                   onChange={handleInputChange}
+                  error={coachRoleError}
+                  helperText={coachRoleError && "Please enter a valid role"}
                 />
               </MDBox>
             </MDBox>
