@@ -35,10 +35,9 @@ import { fetchUserProfile } from "../../fetchUserProfile";
 import VerticalBarChart from "../../examples/Charts/BarCharts/VerticalBarChart";
 import WellnessFlags from "./components/WellnessFlags";
 import PsychologyAlt from "@mui/icons-material/PsychologyAlt";
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
-import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import BirthdaysThisWeek from "./components/Birthdays"; // Import BirthdaysThisWeek component
-
 
 export default function Dashboard() {
   const today = new Date();
@@ -377,15 +376,15 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-   // Determine the font size based on the number of assigned workouts
-   let fontSize;
-   if (assignedWorkoutNames.length === 1 || assignedWorkoutNames.length === 0) {
-     fontSize = 25;
-   } else if (assignedWorkoutNames.length === 2) {
-     fontSize = 20;
-   } else {
-     fontSize = 15;
-   }
+  // Determine the font size based on the number of assigned workouts
+  let fontSize;
+  if (assignedWorkoutNames.length === 1 || assignedWorkoutNames.length === 0) {
+    fontSize = 25;
+  } else if (assignedWorkoutNames.length === 2) {
+    fontSize = 20;
+  } else {
+    fontSize = 15;
+  }
 
   return (
     <DashboardLayout>
@@ -412,17 +411,17 @@ export default function Dashboard() {
                 title="Assigned Workouts"
                 count={
                   <Link
-                  to="/workoutlibrary"
-                  style={{
-                    fontSize: `${fontSize}px`,
-                    textDecoration: "none",
-                    color: "inherit"
-                  }}
-                >
-                  {assignedWorkoutNames.length > 0
-                    ? assignedWorkoutNames.join(", ")
-                    : "No assigned workout today"}
-                </Link>
+                    to="/workoutlibrary"
+                    style={{
+                      fontSize: `${fontSize}px`,
+                      textDecoration: "none",
+                      color: "inherit",
+                    }}
+                  >
+                    {assignedWorkoutNames.length > 0
+                      ? assignedWorkoutNames.join(", ")
+                      : "No assigned workout today"}
+                  </Link>
                 }
                 percentage={{
                   color: "success",

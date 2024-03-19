@@ -180,7 +180,6 @@ import bgImage from "assets/images/grass2.jpg";
 import { supabase } from "../../../supabaseClient";
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
-
 function CoachInfoUpdate() {
   const [profilePic, setProfilePic] = useState("");
   const [profile, setProfile] = useState(null);
@@ -216,13 +215,12 @@ function CoachInfoUpdate() {
   }, []);
 
   // const handleInputChange = () => {
-  
 
   // };
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     let isValid = true;
-  
+
     switch (id) {
       case "first-name":
         isValid = /^[A-Za-z]+$/.test(value.trim());
@@ -248,13 +246,21 @@ function CoachInfoUpdate() {
       default:
         break;
     }
-  
-      // Check if both birth-date and coach-role are not empty
-      const birthDateValue = document.getElementById("birth-date").value;
-      const coachRoleValue = document.getElementById("coach-role").value;
-      const bothNotEmpty = birthDateValue.trim().length > 0 && coachRoleValue.trim().length > 0;
 
-    setFormValid(isValid && !firstNameError && !lastNameError && !phoneNumberError && !birthDateError && !coachRoleError && bothNotEmpty);
+    // Check if both birth-date and coach-role are not empty
+    const birthDateValue = document.getElementById("birth-date").value;
+    const coachRoleValue = document.getElementById("coach-role").value;
+    const bothNotEmpty = birthDateValue.trim().length > 0 && coachRoleValue.trim().length > 0;
+
+    setFormValid(
+      isValid &&
+        !firstNameError &&
+        !lastNameError &&
+        !phoneNumberError &&
+        !birthDateError &&
+        !coachRoleError &&
+        bothNotEmpty
+    );
   };
 
   const handleSubmit = async () => {

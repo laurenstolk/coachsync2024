@@ -151,11 +151,11 @@ function Overview() {
           .from("team")
           .select("water_checkin, sleep_checkin, stress_checkin, soreness_checkin, energy_checkin")
           .eq("id", profile.team_id); // Assuming you have a field named "team_id" to identify the team
-  
+
         if (error) {
           throw error;
         }
-  
+
         if (data && data.length > 0) {
           const wellnessData = data[0];
           // Set the selected wellness options based on the fetched data
@@ -171,12 +171,11 @@ function Overview() {
         console.error("Error fetching team wellness options:", error);
       }
     }
-  
+
     if (profile && profile.team_id) {
       fetchTeamWellnessOptions();
     }
   }, [profile]);
-  
 
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
@@ -355,8 +354,7 @@ function Overview() {
                               </Grid>
                               <Grid item xs={12}>
                                 <MDTypography variant="button" color="text" fontWeight="regular">
-                                  <strong>Options:</strong>{" "}
-                                  {/* {teamData.water_checkin} */}
+                                  <strong>Options:</strong> {/* {teamData.water_checkin} */}
                                 </MDTypography>
                               </Grid>
                               <Grid item>

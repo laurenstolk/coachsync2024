@@ -70,6 +70,9 @@ export default function ExercisesTableData() {
           category: categoryMap[exercise.category],
         }));
 
+        // Sort exercises by exercise name
+        exercisesWithCategories.sort((a, b) => a.name.localeCompare(b.name));
+
         setExercises(exercisesWithCategories);
         setFilteredExercises(exercisesWithCategories);
       }

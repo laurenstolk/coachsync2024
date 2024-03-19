@@ -241,7 +241,14 @@ function PlayerEdit() {
                 />
               </MDBox>
               {/* Add the line below */}
-              <MDTypography display="block" variant="button" color="info" my={1} component={Link} to="/authentication/reset-password">
+              <MDTypography
+                display="block"
+                variant="button"
+                color="info"
+                my={1}
+                component={Link}
+                to="/authentication/reset-password"
+              >
                 Change your password
               </MDTypography>
             </MDBox>

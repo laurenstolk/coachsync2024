@@ -103,7 +103,9 @@ function WellnessSetup() {
           const checkinFrequency = data[0].checkin_frequency;
 
           // Decode the checkin_frequency and set the selected days
-          const selectedDays = checkinFrequency.split("").map((dayIdString) => parseInt(dayIdString));
+          const selectedDays = checkinFrequency
+            .split("")
+            .map((dayIdString) => parseInt(dayIdString));
 
           setSelectedDays(selectedDays);
         }

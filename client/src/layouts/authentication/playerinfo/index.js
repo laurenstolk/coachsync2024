@@ -104,7 +104,7 @@ function PlayerInfoUpdate() {
         break;
       case "jersey-number":
         isValid = true; // For now, let's assume any value is valid
-        setJerseyNumberError(!isValid); 
+        setJerseyNumberError(!isValid);
         break;
       default:
         break;
@@ -114,7 +114,13 @@ function PlayerInfoUpdate() {
     const birthDateValue = document.getElementById("birth-date").value;
     const playerRoleValue = document.getElementById("player-position").value;
     const bothNotEmpty = birthDateValue.trim().length > 0 && playerRoleValue.trim().length > 0;
-    const allFieldsValid = !firstNameError && !lastNameError && !phoneNumberError && !birthDateError && !positionError  && bothNotEmpty;
+    const allFieldsValid =
+      !firstNameError &&
+      !lastNameError &&
+      !phoneNumberError &&
+      !birthDateError &&
+      !positionError &&
+      bothNotEmpty;
     setFormValid(allFieldsValid);
   };
 
