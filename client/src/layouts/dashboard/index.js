@@ -34,6 +34,10 @@ import AssignmentNotCompleted from "./components/AssignmentNotCompleted";
 import { fetchUserProfile } from "../../fetchUserProfile";
 import VerticalBarChart from "../../examples/Charts/BarCharts/VerticalBarChart";
 import WellnessFlags from "./components/WellnessFlags";
+import PsychologyAlt from "@mui/icons-material/PsychologyAlt";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import BirthdaysThisWeek from "./components/Birthdays"; // Import BirthdaysThisWeek component
 
 export default function Dashboard() {
   const today = new Date();
@@ -372,6 +376,16 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
+  // Determine the font size based on the number of assigned workouts
+  let fontSize;
+  if (assignedWorkoutNames.length === 1 || assignedWorkoutNames.length === 0) {
+    fontSize = 25;
+  } else if (assignedWorkoutNames.length === 2) {
+    fontSize = 20;
+  } else {
+    fontSize = 15;
+  }
+
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Dashboard" />
@@ -393,15 +407,27 @@ export default function Dashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon="check"
+                icon={<AssignmentTurnedInIcon>assigned</AssignmentTurnedInIcon>}
                 title="Assigned Workouts"
                 count={
-                  <Link to="/workoutlibrary" style={{ textDecoration: "none", color: "inherit" }}>
+                  <Link
+                    to="/workoutlibrary"
+                    style={{
+                      fontSize: `${fontSize}px`,
+                      textDecoration: "none",
+                      color: "inherit",
+                    }}
+                  >
                     {assignedWorkoutNames.length > 0
                       ? assignedWorkoutNames.join(", ")
                       : "No assigned workout today"}
                   </Link>
                 }
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: "Just updated",
+                }}
               />
             </MDBox>
           </Grid>
@@ -409,7 +435,7 @@ export default function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
-                icon="person_add"
+                icon={<FitnessCenterIcon>Workout</FitnessCenterIcon>}
                 title="Completed Workouts"
                 count={`${
                   completedWorkoutData.length > 0 && !isNaN(completedWorkoutData[0].count)
@@ -428,7 +454,7 @@ export default function Dashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
-                icon="store"
+                icon={<PsychologyAlt>Wellness</PsychologyAlt>}
                 title="Completed Wellness"
                 count={`${
                   wellnessCompletionData.length > 0 ? wellnessCompletionData[0].count + "%" : "0%"
@@ -554,6 +580,9 @@ export default function Dashboard() {
             </Grid>
             <Grid item xs={12} md={6} lg={6}>
               <AssignmentCompleted />
+            </Grid>
+            <Grid item xs={12} md={6} lg={6}>
+              <BirthdaysThisWeek />
             </Grid>
           </Grid>
         </MDBox>

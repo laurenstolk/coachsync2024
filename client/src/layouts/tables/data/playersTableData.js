@@ -31,7 +31,6 @@ import { supabase } from "../../../supabaseClient";
 export default function data() {
   const [profiles, setProfiles] = useState([]);
   const [user, setUser] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
   const [teamSignupCode, setTeamSignupCode] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -64,10 +63,12 @@ export default function data() {
 
       if (error) throw error;
       if (data != null) {
-        const updatedData = await Promise.all(data.map(async (profile) => {
-          const imageUrl = await getProfilePicURL(profile?.profile_picture);
-          return { ...profile, image: imageUrl };
-        }));
+        const updatedData = await Promise.all(
+          data.map(async (profile) => {
+            const imageUrl = await getProfilePicURL(profile?.profile_picture);
+            return { ...profile, image: imageUrl };
+          })
+        );
         setProfiles(updatedData);
         setLoading(false); // Set loading to false after profiles are fetched
       }
@@ -103,16 +104,13 @@ export default function data() {
     fetchTeamSignupCode();
   }, [user]);
   // useEffect to log teamSignupCode
-  useEffect(() => {
-  }, [teamSignupCode]); // useEffect dependency
+  useEffect(() => {}, [teamSignupCode]); // useEffect dependency
 
   // Check if there are no profiles
   if (loading) {
     // Return a single row with the loading message if profiles are still loading
     return {
-      columns: [
-        { Header: "", accessor: "loading", width: "100%", align: "center" },
-      ],
+      columns: [{ Header: "", accessor: "loading", width: "100%", align: "center" }],
       rows: [
         {
           loading: "Loading profiles...",

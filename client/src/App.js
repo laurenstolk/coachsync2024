@@ -1,11 +1,11 @@
 import { ToastContainer } from "react-toastify";
 
-import { useState, useEffect, useMemo, Component, Suspense } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 // react-router components
 
 import { Routes, useLocation, useNavigate } from "react-router-dom";
-import { BrowserRouter as Router, Route, Navigate } from "react-router-dom";
+import { Route, Navigate } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -90,7 +90,6 @@ const sendResetPasswordEmail = async (email) => {
   }
 };
 
-
 export default function App() {
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
@@ -98,35 +97,33 @@ export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
 
-
   const hasFirstName = profile && profile.first_name !== null;
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const token = queryParams.get("token");
     const redirectTo = queryParams.get("redirect_to");
-  
+
     if (token && redirectTo) {
       navigate(`/authentication/reset-password?token=${token}&redirect_to=${redirectTo}`);
     }
   }, [location.search, navigate]);
-  
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       console.log("Session:", session);
     });
-  
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       console.log("Session:", session);
     });
-  
+
     return () => subscription.unsubscribe();
-  }, []);  
+  }, []);
 
   // WHERE THE USER IS NULL ERROR ON SIGN IN IS HAPPENING - i need
   useEffect(() => {
@@ -148,7 +145,6 @@ export default function App() {
       setLoading(false); // No session, so set loading to false
     }
   }, [session]);
-  
 
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -316,7 +312,7 @@ export default function App() {
                 },
               }}
               providers={["google"]}
-              redirectTo="http://localhost:3000/authentication/reset-password"
+              redirectTo="https://coachsync.pro/authentication/reset-password"
               theme="default"
               onResetPassword={sendResetPasswordEmail}
             />

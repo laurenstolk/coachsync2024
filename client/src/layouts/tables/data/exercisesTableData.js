@@ -24,10 +24,10 @@ export default function ExercisesTableData() {
         .single();
 
       let { data: sportData, erorr } = await supabase
-          .from("sport")
-          .select("*")
-          .eq("id", teamData.sport_id)
-          .single();
+        .from("sport")
+        .select("*")
+        .eq("id", teamData.sport_id)
+        .single();
 
       setSportName(sportData.name);
 
@@ -70,6 +70,9 @@ export default function ExercisesTableData() {
           category: categoryMap[exercise.category],
         }));
 
+        // Sort exercises by exercise name
+        exercisesWithCategories.sort((a, b) => a.name.localeCompare(b.name));
+
         setExercises(exercisesWithCategories);
         setFilteredExercises(exercisesWithCategories);
       }
@@ -106,9 +109,9 @@ export default function ExercisesTableData() {
       </MDBox>
     ),
     category: (
-        <MDBox display="flex" py={1}>
-          {exercise.category === "Training" ? sportName : exercise.category}
-        </MDBox>
+      <MDBox display="flex" py={1}>
+        {exercise.category === "Training" ? sportName : exercise.category}
+      </MDBox>
     ),
     description: (
       <MDTypography variant="caption" color="text" fontWeight="medium">

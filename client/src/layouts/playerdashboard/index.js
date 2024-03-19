@@ -32,6 +32,8 @@ import { Link } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import { fetchUserProfile } from "../../fetchUserProfile";
 import PsychologyAlt from "@mui/icons-material/PsychologyAlt";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 
 export default function PlayerDashboard() {
   const today = new Date();
@@ -72,16 +74,16 @@ export default function PlayerDashboard() {
     const fetchCheckinCompletion = async () => {
       try {
         if (!user || !user.id) return; // Add null check here
-    
+
         // Fetch data from the checkin table to check if the check-in is completed for today
         const { data: checkinData, error: checkinError } = await supabase
           .from("checkin")
           .select("player_id")
           .eq("player_id", user.id)
           .eq("date", today.toISOString().split("T")[0]);
-    
+
         if (checkinError) throw checkinError;
-    
+
         setCheckinCompleted(checkinData.length > 0);
       } catch (error) {
         console.error("Error fetching check-in completion:", error.message);
@@ -94,15 +96,15 @@ export default function PlayerDashboard() {
     const fetchTeamCheckinFrequency = async () => {
       try {
         if (!user || !user.team_id) return; // Add null check here
-    
+
         const { data: teamData, error: teamError } = await supabase
           .from("team")
           .select("checkin_frequency")
           .eq("id", user.team_id)
           .single();
-    
+
         if (teamError) throw teamError;
-    
+
         setCheckinFrequency(teamData.checkin_frequency || ""); // Set default value if checkin_frequency is null
       } catch (error) {
         console.error("Error fetching team data:", error.message);
@@ -176,6 +178,8 @@ export default function PlayerDashboard() {
 
   async function fetchAssignedWorkouts() {
     try {
+      // Fetch data from the assignment table to check if there are assigned workouts for today
+
       const { data: assignmentData, error: assignmentError } = await supabase
         .from("assignment")
         .select("workout_id")
@@ -184,19 +188,23 @@ export default function PlayerDashboard() {
 
       if (assignmentError) throw assignmentError;
 
-      const fetchedWorkouts = [];
+      if (assignmentData.length > 0) {
+        const workoutIds = assignmentData.map((assignment) => assignment.workout_id);
 
-      for (const assignment of assignmentData) {
-        const workoutId = assignment.workout_id;
-        const {data: workoutData, error: workoutError } = await supabase
+        // Fetching workout names for the fetched workout ids
+        const { data: workoutData, error: workoutError } = await supabase
           .from("workout")
           .select("workout_name")
-          .eq("id", workoutId)
-          .single();
+          .in("id", workoutIds);
 
-          if (workoutError) throw workoutError;
+        if (workoutError) throw workoutError;
 
-          fetchedWorkouts.push(workoutData.workout_name);
+        const workoutNames = workoutData.map((workout) => workout.workout_name);
+
+        // Set the assignedWorkout state to the array of workout names
+        setAssignedWorkout(workoutNames);
+      } else {
+        setAssignedWorkout(null);
       }
 
       setAssignedWorkouts(fetchedWorkouts);
@@ -218,8 +226,29 @@ export default function PlayerDashboard() {
     } catch (error) {
       console.error("Error fetching assigned workout:", error.message);
     }
-  };
+  }
 
+  // Calculate the font size based on the number of assigned workouts
+  // Calculate the font size based on the number of assigned workouts
+  let fontSize;
+  console.log("Assigned workouts:", assignedWorkout);
+  if (assignedWorkout !== null) {
+    if (Array.isArray(assignedWorkout)) {
+      const numAssignedWorkouts = assignedWorkout.length;
+      if (numAssignedWorkouts === 1 || numAssignedWorkouts === 0) {
+        fontSize = 25;
+      } else if (numAssignedWorkouts === 2) {
+        fontSize = 20;
+      } else {
+        fontSize = 15; // Adjusted font size for multiple workouts
+      }
+    } else {
+      fontSize = 25; // Default font size if assignedWorkout is not an array
+    }
+  } else {
+    fontSize = 25; // Default font size if assignedWorkout is null or undefined
+  }
+  console.log("Font size:", fontSize);
 
   return (
     <DashboardLayout>
@@ -242,23 +271,22 @@ export default function PlayerDashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="primary"
-                icon="person_add"
-                title="Workouts Assigned"
+                icon={<AssignmentTurnedInIcon>Workout</AssignmentTurnedInIcon>}
+                title="Assigned Workouts"
                 count={
-                  assignedWorkouts.length > 0 ? (
-                    <div>
-                      {assignedWorkouts.map((workout, index) => (
-                        <p key={index}>
-                          {workout}
-                        </p>
-                      ))}
-                    </div>
-                  ) : (
-                    "No assigned workouts."
-                  )
+                  assignedWorkout !== null && Array.isArray(assignedWorkout)
+                    ? assignedWorkout.map((workout, index) => (
+                        <div key={index} style={{ display: "inline-block" }}>
+                          <span style={{ fontSize: `${fontSize}px` }}>{workout}</span>
+                          {index !== assignedWorkout.length - 1 && (
+                            <span style={{ fontSize: `${fontSize}px` }}>, </span>
+                          )}
+                        </div>
+                      ))
+                    : assignedWorkout || "No assigned workout."
                 }
                 percentage={{
+                  color: "success",
                   amount: "",
                   label: "Just updated",
                 }}
@@ -269,7 +297,7 @@ export default function PlayerDashboard() {
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="primary"
-                icon="person_add"
+                icon={<FitnessCenterIcon>Workout</FitnessCenterIcon>}
                 title="Workout Complete?"
                 count={
                   assignedWorkouts.length > 0 ? (
@@ -332,36 +360,36 @@ export default function PlayerDashboard() {
             <Grid item xs={12} md={12} lg={12}>
               <MDBox mb={3}>
                 <ReportsLineChart
-                    color="success"
-                    title="Wellness Completion"
-                    description="Percentage of players who completed a wellness checkin."
-                    date="Updated Today"
-                    chart={{
-                      labels: wellnessData.map((item) => {
-                        console.log("This is my wellnessData " & wellnessData)
-                        const date = new Date(item.wDateCompleted);
-                        date.setUTCHours(0, 0, 0, 0); // Set the time to midnight UTC to ensure consistency
-                        return `${date.toLocaleString("en-US", {
-                          month: "long",
-                        })} ${date.getUTCDate()}`;
+                  color="success"
+                  title="Wellness Completion"
+                  description="Percentage of players who completed a wellness checkin."
+                  date="Updated Today"
+                  chart={{
+                    labels: wellnessData.map((item) => {
+                      console.log("This is my wellnessData " & wellnessData);
+                      const date = new Date(item.wDateCompleted);
+                      date.setUTCHours(0, 0, 0, 0); // Set the time to midnight UTC to ensure consistency
+                      return `${date.toLocaleString("en-US", {
+                        month: "long",
+                      })} ${date.getUTCDate()}`;
+                    }),
+                    datasets: {
+                      label: "Percentage of Players Completed Wellness",
+                      data: wellnessData.map((item) => {
+                        const percentage = item.count; // Assuming item.count is already in the range of 0 to 100
+                        return percentage.toFixed(2); // Round to two decimal places
                       }),
-                      datasets: {
-                        label: "Percentage of Players Completed Wellness",
-                        data: wellnessData.map((item) => {
-                          const percentage = item.count; // Assuming item.count is already in the range of 0 to 100
-                          return percentage.toFixed(2); // Round to two decimal places
-                        }),
-                      },
-                      options: {
-                        scales: {
-                          y: {
-                            beginAtZero: true,
-                            suggestedMax: 100, // Ensure the maximum value on the y-axis is 100
-                          },
+                    },
+                    options: {
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          suggestedMax: 100, // Ensure the maximum value on the y-axis is 100
                         },
                       },
-                    }}
-                  />  
+                    },
+                  }}
+                />
               </MDBox>
             </Grid>
           </Grid>

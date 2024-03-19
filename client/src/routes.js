@@ -88,6 +88,7 @@ import ViewCalendar from "./layouts/viewcalendar";
 import MyCalendar from "./layouts/mycalendar";
 import { useEffect, useState } from "react";
 import { Route } from "react-router-dom"; // Add this import statement
+import { layouts } from "chart.js";
 
 const routes = [
   //COACH
@@ -219,7 +220,7 @@ const routes = [
     type: "collapse",
     name: "Complete Workout",
     key: "completeworkout",
-    icon: <Icon fontSize="small">person</Icon>,
+    icon: <FitnessCenterIcon fontSize="small">workout</FitnessCenterIcon>,
     route: "/completeworkout",
     component: <CompleteWorkout />,
     player: true,
@@ -244,6 +245,7 @@ const routes = [
     component: <ViewAssignment />,
     coach: true,
   },
+
   //COACH
   {
     type: "divider",
