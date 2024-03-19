@@ -424,6 +424,11 @@ export default function Dashboard() {
                     : "No assigned workout today"}
                 </Link>
                 }
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: "Just updated",
+                }}
               />
             </MDBox>
           </Grid>

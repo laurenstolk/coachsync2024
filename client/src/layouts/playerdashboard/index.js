@@ -215,9 +215,9 @@ export default function PlayerDashboard() {
      if (numAssignedWorkouts === 1 || numAssignedWorkouts === 0) {
        fontSize = 25;
      } else if (numAssignedWorkouts === 2) {
-       fontSize = 18;
+       fontSize = 20;
      } else {
-       fontSize = 13; // Adjusted font size for multiple workouts
+       fontSize = 15; // Adjusted font size for multiple workouts
      }
    } else {
      fontSize = 25; // Default font size if assignedWorkout is not an array
