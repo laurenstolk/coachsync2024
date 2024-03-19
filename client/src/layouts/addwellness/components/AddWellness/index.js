@@ -127,7 +127,7 @@ function AddWellness() {
     if (!isWellnessRequired()) {
       return;
     }
-    
+
     console.log("startDate", startDate);
     const selectedDate = dayjs(startDate).format("YYYY-MM-DD");
 
