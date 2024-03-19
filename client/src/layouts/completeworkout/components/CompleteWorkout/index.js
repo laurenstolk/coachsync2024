@@ -7,7 +7,7 @@ import Button from "@mui/material/Button";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
-import { FormControl, FormControlLabel, InputLabel } from "@mui/material";
+import { Divider, FormControl, FormControlLabel, InputLabel } from "@mui/material";
 
 import React, { useEffect, useState, useMemo } from "react";
 
@@ -48,18 +48,35 @@ async function getCustomizedExercise(assignmentData) {
   return customizedExercisesWithExerciseInfo;
 }
 
-async function getAssignment(profile) {
+// async function getAssignment(profile) {
+//   const today = new Date();
+//   today.setHours(0, 0, 0, 0);
+//   console.log("today: ", today.toISOString().split("T")[0]);
+//   const { data: assignmentData } = await supabase
+//     .from("assignment")
+//     .select("*")
+//     .eq("player_id", profile.id)
+//     .eq("date", today.toISOString().split("T")[0])
+//     .single();
+//   console.log("assignments: ", assignmentData);
+//   return assignmentData;
+// }
+async function getAssignments(profile) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   console.log("today: ", today.toISOString().split("T")[0]);
-  const { data: assignmentData } = await supabase
+  const { data: assignmentData, error } = await supabase
     .from("assignment")
     .select("*")
     .eq("player_id", profile.id)
-    .eq("date", today.toISOString().split("T")[0])
-    .single();
-  console.log("assignments: ", assignmentData);
+    .eq("date", today.toISOString().split("T")[0]);
+  
+  if (error) {
+    console.error("Error fetching assignments:", error);
+    return null;
+  }
 
+  console.log("assignments: ", assignmentData);
   return assignmentData;
 }
 
@@ -69,9 +86,11 @@ async function getWorkout(assignmentData) {
     .select("*")
     .eq("id", assignmentData.workout_id)
     .single();
-
+  console.log("assignment workoutid:", assignmentData.workout_id)
+  
   return workoutData;
 }
+
 
 function CompleteWorkout() {
   const navigate = useNavigate();
@@ -81,36 +100,56 @@ function CompleteWorkout() {
   const [completedExercises, setCompletedExercises] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+   // Add a useMemo hook to check if any exercises are completed
+  const anyExercisesCompleted = useMemo(() => {
+    return completedExercises.length > 0;
+  }, [completedExercises]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const profileData = await fetchUserProfile();
-        const assignmentData = await getAssignment(profileData);
+        const assignmentData = await getAssignments(profileData);
 
-        if (!assignmentData) {
+        if (!assignmentData || assignmentData.length === 0) {
           setIsLoading(false);
           return;
         }
-
-        setAssignment(assignmentData);
-        const customizedExercisesData = await getCustomizedExercise(assignmentData);
-        setCustomizedExercises(customizedExercisesData);
-        const workoutData = await getWorkout(assignmentData);
-        setWorkout(workoutData);
+        const assignmentsPromises = assignmentData.map(async (assignment) => {
+          const customizedExercisesData = await getCustomizedExercise(assignment);
+          const workoutData = await getWorkout(assignment);
+          return { assignment, customizedExercisesData, workoutData };
+        });
+        // Resolve all promises
+        const resolvedAssignments = await Promise.all(assignmentsPromises);
+        // Update state with the fetched data
+        setAssignment(resolvedAssignments);
         setIsLoading(false);
-      } catch (error) {
+        } catch (error) {
         console.error("Error fetching data");
-      }
-    };
-    fetchData();
-  }, []);
+        }
+      };
+      fetchData();
+    }, []);
+
+  //       setAssignment(assignmentData);
+  //       const customizedExercisesData = await getCustomizedExercise(assignmentData);
+  //       setCustomizedExercises(customizedExercisesData);
+  //       const workoutData = await getWorkout(assignmentData);
+  //       setWorkout(workoutData);
+  //       setIsLoading(false);
+  //     } catch (error) {
+  //       console.error("Error fetching data");
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   // Add a useMemo hook to calculate whether all exercises are completed
   const allExercisesCompleted = useMemo(() => {
     return customizedExercises.length === completedExercises.length;
   }, [customizedExercises, completedExercises]);
 
-  // Function to handle checkbox change for completed exercises
   // Function to handle checkbox change for completed exercises
   const handleExerciseCompletionChange = (exercise) => {
     setCompletedExercises((prevCompletedExercises) => {
@@ -257,92 +296,104 @@ function CompleteWorkout() {
     );
   } else {
     return (
-      <Card id="delete-account">
-        <MDBox pt={3} px={2}>
-          <MDTypography variant="h4" fontWeight="medium">
-            {workout ? workout.workout_name : "Today's Workout"}
-          </MDTypography>
-        </MDBox>
-
-        <MDBox pt={1} pb={2} px={2}>
-          <InputLabel>Exercises</InputLabel>
-          <MDBox
-            component="ul"
-            display="flex"
-            flexDirection="column"
-            p={0}
-            m={0}
-            className="MuiFormControlLabel-root"
-          >
-            {" "}
-            {/* Add the className here */}
-            <MDBox mb={2}>
-              <FormControl>
-                <MDBox display="flex" flexDirection="column">
-                  {customizedExercises.map((customizedExercise, index) => (
-                    <FormControlLabel
-                      key={index}
-                      control={
-                        <Checkbox
-                          checked={completedExercises.includes(customizedExercise)}
-                          onChange={() => handleExerciseCompletionChange(customizedExercise)}
-                          name={customizedExercise.name}
-                        />
-                      }
-                      label={
-                        <div>
-                          <MDTypography variant="body1" fontWeight="medium">
-                            {customizedExercise.name}
-                          </MDTypography>
-                          {(customizedExercise.reps ||
-                            customizedExercise.sets ||
-                            customizedExercise.duration) && (
-                            <MDTypography variant="body2">
-                              {customizedExercise.reps && `Reps: ${customizedExercise.reps}`}
-                              {customizedExercise.reps &&
-                                (customizedExercise.sets || customizedExercise.duration) &&
-                                " | "}
-                              {customizedExercise.sets && `Sets: ${customizedExercise.sets}`}
-                              {customizedExercise.sets && customizedExercise.duration && " | "}
-                              {customizedExercise.duration &&
-                                `Duration: ${customizedExercise.duration}`}
-                            </MDTypography>
-                          )}
-
-                          <MDTypography variant="body2" color="text">
-                            Coach Notes: {customizedExercise.coach_notes}
-                          </MDTypography>
-                          <TextField
-                            label="Notes"
-                            variant="outlined"
-                            size="small"
-                            fullWidth
-                            multiline
-                            rows={1}
-                            placeholder="Enter notes..."
-                            onChange={(event) => handleNotesChange(index, event.target.value)}
-                          />
-                        </div>
-                      }
-                    />
-                  ))}
-                </MDBox>
-              </FormControl>
-            </MDBox>
+    <div>
+      {assignment.map((assignmentItem, assignmentIndex) => (
+        <Card key={`assignment-${assignmentIndex}`}>
+          <MDBox pt={3} px={2}>
+            <MDTypography variant="h4" fontWeight="medium">
+              {assignmentItem.workoutData ? assignmentItem.workoutData.workout_name : "Unknown"}
+            </MDTypography>
+            {assignmentItem.assignment.completed && (
+              <div>
+                <MDTypography variant="body1">You have already completed this workout</MDTypography>
+                <Divider style={{ backgroundColor: 'black' }} sx={{ my: 2, height: 4 }}></Divider>
+              </div>
+            )}
           </MDBox>
-        </MDBox>
 
-        {/* Submit button */}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-          disabled={!allExercisesCompleted} // Disable the button if not all exercises are completed
-        >
-          Submit
-        </Button>
-      </Card>
+          {!assignmentItem.assignment.completed && ( // Conditionally render if assignment is not completed
+            <MDBox pt={1} pb={2} px={2}>
+              <InputLabel>Exercises</InputLabel>
+              <MDBox
+                component="ul"
+                display="flex"
+                flexDirection="column"
+                p={0}
+                m={0}
+                className="MuiFormControlLabel-root"
+              >
+                {assignmentItem.customizedExercisesData.map((customizedExercise, exerciseIndex) => (
+                  <MDBox mb={2} key={`exercise-${exerciseIndex}`}>
+                    <FormControl>
+                      <MDBox display="flex" flexDirection="column">
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={completedExercises.includes(customizedExercise)}
+                              onChange={() => handleExerciseCompletionChange(customizedExercise)}
+                              name={customizedExercise.name}
+                            />
+                          }
+                          label={
+                            <div>
+                              <MDTypography variant="body1" fontWeight="medium">
+                                {customizedExercise.name}
+                              </MDTypography>
+                              {(customizedExercise.reps ||
+                                customizedExercise.sets ||
+                                customizedExercise.duration) && (
+                                <MDTypography variant="body2">
+                                  {customizedExercise.reps && `Reps: ${customizedExercise.reps}`}
+                                  {customizedExercise.reps &&
+                                    (customizedExercise.sets || customizedExercise.duration) &&
+                                    " | "}
+                                  {customizedExercise.sets && `Sets: ${customizedExercise.sets}`}
+                                  {customizedExercise.sets && customizedExercise.duration && " | "}
+                                  {customizedExercise.duration &&
+                                    `Duration: ${customizedExercise.duration}`}
+                                </MDTypography>
+                              )}
+
+                              <MDTypography variant="body2" color="text">
+                                Coach Notes: {customizedExercise.coach_notes}
+                              </MDTypography>
+                              <TextField
+                                label="Notes"
+                                variant="outlined"
+                                size="small"
+                                fullWidth
+                                multiline
+                                rows={1}
+                                placeholder="Enter notes..."
+                                onChange={(event) => handleNotesChange(exerciseIndex, event.target.value)}
+                              />
+                            </div>
+                          }
+                        />
+                      </MDBox>
+                    </FormControl>
+                  </MDBox>
+                ))}
+              </MDBox>
+            </MDBox>
+          )}
+
+          {!assignmentItem.assignment.completed && ( // Conditionally render if assignment is not completed
+            // Submit button
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              style={{ color: 'white' }} 
+              disabled={!allExercisesCompleted} // Disable the button if not all exercises are completed
+            >
+              Submit
+            </Button>
+          )}
+        </Card>
+      ))}
+    </div>
+
     );
-  }
-}
+}}
 export default CompleteWorkout;
