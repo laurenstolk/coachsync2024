@@ -28,6 +28,13 @@ function PlayerInfoUpdate() {
   const [profile, setProfile] = useState(null);
 
   const [formValid, setFormValid] = useState(false);
+  // Add error state variables for validation
+  const [firstNameError, setFirstNameError] = useState(false);
+  const [lastNameError, setLastNameError] = useState(false);
+  const [phoneNumberError, setPhoneNumberError] = useState(false);
+  const [birthDateError, setBirthDateError] = useState(false);
+  const [positionError, setPositionError] = useState(false);
+  const [jerseyNumberError, setJerseyNumberError] = useState(false);
 
   const onDrop = useCallback((acceptedFiles) => {
     // Do something with the uploaded file (e.g., store it in state)
@@ -51,23 +58,64 @@ function PlayerInfoUpdate() {
     fetchData();
   }, []);
 
-  const handleInputChange = () => {
-    const firstName = document.getElementById("first-name").value;
-    const lastName = document.getElementById("last-name").value;
-    const phoneNumber = document.getElementById("phone-number").value;
-    const birthDate = document.getElementById("birth-date").value;
-    const position = document.getElementById("player-position").value;
-    const jerseyNum = document.getElementById("jersey-number").value;
+  // const handleInputChange = () => {
+  //   const firstName = document.getElementById("first-name").value;
+  //   const lastName = document.getElementById("last-name").value;
+  //   const phoneNumber = document.getElementById("phone-number").value;
+  //   const birthDate = document.getElementById("birth-date").value;
+  //   const position = document.getElementById("player-position").value;
+  //   const jerseyNum = document.getElementById("jersey-number").value;
 
-    const isValid =
-      firstName !== "" &&
-      lastName !== "" &&
-      phoneNumber !== "" &&
-      birthDate !== "" &&
-      position !== "";
-    jerseyNum !== "";
-    setFormValid(isValid);
-    console.log(firstName, lastName, phoneNumber, birthDate, position, jerseyNum);
+  //   const isValid =
+  //     firstName !== "" &&
+  //     lastName !== "" &&
+  //     phoneNumber !== "" &&
+  //     birthDate !== "" &&
+  //     position !== "";
+  //   jerseyNum !== "";
+  //   setFormValid(isValid);
+  //   console.log(firstName, lastName, phoneNumber, birthDate, position, jerseyNum);
+  // };
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    let isValid = true;
+
+    switch (id) {
+      case "first-name":
+        isValid = /^[A-Za-z]+$/.test(value.trim());
+        setFirstNameError(!isValid);
+        break;
+      case "last-name":
+        isValid = /^[A-Za-z]+$/.test(value.trim());
+        setLastNameError(!isValid);
+        break;
+      case "phone-number":
+        isValid = /^\d{1,13}$/.test(value.trim());
+        setPhoneNumberError(!isValid);
+        break;
+      case "birth-date":
+        const inputDate = new Date(value.trim());
+        isValid = inputDate <= new Date(); // Check if birth date is in the past or today
+        setBirthDateError(!isValid);
+        break;
+      case "player-position":
+        isValid = value.trim().length > 0;
+        setPositionError(!isValid);
+        break;
+      case "jersey-number":
+        isValid = true; // For now, let's assume any value is valid
+        setJerseyNumberError(!isValid); 
+        break;
+      default:
+        break;
+    }
+
+    // Check if all required fields are valid
+    const birthDateValue = document.getElementById("birth-date").value;
+    const playerRoleValue = document.getElementById("player-position").value;
+    const bothNotEmpty = birthDateValue.trim().length > 0 && playerRoleValue.trim().length > 0;
+    const allFieldsValid = !firstNameError && !lastNameError && !phoneNumberError && !birthDateError && !positionError  && bothNotEmpty;
+    setFormValid(allFieldsValid);
   };
 
   const handleSubmit = async () => {
@@ -94,7 +142,7 @@ function PlayerInfoUpdate() {
         phone_number: document.getElementById("phone-number").value,
         birth_date: document.getElementById("birth-date").value,
       };
-      console.log(playerRoleData);
+      console.log("player data submission", playerRoleData);
 
       try {
         if (profilePic) {
@@ -170,6 +218,8 @@ function PlayerInfoUpdate() {
                   fullWidth
                   required
                   onChange={handleInputChange}
+                  error={firstNameError}
+                  helperText={firstNameError && "Please enter a valid first name"}
                 />
               </MDBox>
               <MDBox mb={2}>
@@ -181,6 +231,8 @@ function PlayerInfoUpdate() {
                   fullWidth
                   required
                   onChange={handleInputChange}
+                  error={lastNameError}
+                  helperText={lastNameError && "Please enter a valid last name"}
                 />
               </MDBox>
               <MDBox mb={3}>
@@ -192,6 +244,8 @@ function PlayerInfoUpdate() {
                   fullWidth
                   required
                   onChange={handleInputChange}
+                  error={phoneNumberError}
+                  helperText={phoneNumberError && "Please enter a valid phone number"}
                 />
               </MDBox>
               <MDBox mb={3}>
@@ -205,6 +259,8 @@ function PlayerInfoUpdate() {
                   fullWidth
                   required
                   onChange={handleInputChange}
+                  error={birthDateError}
+                  helperText={birthDateError && "Please enter a valid birthday"}
                 />
               </MDBox>
               <MDTypography display="block" variant="button" color="text" my={1}>
@@ -219,6 +275,8 @@ function PlayerInfoUpdate() {
                   fullWidth
                   required
                   onChange={handleInputChange}
+                  error={positionError}
+                  helperText={positionError && "Please enter a valid position"}
                 />
               </MDBox>
               <MDTypography display="block" variant="button" color="text" my={1}>
@@ -232,6 +290,8 @@ function PlayerInfoUpdate() {
                   variant="outlined"
                   fullWidth
                   onChange={handleInputChange}
+                  error={jerseyNumberError}
+                  helperText={jerseyNumberError && "Please enter a valid jersey number"}
                 />
               </MDBox>
             </MDBox>
