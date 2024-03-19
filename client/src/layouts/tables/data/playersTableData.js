@@ -140,13 +140,13 @@ export default function data() {
 
   return {
     columns: [
-      { Header: "Picture", accessor: "image", width: "10%", align: "left" },
+      { Header: "Picture", accessor: "image", width: "15%", align: "left" },
       { Header: "First Name", accessor: "first", width: "15%", align: "left" },
       { Header: "Last Name", accessor: "last", width: "15%", align: "left" },
       { Header: "Position", accessor: "position", width: "15%", align: "left" },
-      { Header: "Jersey Number", accessor: "jersey", width: "10%", align: "left" },
-      { Header: "Phone Number", accessor: "phone", width: "17.5%", align: "left" },
-      { Header: "Email Address", accessor: "email", width: "17.5%", align: "left" },
+      { Header: "Jersey Number", accessor: "jersey", width: "15%", align: "left" },
+      { Header: "Phone Number", accessor: "phone", width: "15%", align: "left" },
+      { Header: "Email Address", accessor: "email", width: "15%", align: "left" },
     ],
 
     rows: profiles.map((profile, index) => ({
