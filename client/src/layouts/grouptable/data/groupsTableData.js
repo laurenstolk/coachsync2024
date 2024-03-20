@@ -116,20 +116,20 @@ export default function data() {
     getGroups();
   }, []);
 
-  const handleDeleteGroup = async (groupId) => {
-    try {
-      // Delete the group with the given ID
-      await supabase.from("team_group").delete().eq("id", groupId);
+  // const handleDeleteGroup = async (groupId) => {
+  //   try {
+  //     // Delete the group with the given ID
+  //     await supabase.from("team_group").delete().eq("id", groupId);
 
-      // Delete group memberships associated with the group
-      await supabase.from("team_group_membership").delete().eq("team_group_id", groupId);
+  //     // Delete group memberships associated with the group
+  //     await supabase.from("team_group_membership").delete().eq("team_group_id", groupId);
 
-      // Filter out the deleted group from the state
-      setGroups(groups.filter((group) => group.id !== groupId));
-    } catch (error) {
-      console.error("Error deleting group:", error.message);
-    }
-  };
+  //     // Filter out the deleted group from the state
+  //     setGroups(groups.filter((group) => group.id !== groupId));
+  //   } catch (error) {
+  //     console.error("Error deleting group:", error.message);
+  //   }
+  // };
 
   return {
     columns: [
@@ -138,6 +138,11 @@ export default function data() {
     ],
 
     rows: groups.map((group) => ({
+      id: (
+        <MDBox display="flex" py={1} pr={2.8} pl={2}>
+          {group.id}
+        </MDBox>
+      ),
       name: (
         <MDBox display="flex" py={1} pr={2.8} pl={2}>
           {group.name}
