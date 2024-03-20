@@ -148,9 +148,14 @@ function TeamInfoUpdate() {
         }
         console.log("Team logo updated successfully");
         console.log("Profile updated successfully with team ID:", teamId);
-        toast.success("Here's your team code! Save this, since your players will need it to join your team:" + "      " + teamData.signup_code, {
-          autoClose: false
-        });
+        toast.success(
+          "Here's your team code! Save this, since your players will need it to join your team:" +
+            "      " +
+            teamData.signup_code,
+          {
+            autoClose: false,
+          }
+        );
       }
     } catch (error) {
       console.error("Error:", error);

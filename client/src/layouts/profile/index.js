@@ -355,18 +355,17 @@ function Overview() {
                               <Grid item xs={12}>
                                 <MDTypography variant="button" color="text" fontWeight="regular">
                                   <strong>Options:</strong>{" "}
-                                  {teamData
-                                    ? (
-                                      <>
-                                        {teamData.water_checkin && <span>Water </span>}
-                                        {teamData.sleep_checkin && <span>Sleep </span>}
-                                        {teamData.soreness_checkin && <span>Soreness </span>}
-                                        {teamData.energy_checkin && <span>Energy </span>}
-                                        {teamData.stress_checkin && <span>Stress </span>}
-                                      </>
-                                    )
-                                    : ""
-                                  }
+                                  {teamData ? (
+                                    <>
+                                      {teamData.water_checkin && <span>Water </span>}
+                                      {teamData.sleep_checkin && <span>Sleep </span>}
+                                      {teamData.soreness_checkin && <span>Soreness </span>}
+                                      {teamData.energy_checkin && <span>Energy </span>}
+                                      {teamData.stress_checkin && <span>Stress </span>}
+                                    </>
+                                  ) : (
+                                    ""
+                                  )}
                                 </MDTypography>
                               </Grid>
                               <Grid item>

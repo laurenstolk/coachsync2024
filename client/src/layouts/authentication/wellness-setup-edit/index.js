@@ -86,24 +86,26 @@ function WellnessSetup() {
           .from("team")
           .select("checkin_frequency")
           .eq("id", profile.team_id); // Assuming you have a field named "team_id" to identify the team
-  
+
         if (error) {
           throw error;
         }
-  
+
         if (data && data.length > 0) {
           const checkinFrequency = data[0].checkin_frequency;
-  
+
           // Decode the checkin_frequency and set the selected days
-          const selectedDays = checkinFrequency.split("").map((dayIdString) => parseInt(dayIdString));
-  
+          const selectedDays = checkinFrequency
+            .split("")
+            .map((dayIdString) => parseInt(dayIdString));
+
           setSelectedDays(selectedDays);
         }
       } catch (error) {
         console.error("Error fetching team checkin frequency:", error);
       }
     }
-  
+
     if (profile && profile.team_id) {
       fetchTeamCheckinFrequency();
     }
@@ -117,14 +119,14 @@ function WellnessSetup() {
           .from("team")
           .select("water_checkin, sleep_checkin, soreness_checkin, energy_checkin, stress_checkin")
           .eq("id", profile.team_id); // Assuming you have a field named "team_id" to identify the team
-  
+
         if (error) {
           throw error;
         }
-  
+
         if (data && data.length > 0) {
           const teamCheckinOptions = data[0];
-          
+
           // Update selected wellness options based on fetched data
           const selectedWellnessOptions = [];
           if (teamCheckinOptions.water_checkin) selectedWellnessOptions.push("Water");
@@ -132,19 +134,19 @@ function WellnessSetup() {
           if (teamCheckinOptions.soreness_checkin) selectedWellnessOptions.push("Soreness");
           if (teamCheckinOptions.energy_checkin) selectedWellnessOptions.push("Energy");
           if (teamCheckinOptions.stress_checkin) selectedWellnessOptions.push("Stress");
-  
+
           setSelectedWellnessOptions(selectedWellnessOptions);
         }
       } catch (error) {
         console.error("Error fetching team checkin options:", error);
       }
     }
-  
+
     if (profile && profile.team_id) {
       fetchTeamCheckinOptions();
     }
   }, [profile]);
-  
+
   const handleDayChange = (day) => {
     setSelectedDays((prevSelectedDays) => {
       const newSelectedDays = prevSelectedDays.includes(day)
