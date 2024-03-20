@@ -26,6 +26,9 @@ import { fetchUserProfile } from "../../../fetchUserProfile";
 
 import MenuItem from "@mui/material/MenuItem";
 
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function TeamInfoUpdate() {
   const [selectedSport, setSelectedSport] = useState(""); // new state for selected sport
   const [teamLogo, setTeamLogo] = React.useState(null);
@@ -145,6 +148,9 @@ function TeamInfoUpdate() {
         }
         console.log("Team logo updated successfully");
         console.log("Profile updated successfully with team ID:", teamId);
+        toast.success("Here's your team code! Save this, since your players will need it to join your team:" + "      " + teamData.signup_code, {
+          autoClose: false
+        });
       }
     } catch (error) {
       console.error("Error:", error);

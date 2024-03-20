@@ -38,11 +38,12 @@ function AddWellness() {
   const [startDate, setStartDate] = useState(dayjs());
   const [checkinFrequency, setCheckinFrequency] = useState("");
   const [wellnessData, setWellnessData] = useState({
-    water: { id: 1, value: 3, notes: "" }, //make sure to update to percent
-    sleep: { id: 2, value: 3, notes: "" },
-    stress: { id: 3, value: 3, notes: "" },
-    soreness: { id: 4, value: 3, notes: "" },
-    energy: { id: 5, value: 3, notes: "" },
+
+    water: { id: 1, value: 3 , notes: null}, 
+    sleep: { id: 2, value: 3 , notes: null},
+    stress: { id: 3, value: 3 , notes: null},
+    soreness: { id: 4, value: 3 , notes: null},
+    energy: { id: 5, value: 3 , notes: null},
   });
 
   const [teamData, setTeamData] = useState({
