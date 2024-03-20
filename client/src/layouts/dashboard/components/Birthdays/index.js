@@ -18,7 +18,6 @@ function BirthdaysThisWeek() {
     const fetchData = async () => {
       let playerIds;
       const profileData = await fetchUserProfile();
-      console.log("profileData: ", profileData);
 
       const startOfWeek = new Date(today);
       startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
@@ -56,8 +55,6 @@ function BirthdaysThisWeek() {
           };
         })
         .filter((birthday) => birthday.birthday >= startOfWeek && birthday.birthday <= endOfWeek);
-
-      console.log("birthdaysThisWeek: ", birthdaysThisWeek);
 
       setBirthdaysThisWeek(birthdaysThisWeek);
 

@@ -82,8 +82,6 @@ const sendResetPasswordEmail = async (email) => {
     if (error) {
       throw error;
     }
-    // Handle success (optional)
-    console.log("Reset password email sent successfully");
   } catch (error) {
     // Handle error (optional)
     console.error("Error sending reset password email:", error.message);
@@ -112,14 +110,12 @@ export default function App() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      console.log("Session:", session);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
-      console.log("Session:", session);
     });
 
     return () => subscription.unsubscribe();
@@ -127,7 +123,6 @@ export default function App() {
 
   // WHERE THE USER IS NULL ERROR ON SIGN IN IS HAPPENING - i need
   useEffect(() => {
-    console.log("Location pathname:", location.pathname);
     if (session) {
       const fetchData = async () => {
         try {

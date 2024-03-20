@@ -16,7 +16,6 @@ function WellnessFlags() {
     const fetchData = async () => {
       let playerIds;
       const profileData = await fetchUserProfile();
-      console.log("profileData: ", profileData);
 
       // grab the profiles of the players on my team
       const { data: profilesData, error: profilesError } = await supabase
@@ -46,8 +45,6 @@ function WellnessFlags() {
         .in("player_id", playerIds)
         .eq("date", today.toISOString().split("T")[0]);
 
-      console.log("wellnessCheckinData: ", wellnessCheckinData);
-
       // Filter concerning check-ins
       if (wellnessCheckinData && wellnessCheckinData.length > 0) {
         const concerningCheckins = wellnessCheckinData.filter((checkin) => {
@@ -60,16 +57,12 @@ function WellnessFlags() {
           );
         });
 
-        console.log("concerningCheckins: ", concerningCheckins);
-
         const concerningCheckinsWithProfiles = concerningCheckins.map((checkin) => {
           return {
             ...checkin,
             profile: profilesMap[checkin.player_id],
           };
         });
-
-        console.log("concerningcheckinsWithProfiles: ", concerningCheckinsWithProfiles);
 
         setConcerningCheckins(concerningCheckinsWithProfiles);
       }
