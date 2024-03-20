@@ -29,7 +29,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { fetchUserProfile } from "../../../../fetchUserProfile";
 import { fetchTeamInfo } from "../../../../fetchTeamInfo";
 import { DatePicker } from "@mui/x-date-pickers";
-import TextField from "@mui/material/TextField"
+import TextField from "@mui/material/TextField";
 import dayjs from "dayjs";
 
 function AddWellness() {
@@ -38,6 +38,7 @@ function AddWellness() {
   const [startDate, setStartDate] = useState(dayjs());
   const [checkinFrequency, setCheckinFrequency] = useState("");
   const [wellnessData, setWellnessData] = useState({
+
     water: { id: 1, value: 3 , notes: null}, 
     sleep: { id: 2, value: 3 , notes: null},
     stress: { id: 3, value: 3 , notes: null},
@@ -120,7 +121,7 @@ function AddWellness() {
   const handleSliderChange = (type, value) => {
     setWellnessData((prevData) => ({
       ...prevData,
-      [type]: { id: prevData[type].id, value: value , notes: prevData[type].notes },
+      [type]: { id: prevData[type].id, value: value, notes: prevData[type].notes },
     }));
   };
 
@@ -253,8 +254,7 @@ function AddWellness() {
                 />
               </MDBox>
             </MDBox>
-          )
-          }
+          )}
           {teamData.sleep && (
             <MDBox pt={1} pb={2} px={2}>
               <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>

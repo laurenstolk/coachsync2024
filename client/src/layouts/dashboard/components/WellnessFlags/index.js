@@ -16,7 +16,6 @@ function WellnessFlags() {
     const fetchData = async () => {
       let playerIds;
       const profileData = await fetchUserProfile();
-      console.log("profileData: ", profileData);
 
       // grab the profiles of the players on my team
       const { data: profilesData, error: profilesError } = await supabase
@@ -46,8 +45,6 @@ function WellnessFlags() {
         .in("player_id", playerIds)
         .eq("date", today.toISOString().split("T")[0]);
 
-      console.log("wellnessCheckinData: ", wellnessCheckinData);
-
       // Filter concerning check-ins
       if (wellnessCheckinData && wellnessCheckinData.length > 0) {
         const concerningCheckins = wellnessCheckinData.filter((checkin) => {
@@ -60,16 +57,12 @@ function WellnessFlags() {
           );
         });
 
-        console.log("concerningCheckins: ", concerningCheckins);
-
         const concerningCheckinsWithProfiles = concerningCheckins.map((checkin) => {
           return {
             ...checkin,
             profile: profilesMap[checkin.player_id],
           };
         });
-
-        console.log("concerningcheckinsWithProfiles: ", concerningCheckinsWithProfiles);
 
         setConcerningCheckins(concerningCheckinsWithProfiles);
       }
@@ -90,23 +83,23 @@ function WellnessFlags() {
           let transactionDescription = "";
           switch (checkin.wellness_id) {
             case 1:
-              transactionDescription = "Water level";
+              transactionDescription = "Water notes";
               transactionValue = "DEHYDRATED";
               break;
             case 2:
-              transactionDescription = "Sleep level";
+              transactionDescription = "Sleep notes";
               transactionValue = "TIRED";
               break;
             case 3:
-              transactionDescription = "Stress level";
+              transactionDescription = "Stress notes";
               transactionValue = "STRESSED";
               break;
             case 4:
-              transactionDescription = "Soreness level";
+              transactionDescription = "Soreness notes";
               transactionValue = "SORE";
               break;
             case 5:
-              transactionDescription = "Energy level";
+              transactionDescription = "Energy notes";
               transactionValue = "LOW ENERGY";
               break;
             default:
@@ -119,8 +112,8 @@ function WellnessFlags() {
               color="warning"
               icon="warning"
               name={`${checkin.profile.first_name} ${checkin.profile.last_name}`}
-              description={`${transactionDescription}: ${checkin.value}`}
-              value={transactionValue}
+              description={`${transactionDescription}: ${checkin.notes}`}
+              value={`${transactionValue} (${checkin.value})`}
             />
           );
         })}

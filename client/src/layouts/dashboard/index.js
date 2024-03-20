@@ -37,7 +37,8 @@ import WellnessFlags from "./components/WellnessFlags";
 import PsychologyAlt from "@mui/icons-material/PsychologyAlt";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
-import BirthdaysThisWeek from "./components/Birthdays"; // Import BirthdaysThisWeek component
+import BirthdaysThisWeek from "./components/Birthdays";
+import NotesLog from "./components/NotesLog"; // Import BirthdaysThisWeek component
 
 export default function Dashboard() {
   const today = new Date();
@@ -569,6 +570,9 @@ export default function Dashboard() {
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={6}>
               <WellnessFlags />
+            </Grid>
+            <Grid item xs={12} md={6} lg={6}>
+              <NotesLog />
             </Grid>
           </Grid>
         </MDBox>
