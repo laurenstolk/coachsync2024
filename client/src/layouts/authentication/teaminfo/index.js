@@ -33,7 +33,6 @@ function TeamInfoUpdate() {
   const [selectedSport, setSelectedSport] = useState(""); // new state for selected sport
   const [teamLogo, setTeamLogo] = React.useState(null);
   const [sports, setSports] = useState([]);
-  const [teamid, setTeamID] = useState([]);
   const [profile, setProfile] = useState(null);
   const [formValid, setFormValid] = useState(false);
   const randomNumber = Math.floor(100000 + Math.random() * 900000);
@@ -83,14 +82,12 @@ function TeamInfoUpdate() {
 
   const handleInputChange = () => {
     const name = document.getElementById("team-name").value;
-    const sport_id = selectedSport;
 
     const isValid = name !== "";
     setFormValid(isValid);
   };
 
   const handleSubmit = async () => {
-    const currentDate = new Date().toISOString();
     const teamName = document.getElementById("team-name").value;
     const teamNameWithoutSpaces = teamName.replace(/\s/g, "");
 
@@ -162,45 +159,6 @@ function TeamInfoUpdate() {
       // Handle the error here
     }
   };
-
-  // const handleSubmit = async () => {
-  //   const teamData = {
-  //     name: document.getElementById("team-name").value,
-  //     sport_id: selectedSport, // use the selectedSport state variable
-  //   };
-
-  //   try {
-
-  //     // Use supabase client's api.post method to add data
-  //     const { data, error } = await supabase.from("team").upsert([teamData]).select();
-
-  //     if (error) {
-  //       console.error("Error adding team:", error);
-  //       // Handle the error here
-  //     } else {
-  //       console.log("Team added successfully!");
-  //       // Extract the ID of the newly created team
-  //       const teamId = data[0].id;
-
-  //       // Update the profile table with the team ID
-  //       const profileUpdate = await supabase
-  //         .from("profile")
-  //         .update({ team_id: teamId })
-  //         .eq("id", profile.id); // Assuming you have user_id in profile data
-
-  //       if (profileUpdate.error) {
-  //         console.error("Error updating profile:", profileUpdate.error);
-  //         // Handle the error here
-  //         return;
-  //       }
-  //       console.log("Team logo updated successfully");
-  //       console.log("Profile updated successfully with team ID:", teamId);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     // Handle the error here
-  //   }
-  // };
 
   return (
     <CoverLayout image={bgImage}>
@@ -314,7 +272,12 @@ function TeamInfoUpdate() {
               </MDButton>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton component={Link} to="/authentication/assistantornew" color="white" fullWidth>
+              <MDButton
+                component={Link}
+                to="/authentication/assistantornew"
+                color="white"
+                fullWidth
+              >
                 Go Back
               </MDButton>
             </MDBox>

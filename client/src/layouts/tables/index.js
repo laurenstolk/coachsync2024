@@ -75,7 +75,7 @@ function Tables() {
         toast.success("Group deleted successfully!", {
           onClose: () => {
             window.location.reload();
-          }
+          },
         });
       } catch (error) {
         console.error("Error deleting group:", error.message);
