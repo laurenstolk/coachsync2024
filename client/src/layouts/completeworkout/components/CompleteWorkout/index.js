@@ -1,46 +1,35 @@
+
 // @mui material components
 import Card from "@mui/material/Card";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-
 import { Divider, FormControl, FormControlLabel, InputLabel } from "@mui/material";
-
 import React, { useEffect, useState, useMemo } from "react";
-
 // Add supabase connection
 import { supabase } from "../../../../supabaseClient";
 import { useNavigate } from "react-router-dom";
-
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fetchUserProfile } from "../../../../fetchUserProfile";
 import Checkbox from "@mui/material/Checkbox";
-
 async function getCustomizedExercise(assignmentData) {
   console.log("Assignment Data:", assignmentData); // Log assignmentData to ensure it's correct
-
   const { data: customizedExercisesData } = await supabase
     .from("customized_exercise")
     .select("*, id")
     .eq("workout_id", assignmentData.workout_id);
-
     console.log("Customized Exercises Data:", customizedExercisesData); // Log customizedExercisesData to see what's retrieved
-
   // Fetch exercise data separately
   const { data: exerciseData } = await supabase.from("exercise").select("*");
-
   // Merge exercise data with customized exercises
   const customizedExercisesWithExerciseInfo = customizedExercisesData.map((customizedExercise) => {
     const exerciseInfo = exerciseData.find(
       (exercise) => exercise.id === customizedExercise.exercise_id
     );
-
     const { id: customized_exercise_id, ...restCustomizedExercise } = customizedExercise;
-
     return {
       ...restCustomizedExercise,
       customized_exercise_id, // Add the renamed id field
@@ -48,9 +37,7 @@ async function getCustomizedExercise(assignmentData) {
       ...exerciseInfo,
     };
     console.log("Customized Exercises with Exercise Info:", customizedExercisesWithExerciseInfo); // Log the merged data
-
   });
-
   return customizedExercisesWithExerciseInfo;
 }
 async function getAssignments(profile) {
@@ -67,11 +54,9 @@ async function getAssignments(profile) {
     console.error("Error fetching assignments:", error);
     return null;
   }
-
   console.log("assignments: ", assignmentData);
   return assignmentData;
 }
-
 async function getWorkout(assignmentData) {
   const { data: workoutData } = await supabase
     .from("workout")
@@ -83,7 +68,6 @@ async function getWorkout(assignmentData) {
   return workoutData;
 }
 
-
 function CompleteWorkout() {
   const navigate = useNavigate();
   const [assignment, setAssignment] = useState([]);
@@ -94,12 +78,10 @@ function CompleteWorkout() {
   const [isLoading, setIsLoading] = useState(true);
   const [completedExercisesMap, setCompletedExercisesMap] = useState({});
 
-
    // Add a useMemo hook to check if any exercises are completed
   const anyExercisesCompleted = useMemo(() => {
     return completedExercises.length > 0;
   }, [completedExercises]);
-
   // console.log('Customized Exercises Length:', customizedExercisesData.length);
   console.log('Completed Exercises Length:', completedExercises.length);
   useEffect(() => {
@@ -110,16 +92,13 @@ function CompleteWorkout() {
       });
       setCompletedExercisesMap(initialMap);
     };
-
     initializeCompletedExercisesMap();
   }, [assignment]);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
         const profileData = await fetchUserProfile();
         const assignmentData = await getAssignments(profileData);
-
         if (!assignmentData || assignmentData.length === 0) {
           setIsLoading(false);
           return;
@@ -135,7 +114,6 @@ function CompleteWorkout() {
         // Update state with the fetched data
         setAssignment(resolvedAssignments);
         setIsLoading(false);
-
         } catch (error) {
         console.error("Error fetching data");
         setIsLoading(false); // Ensure loading is set to false even in case of errors
@@ -179,7 +157,6 @@ function CompleteWorkout() {
   
   //   fetchData();
   // }, []);
-
   //       setAssignment(assignmentData);
   //       const customizedExercisesData = await getCustomizedExercise(assignmentData);
   //       setCustomizedExercises(customizedExercisesData);
@@ -192,13 +169,11 @@ function CompleteWorkout() {
   //   };
   //   fetchData();
   // }, []);
-
   // Add a useMemo hook to calculate whether all exercises are completed
   const allExercisesCompleted = useMemo(() => {
     console.log("cust ex leng:", customizedExercisesData.length)
     return customizedExercisesData.length === completedExercises.length;
   }, [customizedExercisesData, completedExercises]);
-
   // Function to handle checkbox change for completed exercises
   // const handleExerciseCompletionChange = (exercise) => {
   //   console.log('Exercise:', exercise);
@@ -208,7 +183,6 @@ function CompleteWorkout() {
   //         completedExercise.customized_exercise_id === exercise.customized_exercise_id
   //     );
   //     console.log("already completed", completedExercises)
-
   //     if (isAlreadyCompleted) {
   //       console.log('Removing exercise from completed:', exercise);
   //       // If the exercise is already completed, remove it from completedExercises
@@ -245,7 +219,6 @@ function CompleteWorkout() {
   //           completedExercise.customized_exercise_id !== exercise.customized_exercise_id
   //       );
   //       console.log("already completed final", updatedCompletedExercises)
-
   //       return updatedCompletedExercises;
   //     }
   //   });
@@ -256,7 +229,6 @@ function CompleteWorkout() {
       const isAlreadyCompleted = prevCompletedExercises.some(
         (completedExercise) => completedExercise.customized_exercise_id === exercise.customized_exercise_id
       );
-
       if (!isAlreadyCompleted) {
         return {
           ...prevCompletedExercisesMap,
@@ -272,7 +244,6 @@ function CompleteWorkout() {
       }
     });
   };
-
   // const handleNotesChange = (index, value) => {
   //   setCustomizedExercises((prevCustomizedExercises) => {
   //     const updatedExercises = [...prevCustomizedExercises];
@@ -280,21 +251,48 @@ function CompleteWorkout() {
   //     return updatedExercises;
   //   });
   // };
-  const handleNotesChange = (index, value) => {
-    setCustomizedExercises((prevCustomizedExercises) => {
-      // Check if the exercise at the given index exists
-      if (prevCustomizedExercises[index]) {
-        const updatedExercises = [...prevCustomizedExercises];
-        updatedExercises[index].notes = value; // Update the notes for the corresponding exercise
-        return updatedExercises;
+  // const handleNotesChange = (index, value) => {
+  //   setCustomizedExercises((prevCustomizedExercises) => {
+  //     // Check if the exercise at the given index exists
+  //     if (prevCustomizedExercises[index]) {
+  //       const updatedExercises = [...prevCustomizedExercises];
+  //       updatedExercises[index].notes = value; // Update the notes for the corresponding exercise
+  //       return updatedExercises;
+  //     } else {
+  //       // Handle the case where the exercise at the given index does not exist
+  //       console.error(`Exercise at index ${index} does not exist`);
+  //       return prevCustomizedExercises;
+  //     }
+  //   });
+  // };
+  const handleNotesChange = (assignmentIndex, exerciseIndex, value) => {
+    setAssignment((prevAssignment) => {
+      // Make a shallow copy of the assignment array
+      const updatedAssignment = [...prevAssignment];
+      // Check if the assignment at the given index exists
+      if (updatedAssignment[assignmentIndex]) {
+        // Make a shallow copy of the customized exercises array
+        const updatedCustomizedExercises = [...updatedAssignment[assignmentIndex].customizedExercisesData];
+        // Check if the exercise at the given index exists
+        if (updatedCustomizedExercises[exerciseIndex]) {
+          // Update the notes for the corresponding exercise
+          updatedCustomizedExercises[exerciseIndex].notes = value;
+          // Update the customized exercises array within the assignment
+          updatedAssignment[assignmentIndex].customizedExercisesData = updatedCustomizedExercises;
+          // Update the state with the modified assignment array
+          return updatedAssignment;
+        } else {
+          // Handle the case where the exercise at the given index does not exist
+          console.error(`Exercise at index ${exerciseIndex} does not exist`);
+          return prevAssignment;
+        }
       } else {
-        // Handle the case where the exercise at the given index does not exist
-        console.error(`Exercise at index ${index} does not exist`);
-        return prevCustomizedExercises;
+        // Handle the case where the assignment at the given index does not exist
+        console.error(`Assignment at index ${assignmentIndex} does not exist`);
+        return prevAssignment;
       }
     });
   };
-
   // Function to handle form submission
   // const handleSubmit = async () => {
   //   try {
@@ -302,33 +300,28 @@ function CompleteWorkout() {
   //     // console.log('Completed Exercises Length:', completedExercises.length);
   //     // Check if all exercises are completed
   //     const allExercisesCompleted =  resolvedAssignments[0].customizedExercisesData.length === completedExercises.length;
-
   //     if (allExercisesCompleted) {
   //       // If all exercises are completed, update the 'completed' field of the assignment to TRUE
   //       const { data: updateResult, error: updateError } = await supabase
   //         .from("assignment")
   //         .update({ completed: true })
   //         .eq("id", assignment.id);
-
   //       if (updateError) {
   //         console.error("Error updating assignment:", updateError);
   //       } else {
   //         console.log("Assignment marked as completed successfully!");
   //       }
   //     }
-
   //     const completionRecords = completedExercises.map((exercise) => ({
   //       date_completed: new Date().toISOString().split("T")[0],
   //       player_notes: exercise.notes,
   //       customized_exercise_id: exercise.customized_exercise_id,
   //       assignment_id: assignment.id,
   //     }));
-
   //     const { data: completionResult, error: completionError } = await supabase
   //       .from("exercise_completion")
   //       .upsert(completionRecords)
   //       .select();
-
   //     if (completionError) {
   //       console.error("Error adding completion records:", completionError);
   //     } else {
@@ -337,7 +330,6 @@ function CompleteWorkout() {
   //   } catch (error) {
   //     console.error("Error: ", error);
   //   }
-
   //   try {
   //     // Your submission logic
   //     toast.success("Workout completed and notes added successfully!", {
@@ -356,8 +348,6 @@ function CompleteWorkout() {
       const { assignment, customizedExercisesData } = assignmentItem;
       const assignmentId = assignment.id;
       const completedExercises = completedExercisesMap[assignmentId];
-      console.log("Submitting assignment:", assignment);
-      console.log("Customized exercises data:", customizedExercisesData);
   
       // Check if all exercises are completed
       const allExercisesCompleted = customizedExercisesData.length === completedExercises.length;
@@ -367,7 +357,7 @@ function CompleteWorkout() {
         const { data: updateResult, error: updateError } = await supabase
           .from("assignment")
           .update({ completed: true })
-          .eq("id", assignment.id);
+          .eq("id", assignmentId); // Use assignmentId instead of assignment.id
   
         if (updateError) {
           console.error("Error updating assignment:", updateError);
@@ -380,7 +370,7 @@ function CompleteWorkout() {
         date_completed: new Date().toISOString().split("T")[0],
         player_notes: exercise.notes,
         customized_exercise_id: exercise.customized_exercise_id,
-        assignment_id: assignment.id,
+        assignment_id: assignmentId, // Use assignmentId instead of assignment.id
       }));
   
       const { data: completionResult, error: completionError } = await supabase
@@ -406,7 +396,6 @@ function CompleteWorkout() {
       // Handle error
     }
   };
-
   // Render the form
   if (isLoading) {
     return (
@@ -420,7 +409,6 @@ function CompleteWorkout() {
       </Card>
     );
   }
-
   if (!assignment) {
     return (
       <Card id="delete-account">
@@ -517,7 +505,7 @@ function CompleteWorkout() {
                                     multiline
                                     rows={1}
                                     placeholder="Enter notes..."
-                                    onChange={(event) => handleNotesChange(exerciseIndex, event.target.value)}
+                                    onChange={(event) => handleNotesChange(assignmentIndex, exerciseIndex, event.target.value)}
                                   />
                                 </div>
                               }
@@ -536,7 +524,7 @@ function CompleteWorkout() {
                   color="primary"
                   onClick={() => handleSubmit(assignmentItem)}
                   style={{ color: 'white' }} 
-                  disabled={!allExercisesCompleted} // Disable the button if not all exercises are completed
+                  //disabled={!allExercisesCompleted} // Disable the button if not all exercises are completed
                 >
                   Submit
                 </Button>
