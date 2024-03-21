@@ -38,76 +38,80 @@ function NotesLog() {
 
   useEffect(() => {
     const fetchData = async () => {
-      let playerIds;
-      let assignmentIds;
+      try {
+        let playerIds;
+        let assignmentIds;
 
-      const profileData = await fetchUserProfile();
+        const profileData = await fetchUserProfile();
 
-      // grab the profiles of the players on my team
-      const { data: profilesData, error: profilesError } = await supabase
-        .from("profile")
-        .select("*")
-        .filter("player", "eq", true)
-        .filter("team_id", "eq", profileData.team_id);
+        // grab the profiles of the players on my team
+        const { data: profilesData, error: profilesError } = await supabase
+          .from("profile")
+          .select("*")
+          .filter("player", "eq", true)
+          .filter("team_id", "eq", profileData.team_id);
 
-      if (profilesError) {
-        console.error("Error fetching profiles:", profilesError.message);
-        return;
+        if (profilesError) {
+          console.error("Error fetching profiles:", profilesError.message);
+          return;
+        }
+
+        const profilesMap = {};
+        profilesData.forEach((profile) => {
+          profilesMap[profile.id] = profile;
+        });
+        setPlayerProfiles(profilesMap);
+
+        // set player IDs and fetch concerning check-ins
+        playerIds = profilesData.map((profile) => profile.id);
+        setPlayerIds(playerIds);
+
+        const { data: wellnessCheckinData, error: wellnessError } = await supabase
+          .from("checkin")
+          .select("*")
+          .in("player_id", playerIds)
+          .eq("date", today.toISOString().split("T")[0])
+          .not("notes", "is", null);
+
+        const nonConcerningCheckins = wellnessCheckinData.filter((checkin) => {
+          return (
+            (checkin.wellness_id === 1 && ![1, 2].includes(checkin.value)) || // Water is not 1 or 2
+            (checkin.wellness_id === 2 && ![1, 2].includes(checkin.value)) || // Sleep is not 1 or 2
+            (checkin.wellness_id === 4 && ![4, 5].includes(checkin.value)) || // Soreness is not 4 or 5
+            (checkin.wellness_id === 5 && ![1, 2].includes(checkin.value)) || // Energy is not 1 or 2
+            (checkin.wellness_id === 3 && ![4, 5].includes(checkin.value)) // Stress is not 4 or 5
+          );
+        });
+        setCheckInsWithNotes(nonConcerningCheckins);
+
+        const { data: assignmentData, error: assignmentError } = await supabase
+          .from("assignment")
+          .select("*")
+          .eq("date", today.toISOString().split("T")[0])
+          .eq("completed", true)
+          .in("player_id", playerIds);
+        setAssignnments(assignmentData);
+
+        assignmentIds = assignmentData.map((workout) => workout.id);
+
+        const { data: exerciseCompletionData, error: exerciseCompletionError } = await supabase
+          .from("exercise_completion")
+          .select("*")
+          .in("assignment_id", assignmentIds)
+          .not("player_notes", "is", null);
+
+        const { data: exerciseData, error: exerciseError } = await supabase
+          .from("exercise")
+          .select("*");
+        setExercises(exerciseData);
+
+        // Combine both arrays
+        const combinedData = [...nonConcerningCheckins, ...exerciseCompletionData];
+
+        setNotesLog(combinedData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-
-      const profilesMap = {};
-      profilesData.forEach((profile) => {
-        profilesMap[profile.id] = profile;
-      });
-      setPlayerProfiles(profilesMap);
-
-      // set player IDs and fetch concerning check-ins
-      playerIds = profilesData.map((profile) => profile.id);
-      setPlayerIds(playerIds);
-
-      const { data: wellnessCheckinData, error: wellnessError } = await supabase
-        .from("checkin")
-        .select("*")
-        .in("player_id", playerIds)
-        .eq("date", today.toISOString().split("T")[0])
-        .not("notes", "is", null);
-
-      const nonConcerningCheckins = wellnessCheckinData.filter((checkin) => {
-        return (
-          (checkin.wellness_id === 1 && checkin.value !== 1) || // Water is not 1
-          (checkin.wellness_id === 2 && ![1, 2].includes(checkin.value)) || // Sleep is not 1 or 2
-          (checkin.wellness_id === 4 && checkin.value !== 5) || // Soreness is not 5
-          (checkin.wellness_id === 5 && ![1, 2].includes(checkin.value)) || // Energy is not 1 or 2
-          (checkin.wellness_id === 3 && ![4, 5].includes(checkin.value)) // Stress is not 4 or 5
-        );
-      });
-      setCheckInsWithNotes(nonConcerningCheckins);
-
-      const { data: assignmentData, error: assignmentError } = await supabase
-        .from("assignment")
-        .select("*")
-        .eq("date", today.toISOString().split("T")[0])
-        .eq("completed", true)
-        .in("player_id", playerIds);
-      setAssignnments(assignmentData);
-
-      assignmentIds = assignmentData.map((workout) => workout.id);
-
-      const { data: exerciseCompletionData, error: exerciseCompletionError } = await supabase
-        .from("exercise_completion")
-        .select("*")
-        .in("assignment_id", assignmentIds)
-        .not("player_notes", "is", null);
-
-      const { data: exerciseData, error: exerciseError } = await supabase
-        .from("exercise")
-        .select("*");
-      setExercises(exerciseData);
-
-      // Combine both arrays
-      const combinedData = [...nonConcerningCheckins, ...exerciseCompletionData];
-
-      setNotesLog(combinedData);
     };
     fetchData();
   }, []);

@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useDropzone } from "react-dropzone";
+import React, { useEffect, useState } from "react";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
-import Checkbox from "@mui/material/Checkbox";
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
@@ -14,11 +12,6 @@ import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 
-// @mui icons
-import Icon from "@mui/material/Icon";
-
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import logo from "assets/images/logo-ct.png";
 
 // Authentication layout components
@@ -26,18 +19,12 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 
 // Images
 import bgImage from "assets/images/grass2.jpg";
-import { FormControl, InputLabel, Select } from "@mui/material";
 import { supabase } from "../../../supabaseClient";
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
-import MenuItem from "@mui/material/MenuItem";
-
 function PlayerTeamUpdate() {
-  const [sports, setSports] = useState([]);
-  const [teamid, setTeamID] = useState([]);
   const [profile, setProfile] = useState(null);
   const [formValid, setFormValid] = useState(false);
-  const [signupcode, setSignupCode] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -234,7 +221,12 @@ function PlayerTeamUpdate() {
               </MDButton>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton component={Link} to="/authentication/assistantornew" color="white" fullWidth>
+              <MDButton
+                component={Link}
+                to="/authentication/assistantornew"
+                color="white"
+                fullWidth
+              >
                 Go Back
               </MDButton>
             </MDBox>

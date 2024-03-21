@@ -49,9 +49,9 @@ function WellnessFlags() {
       if (wellnessCheckinData && wellnessCheckinData.length > 0) {
         const concerningCheckins = wellnessCheckinData.filter((checkin) => {
           return (
-            (checkin.wellness_id === 1 && checkin.value === 1) || // Water is 1
+            (checkin.wellness_id === 1 && (checkin.value === 1 || checkin.value === 2)) || // Water is 1 or 2
             (checkin.wellness_id === 2 && (checkin.value === 1 || checkin.value === 2)) || // Sleep is 1 or 2
-            (checkin.wellness_id === 4 && checkin.value === 5) || // Soreness is 5
+            (checkin.wellness_id === 4 && (checkin.value === 4 || checkin.value === 5)) || // Soreness is 4 or 5
             (checkin.wellness_id === 5 && (checkin.value === 1 || checkin.value === 2)) || // Energy is 1 or 2
             (checkin.wellness_id === 3 && (checkin.value === 4 || checkin.value === 5)) // Stress is 4 or 5
           );
@@ -80,39 +80,46 @@ function WellnessFlags() {
       <MDBox p={2}>
         {concerningCheckins.map((checkin) => {
           let transactionValue = "";
-          let transactionDescription = "";
+          let transactionColor = "warning"; // Default color is yellow
+
+          // Check if the criteria for extreme wellness check-ins are met, then set color to red
+          if (
+            (checkin.wellness_id === 1 && checkin.value === 1) ||
+            (checkin.wellness_id === 2 && checkin.value === 1) ||
+            (checkin.wellness_id === 3 && checkin.value === 5) ||
+            (checkin.wellness_id === 4 && checkin.value === 5) ||
+            (checkin.wellness_id === 5 && checkin.value === 1)
+          ) {
+            transactionColor = "error"; // Set color to red for extreme check-ins
+          }
+
           switch (checkin.wellness_id) {
             case 1:
-              transactionDescription = "Water notes";
               transactionValue = "DEHYDRATED";
               break;
             case 2:
-              transactionDescription = "Sleep notes";
               transactionValue = "TIRED";
               break;
             case 3:
-              transactionDescription = "Stress notes";
               transactionValue = "STRESSED";
               break;
             case 4:
-              transactionDescription = "Soreness notes";
               transactionValue = "SORE";
               break;
             case 5:
-              transactionDescription = "Energy notes";
               transactionValue = "LOW ENERGY";
               break;
             default:
-              transactionDescription = "Unknown";
               transactionValue = "Unknown";
           }
+          const notesDescription = checkin.notes ? `Notes: "${checkin.notes}"` : "Notes: N/A"; // Conditional check for null notes
           return (
             <Transaction
               key={checkin.id}
-              color="warning"
+              color={transactionColor}
               icon="warning"
               name={`${checkin.profile.first_name} ${checkin.profile.last_name}`}
-              description={`${transactionDescription}: ${checkin.notes}`}
+              description={notesDescription}
               value={`${transactionValue} (${checkin.value})`}
             />
           );
