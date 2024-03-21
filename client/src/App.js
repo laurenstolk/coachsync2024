@@ -4,8 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 
 // react-router components
 
-import { Routes, useLocation, useNavigate } from "react-router-dom";
-import { Route, Navigate } from "react-router-dom";
+import { Routes, useLocation, useNavigate, Route, Navigate } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -39,6 +38,7 @@ import routes from "routes";
 import { useMaterialUIController, setMiniSidenav } from "context";
 
 import LoadingPage from "layouts/loadingpage.js";
+import RedirectTermsToLandingPage from "./RedirectToLandingPage";
 
 // Images
 import brandWhite from "assets/images/logo-ct.png";
@@ -49,6 +49,7 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { fetchUserProfile } from "./fetchUserProfile";
 import Cover from "layouts/authentication/reset-password/cover";
+import RedirectToLandingPage from "./RedirectToLandingPage";
 
 const WelcomeBox = () => (
   <div
@@ -245,7 +246,7 @@ export default function App() {
   if (loading) {
     // Render loading UI
     return <LoadingPage />;
-  } else if (!session && location.pathname !== "/authentication/reset-password") {
+  } else if (!session && location.pathname !== "/authentication/reset-password" && location.pathname !== "/") {
     return (
       <div>
         <div
@@ -337,6 +338,7 @@ export default function App() {
           )}
           {layout === "vr" && <Configurator />}
           <Routes>
+            <Route path="/" element={<RedirectToLandingPage />} />
             <Route path="/authentication/reset-password" element={<Cover />} />
             {getRoutes(routes)}
             <Route path="*" element={<Navigate to="/dashboard" />} />
@@ -363,6 +365,7 @@ export default function App() {
         )}
         {layout === "vr" && <Configurator />}
         <Routes>
+          <Route path="/" element={<RedirectToLandingPage />} />
           {getRoutes(routes)}
           {hasFirstName ? (
             <Route path="*" element={<Navigate to="/dashboard" />} />
