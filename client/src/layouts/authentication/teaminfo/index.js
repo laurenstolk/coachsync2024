@@ -314,7 +314,7 @@ function TeamInfoUpdate() {
               </MDButton>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton component={Link} to="/authentication/coachinfo" color="white" fullWidth>
+              <MDButton component={Link} to="/authentication/assistantornew" color="white" fullWidth>
                 Go Back
               </MDButton>
             </MDBox>

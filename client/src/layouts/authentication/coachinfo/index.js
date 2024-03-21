@@ -466,7 +466,7 @@ function CoachInfoUpdate() {
             <MDBox mt={4} mb={1}>
               <MDButton
                 component={Link}
-                to="/authentication/teaminfo"
+                to="/authentication/assistantornew"
                 variant="gradient"
                 color={formValid ? "info" : "default"} // Change color based on selectionMade
                 fullWidth
