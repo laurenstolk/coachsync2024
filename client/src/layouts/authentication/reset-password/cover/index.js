@@ -7,6 +7,7 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/bg-reset-cover.jpeg";
 import { useState } from "react";
 import { supabase } from "../../../../supabaseClient";
+import { Link } from "react-router-dom";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -122,6 +123,19 @@ function Cover() {
               </MDButton>
             </MDBox>
           </form>
+        </MDBox>
+        <MDBox textAlign="center" mb={2}>
+          <MDTypography
+            display="inline"
+            variant="button"
+            color="inherit"
+            fontSize="12px"
+            fontWeight="bold"
+            component={Link}
+            to="/dashboard"
+          >
+            <span>&#8592;</span> Return home without resetting password
+          </MDTypography>
         </MDBox>
       </Card>
     </CoverLayout>
