@@ -24,8 +24,10 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
+import MultipleLineChart from "examples/Charts/LineCharts/MultipleLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import Button from "@mui/material/Button"; // Import Button component
+
 
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -156,10 +158,8 @@ export default function PlayerDashboard() {
     const nextCheckinDay = getNextCheckinDay();
     setNextCheckinDay(nextCheckinDay);
 
-    
-
     // ... (other code)
-  }, [user, today, checkinFrequency]);
+  }, []); // removed this (user, today, checkinFrequency) from the array -- may have been constantly refreshing everything 
 
   // Determine if check-in is required for today
   const isCheckinRequired = () => {
@@ -287,8 +287,69 @@ export default function PlayerDashboard() {
     }
   } else {
     fontSize = 25; // Default font size if assignedWorkout is null or undefined
+  };
+
+  //working on the line chart
+  const currentDay = new Date(); // Get today's date
+  const labels = []; // Initialize an array to hold the labels
+
+  // Loop through the past 7 days and generate labels
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(currentDay); // Create a new date object for each day
+    date.setDate(today.getDate() - i); // Subtract i days from today's date
+    labels.push(date.toLocaleDateString("en-US", { month: "short", day: "numeric" })); // Format the date and push it to the labels array
+  };
+
+  //checkin chart 
+
+  const [checkinData, setCheckinData] = useState(null); // State variable for storing checkin data
+
+  useEffect(() => {
+    // Fetch checkin data
+    const fetchCheckinData = async () => {
+      try {
+        const { data: checkinData, error: checkinError } = await supabase
+          .from("checkin")
+          .select("date, wellness_id, value")
+          .eq("player_id", user.id)
+          .gte("date", new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000).toISOString()) // Fetch data for the past 7 days
+          .order("date");
+
+        if (checkinError) {
+          throw checkinError;
+        }
+
+        setCheckinData(checkinData);
+      } catch (error) {
+        console.error("Error fetching checkin data:", error.message);
+      }
+    };
+
+    if (user && user.id) {
+      fetchCheckinData();
+    }
+  }, []);
+
+  console.log("This is the checkin data ",checkinData)
+  //end checkin chart
+
+  //binary data
+  const checkinBinaryData = [];
+  if (checkinData !== null) {
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      const checkinEntry = checkinData.find(entry => {
+        const entryDate = new Date(entry.date);
+        return entryDate.toDateString() === date.toDateString();
+      });
+      checkinBinaryData.push(checkinEntry ? 1 : 0);
+    }
   }
 
+  console.log("binary data", checkinBinaryData)
+
+  //end binary data
 
   return (
     <DashboardLayout>
@@ -399,38 +460,21 @@ export default function PlayerDashboard() {
         <MDBox mt={4.5} mb={9}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={12} lg={12}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="Wellness Completion"
-                  description="Percentage of players who completed a wellness checkin."
-                  date="Updated Today"
-                  chart={{
-                    labels: wellnessData.map((item) => {
-                      const date = new Date(item.wDateCompleted);
-                      date.setUTCHours(0, 0, 0, 0); // Set the time to midnight UTC to ensure consistency
-                      return `${date.toLocaleString("en-US", {
-                        month: "long",
-                      })} ${date.getUTCDate()}`;
-                    }),
-                    datasets: {
-                      label: "Percentage of Players Completed Wellness",
-                      data: wellnessData.map((item) => {
-                        const percentage = item.count; // Assuming item.count is already in the range of 0 to 100
-                        return percentage.toFixed(2); // Round to two decimal places
-                      }),
-                    },
-                    options: {
-                      scales: {
-                        y: {
-                          beginAtZero: true,
-                          suggestedMax: 100, // Ensure the maximum value on the y-axis is 100
-                        },
-                      },
-                    },
-                  }}
-                />
-              </MDBox>
+            <MDBox mb={3}>
+              <MultipleLineChart
+                color="success"
+                title="Check-in Results"
+                description="Days from the past week that you completed your check in."
+                date="Updated Today"
+                chart={{
+                  labels: labels,
+                  datasets: {
+                    label: "Completed Daily Wellness?",
+                    data: checkinBinaryData,//checkinData ? checkinData.map(entry => entry.value) : [],
+                  }
+                }}
+              />
+            </MDBox>
             </Grid>
           </Grid>
         </MDBox>
