@@ -45,10 +45,11 @@ export default function PlayerDashboard() {
   const [checkinFrequency, setCheckinFrequency] = useState("");
   const [nextCheckinDay, setNextCheckinDay] = useState("");
   const [assignedWorkout, setAssignedWorkout] = useState(null);
-  const [assignedWorkouts, setAssignedWorkouts] = useState([]);
+  //const [assignedWorkouts, setAssignedWorkouts] = useState([]);
   const [currentDate, setCurrentDate] = useState("");
   const [user, setUser] = useState(null);
   const [playerIds, setPlayerIds] = useState([]);
+  const [nextWorkoutDay, setNextWorkoutDay] = useState(null);
 
   const getFormattedDate = (date) => {
     const options = { weekday: "long", month: "long", day: "numeric" };
@@ -70,6 +71,18 @@ export default function PlayerDashboard() {
       fetchWorkoutCompletion();
       fetchAssignedWorkouts();
     }
+
+    const fetchNextWorkoutDay = async () => {
+      try {
+        const nextWorkoutDayResult = await getNextWorkoutDay();
+        setNextWorkoutDay(nextWorkoutDayResult);
+      } catch (error) {
+        console.error("Error fetching next workout day:", error.message);
+      }
+    };
+  
+    fetchNextWorkoutDay();
+  
 
     const fetchCheckinCompletion = async () => {
       try {
@@ -143,6 +156,8 @@ export default function PlayerDashboard() {
     const nextCheckinDay = getNextCheckinDay();
     setNextCheckinDay(nextCheckinDay);
 
+    
+
     // ... (other code)
   }, [user, today, checkinFrequency]);
 
@@ -154,6 +169,46 @@ export default function PlayerDashboard() {
   };
 
   const checkinRequired = isCheckinRequired();
+
+  //function to display next workout day
+  const getNextWorkoutDay = async () => {
+    try {
+      // Fetch data from the assignment table to get future assigned workout dates
+      const { data: assignmentData, error: assignmentError } = await supabase
+        .from("assignment")
+        .select("date")
+        .eq("player_id", user.id)
+        .gte("date", today.toISOString().split("T")[0]); // Get assignments with dates greater than or equal to today
+  
+      if (assignmentError) {
+        throw assignmentError;
+      }
+  
+      if (assignmentData.length === 0) {
+        return "None Assigned";
+      }
+
+      console.log("Test assignment data", assignmentData)
+  
+      // Filter out past dates
+      const futureAssignments = assignmentData.filter(item => new Date(item.date) >= today);
+  
+      if (futureAssignments.length === 0) {
+        return "None Assigned";
+      }
+  
+      // Sort future assignments by date in ascending order
+      const sortedAssignments = futureAssignments.sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+      // Get the date of the next assigned workout directly from sortedAssignments array
+      const nextWorkoutDate = sortedAssignments[0].date;
+  
+      return nextWorkoutDate;
+    } catch (error) {
+      console.error("Error fetching next workout day:", error.message);
+      return "Error fetching next workout day";
+    }
+  };
 
   async function fetchWorkoutCompletion() {
     try {
@@ -211,31 +266,18 @@ export default function PlayerDashboard() {
         setAssignedWorkout([]);
       }
 
-      //setAssignedWorkouts(fetchedWorkouts);
+      console.log("Assigned workout just after the function: ", assignedWorkout)
 
-      // if (assignmentData.length > 0) {
-      //   const workoutId = assignmentData[0].workout_id;
-      //   const { data: workoutData, error: workoutError } = await supabase
-      //     .from("workout")
-      //     .select("workout_name")
-      //     .eq("id", workoutId)
-      //     .single();
-
-      //   if (workoutError) throw workoutError;
-
-      //   setAssignedWorkout(workoutData.workout_name);
-      // } else {
-      //   setAssignedWorkout(null);
-      //}
     } catch (error) {
       console.error("Error fetching assigned workout:", error.message);
     }
   }
 
-  // Calculate the font size based on the number of assigned workouts
+
+
   // Calculate the font size based on the number of assigned workouts
   let fontSize;
-  console.log("Assigned workouts:", assignedWorkout);
+  console.log("Assigned workouts before font stuff:", assignedWorkout);
   if (assignedWorkout !== null) {
     if (Array.isArray(assignedWorkout)) {
       const numAssignedWorkouts = assignedWorkout.length;
@@ -252,7 +294,7 @@ export default function PlayerDashboard() {
   } else {
     fontSize = 25; // Default font size if assignedWorkout is null or undefined
   }
-  console.log("Font size:", fontSize);
+  console.log("Assigned workout after font changes ", assignedWorkout);
 
   return (
     <DashboardLayout>
@@ -275,26 +317,27 @@ export default function PlayerDashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon={<AssignmentTurnedInIcon>Workout</AssignmentTurnedInIcon>}
-                title="Assigned Workouts"
-                count={
-                  assignedWorkout !== null && Array.isArray(assignedWorkout)
-                    ? assignedWorkout.map((workout, index) => (
-                        <div key={index} style={{ display: "inline-block" }}>
-                          <span style={{ fontSize: `${fontSize}px` }}>{workout}</span>
-                          {index !== assignedWorkout.length - 1 && (
-                            <span style={{ fontSize: `${fontSize}px` }}>, </span>
-                          )}
-                        </div>
-                      ))
-                    : assignedWorkout || "No assigned workout."
-                }
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "Just updated",
-                }}
-              />
+                  icon={<AssignmentTurnedInIcon>Workout</AssignmentTurnedInIcon>}
+                  title="Assigned Workouts"
+                  count={
+                    assignedWorkout && assignedWorkout.length > 0 ? (
+                      assignedWorkout.map((workout, index) => (
+                          <div key={index} style={{ display: "inline-block" }}>
+                            <span style={{ fontSize: `${fontSize}px` }}>{workout}</span>
+                            {index !== assignedWorkout.length - 1 && (
+                              <span style={{ fontSize: `${fontSize}px` }}>, </span>
+                            )}
+                          </div>
+                        ))
+                      ) : ( "No assigned workout."
+                    )
+                  }
+                  percentage={{
+                    color: "success",
+                    amount: "",
+                    label: "Just updated",
+                  }}
+                />
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
@@ -304,10 +347,10 @@ export default function PlayerDashboard() {
                 icon={<FitnessCenterIcon>Workout</FitnessCenterIcon>}
                 title="Workout Complete?"
                 count={
-                  assignedWorkouts.length > 0 ? (
-                    workoutCompleted ? (
-                      "Your workout is complete."
-                    ) : (
+                  (assignedWorkout !== null && assignedWorkout.length > 0 && workoutCompleted) ? (
+                    "Your workout is complete."
+                  ) : (
+                    assignedWorkout !== null && assignedWorkout.length > 0 ? (
                       <Button
                         style={{ border: "2px solid", color: "inherit" }}
                         component={Link}
@@ -315,22 +358,14 @@ export default function PlayerDashboard() {
                       >
                         No. Complete Workout?
                       </Button>
+                    ) : (
+                        "No assigned workout."
                     )
-                  ) : workoutCompleted ? (
-                    "No assigned workout."
-                  ) : (
-                    <Button
-                      style={{ border: "2px solid", color: "inherit" }}
-                      component={Link}
-                      to="/completeworkout"
-                    >
-                      No assigned workout. Complete Workout?
-                    </Button>
                   )
                 }
                 percentage={{
                   amount: "",
-                  label: "Next Workout:",
+                  label: nextWorkoutDay ? `Next Workout: ${nextWorkoutDay}` : "Fetching next workout day..."
                 }}
               />
             </MDBox>
