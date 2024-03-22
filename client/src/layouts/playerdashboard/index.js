@@ -36,6 +36,7 @@ import { fetchUserProfile } from "../../fetchUserProfile";
 import PsychologyAlt from "@mui/icons-material/PsychologyAlt";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import { Line } from "react-chartjs-2"
 
 export default function PlayerDashboard() {
   const today = new Date();
@@ -304,52 +305,196 @@ export default function PlayerDashboard() {
 
   const [checkinData, setCheckinData] = useState(null); // State variable for storing checkin data
 
+  // useEffect(() => {
+  //   // Fetch checkin data
+  //   const fetchCheckinData = async () => {
+  //     try {
+  //       const { data: checkinData, error: checkinError } = await supabase
+  //         .from("checkin")
+  //         .select("date, wellness_id, value")
+  //         .eq("player_id", user.id)
+  //         .gte("date", new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000).toISOString()) // Fetch data for the past 7 days
+  //         .order("date");
+
+  //       if (checkinError) {
+  //         throw checkinError;
+  //       }
+
+  //       setCheckinData(checkinData);
+  //     } catch (error) {
+  //       console.error("Error fetching checkin data:", error.message);
+  //     }
+  //   };
+
+  //   if (user && user.id) {
+  //     fetchCheckinData();
+  //   }
+  // }, []);
+
+  // console.log("This is the checkin data ",checkinData)
+  // //end checkin chart
+
+  const [chartData, setChartData] = useState(null);
+
   useEffect(() => {
-    // Fetch checkin data
-    const fetchCheckinData = async () => {
+    // Function to fetch data from the checkin table
+    const fetchChartData = async () => {
       try {
-        const { data: checkinData, error: checkinError } = await supabase
+        // Fetch the past week of data for wellness_id 1
+        const { data: wellness1Data, error: wellness1Error } = await supabase
           .from("checkin")
-          .select("date, wellness_id, value")
-          .eq("player_id", user.id)
-          .gte("date", new Date(today.getTime() - 6 * 24 * 60 * 60 * 1000).toISOString()) // Fetch data for the past 7 days
+          .select("date, value")
+          .eq("wellness_id", 1)
+          .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
           .order("date");
 
-        if (checkinError) {
-          throw checkinError;
+        const { data: wellness2Data, error: wellness2Error } = await supabase
+          .from("checkin")
+          .select("date, value")
+          .eq("wellness_id", 2)
+          .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
+          .order("date");  
+
+        const { data: wellness3Data, error: wellness3Error } = await supabase
+          .from("checkin")
+          .select("date, value")
+          .eq("wellness_id", 3)
+          .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
+          .order("date");   
+        
+        const { data: wellness4Data, error: wellness4Error } = await supabase
+          .from("checkin")
+          .select("date, value")
+          .eq("wellness_id", 4)
+          .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
+          .order("date");   
+
+        const { data: wellness5Data, error: wellness5Error } = await supabase
+          .from("checkin")
+          .select("date, value")
+          .eq("wellness_id", 5)
+          .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
+          .order("date");     
+
+        if (wellness1Error || wellness2Error || wellness3Error || wellness4Error || wellness5Error) {
+          throw wellness1Error || wellness2Error || wellness3Error || wellness4Error || wellness5Error;
         }
 
-        setCheckinData(checkinData);
+        // Format the fetched data for the chart
+          const formattedData = {
+            labels: [],
+            datasets: [
+              {
+                label: "Wellness Data 1 - Water",
+                data: [],
+                fill: false,
+                borderColor: "rgb(75, 192, 192)",
+                tension: 0.1,
+              },
+              {
+                label: "Wellness Data 2 - Sleep",
+                data: [],
+                fill: false,
+                borderColor: "rgb(255, 99, 132)",
+                tension: 0.1,
+              },
+              {
+                label: "Wellness Data 3 - Stress",
+                data: [],
+                fill: false,
+                borderColor: "rgb(54, 162, 235)",
+                tension: 0.1,
+              },
+              {
+                label: "Wellness Data 4 - Soreness",
+                data: [],
+                fill: false,
+                borderColor: "rgb(255, 205, 86)",
+                tension: 0.1,
+              },
+              {
+                label: "Wellness Data 5 - Energy",
+                data: [],
+                fill: false,
+                borderColor: "rgb(153, 102, 255)",
+                tension: 0.1,
+              },
+            ],
+          };
+
+        // Generate labels for the last 7 days
+        const currentDate = new Date();
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date(currentDate);
+          date.setDate(currentDate.getDate() - i);
+          formattedData.labels.push(date.toISOString().split("T")[0]); // Add date to labels array
+        }
+
+        // Populate the data array
+        for (let i = 0; i < 7; i++) {
+          const currentDate = formattedData.labels[i];
+          const wellness1Entry = wellness1Data.find((entry) => entry.date === currentDate);
+          const wellness2Entry = wellness2Data.find((entry) => entry.date === currentDate);
+          const wellness3Entry = wellness3Data.find((entry) => entry.date === currentDate);
+          const wellness4Entry = wellness4Data.find((entry) => entry.date === currentDate);
+          const wellness5Entry = wellness5Data.find((entry) => entry.date === currentDate);
+          formattedData.datasets[0].data.push(wellness1Entry ? wellness1Entry.value : null);
+          formattedData.datasets[1].data.push(wellness2Entry ? wellness2Entry.value : null);
+          formattedData.datasets[2].data.push(wellness3Entry ? wellness3Entry.value : null);
+          formattedData.datasets[3].data.push(wellness4Entry ? wellness4Entry.value : null);
+          formattedData.datasets[4].data.push(wellness5Entry ? wellness5Entry.value : null);
+        }
+
+        // Set the formatted data to the state
+        setChartData(formattedData);
       } catch (error) {
         console.error("Error fetching checkin data:", error.message);
       }
     };
 
-    if (user && user.id) {
-      fetchCheckinData();
-    }
+    fetchChartData(); // Call the function to fetch checkin data
   }, []);
 
-  console.log("This is the checkin data ",checkinData)
-  //end checkin chart
+  //binary data for multiplelinechart
+  // const checkinBinaryData = [];
+  // if (checkinData !== null) {
+  //   for (let i = 6; i >= 0; i--) {
+  //     const date = new Date(today);
+  //     date.setDate(today.getDate() - i);
+  //     const checkinEntry = checkinData.find(entry => {
+  //       const entryDate = new Date(entry.date);
+  //       return entryDate.toDateString() === date.toDateString();
+  //     });
+  //     checkinBinaryData.push(checkinEntry ? 1 : 0);
+  //   }
+  // }
 
-  //binary data
-  const checkinBinaryData = [];
-  if (checkinData !== null) {
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - i);
-      const checkinEntry = checkinData.find(entry => {
-        const entryDate = new Date(entry.date);
-        return entryDate.toDateString() === date.toDateString();
-      });
-      checkinBinaryData.push(checkinEntry ? 1 : 0);
-    }
-  }
-
-  console.log("binary data", checkinBinaryData)
+  // console.log("binary data", checkinBinaryData)
 
   //end binary data
+
+  //test new chart
+  // const chartData = {
+  //   labels: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+  //   datasets: [
+  //     {
+  //       label: "Sample Data 1",
+  //       data: [12, 19, 3, 5, 2, 3, 15], // Sample data values for the first line
+  //       fill: false,
+  //       borderColor: "rgb(75, 192, 192)",
+  //       tension: 0.1,
+  //     },
+  //     {
+  //       label: "Sample Data 2", // Label for the second line
+  //       data: [5, 12, 7, 10, 4, 8, 11], // Sample data values for the second line
+  //       fill: false,
+  //       borderColor: "rgb(255, 99, 132)", // Different color for the second line
+  //       tension: 0.1,
+  //     },
+  //   ],
+  // };
+
+  // end test chart 
 
   return (
     <DashboardLayout>
@@ -461,7 +606,7 @@ export default function PlayerDashboard() {
           <Grid container spacing={3}>
             <Grid item xs={12} md={12} lg={12}>
             <MDBox mb={3}>
-              <MultipleLineChart
+              {/* <MultipleLineChart
                 color="success"
                 title="Check-in Results"
                 description="Days from the past week that you completed your check in."
@@ -473,8 +618,17 @@ export default function PlayerDashboard() {
                     data: checkinBinaryData,//checkinData ? checkinData.map(entry => entry.value) : [],
                   }
                 }}
-              />
+              /> */}
             </MDBox>
+            </Grid>
+          </Grid>
+        </MDBox>
+        <MDBox mt={4.5} mb={9}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={12} lg={12}>
+              <MDBox mb={3}>
+                {chartData && <Line data={chartData} />} {/* Render the line chart when data is available */}
+              </MDBox>
             </Grid>
           </Grid>
         </MDBox>
