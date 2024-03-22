@@ -187,8 +187,6 @@ export default function PlayerDashboard() {
       if (assignmentData.length === 0) {
         return "None Assigned";
       }
-
-      console.log("Test assignment data", assignmentData)
   
       // Filter out past dates
       const futureAssignments = assignmentData.filter(item => new Date(item.date) >= today);
@@ -221,14 +219,14 @@ export default function PlayerDashboard() {
 
       if (completionError) throw completionError;
 
-      console.log("completion data ", completionData);
+
 
       if (completionData.length > 0) {
         setWorkoutCompleted(completionData[0].completed);
-        console.log("Workout completion: ", workoutCompleted);
+
       } else {
         setWorkoutCompleted(false);
-        console.log("Workout completion: ", workoutCompleted);
+
       }
     } catch (error) {
       console.error("Error fetching workout completion:", error.message);
@@ -266,18 +264,14 @@ export default function PlayerDashboard() {
         setAssignedWorkout([]);
       }
 
-      console.log("Assigned workout just after the function: ", assignedWorkout)
 
     } catch (error) {
       console.error("Error fetching assigned workout:", error.message);
     }
   }
 
-
-
   // Calculate the font size based on the number of assigned workouts
   let fontSize;
-  console.log("Assigned workouts before font stuff:", assignedWorkout);
   if (assignedWorkout !== null) {
     if (Array.isArray(assignedWorkout)) {
       const numAssignedWorkouts = assignedWorkout.length;
@@ -294,7 +288,7 @@ export default function PlayerDashboard() {
   } else {
     fontSize = 25; // Default font size if assignedWorkout is null or undefined
   }
-  console.log("Assigned workout after font changes ", assignedWorkout);
+
 
   return (
     <DashboardLayout>
@@ -413,7 +407,6 @@ export default function PlayerDashboard() {
                   date="Updated Today"
                   chart={{
                     labels: wellnessData.map((item) => {
-                      console.log("This is my wellnessData " & wellnessData);
                       const date = new Date(item.wDateCompleted);
                       date.setUTCHours(0, 0, 0, 0); // Set the time to midnight UTC to ensure consistency
                       return `${date.toLocaleString("en-US", {
