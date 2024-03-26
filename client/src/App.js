@@ -66,7 +66,7 @@ const WelcomeBox = () => (
       justifyContent: "center",
     }}
   >
-    <h2 style={{ marginBottom: "10px" }}>Welcome to CoachSync</h2>
+    <h2 style={{ marginBottom: "10px", fontFamily: "Arial, sans-serif" }}>Welcome to CoachSync</h2>
     <img
       src="/static/media/logo-ct.39c110530c00e2b0debf.png"
       alt="CoachSync Logo"
