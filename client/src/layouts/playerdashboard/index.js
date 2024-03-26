@@ -623,15 +623,6 @@ export default function PlayerDashboard() {
             </Grid>
           </Grid>
         </MDBox>
-        <MDBox mt={4.5} mb={9}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={12} lg={12}>
-              <MDBox mb={3}>
-                {chartData && <Line data={chartData} />} {/* Render the line chart when data is available */}
-              </MDBox>
-            </Grid>
-          </Grid>
-        </MDBox>
       </MDBox>
       <Footer />
     </DashboardLayout>
