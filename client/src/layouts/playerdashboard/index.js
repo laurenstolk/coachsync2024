@@ -342,6 +342,7 @@ export default function PlayerDashboard() {
           .from("checkin")
           .select("date, value")
           .eq("wellness_id", wellnessId)
+          .eq("player_id", user.id)
           .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
           .order("date");
   
@@ -368,11 +369,11 @@ export default function PlayerDashboard() {
         const formattedData = {
           labels: [],
           datasets: [
-            { label: "Wellness Data 1 - Water", data: [], fill: false, borderColor: "rgb(75, 192, 192)", tension: 0.1 },
-            { label: "Wellness Data 2 - Sleep", data: [], fill: false, borderColor: "rgb(255, 99, 132)", tension: 0.1 },
-            { label: "Wellness Data 3 - Stress", data: [], fill: false, borderColor: "rgb(54, 162, 235)", tension: 0.1 },
-            { label: "Wellness Data 4 - Soreness", data: [], fill: false, borderColor: "rgb(255, 205, 86)", tension: 0.1 },
-            { label: "Wellness Data 5 - Energy", data: [], fill: false, borderColor: "rgb(153, 102, 255)", tension: 0.1 },
+            { label: "Water", data: [], fill: false, borderColor: "rgb(75, 192, 192)", tension: 0.1 },
+            { label: "Sleep", data: [], fill: false, borderColor: "rgb(255, 99, 132)", tension: 0.1 },
+            { label: "Stress", data: [], fill: false, borderColor: "rgb(54, 162, 235)", tension: 0.1 },
+            { label: "Soreness", data: [], fill: false, borderColor: "rgb(255, 205, 86)", tension: 0.1 },
+            { label: "Energy", data: [], fill: false, borderColor: "rgb(153, 102, 255)", tension: 0.1 },
           ],
         };
   
@@ -387,9 +388,11 @@ export default function PlayerDashboard() {
           for (let i = 0; i < 7; i++) {
             const currentDate = formattedData.labels[i];
             const entry = wellnessData.find((entry) => entry.date === currentDate);
-            formattedData.datasets[index].data.push(entry ? entry.value : null);
+            formattedData.datasets[index].data.push(entry ? entry.value : 0);
           }
         });
+
+        console.log("This is the formatted data ", formattedData)
   
         setChartData(formattedData);
       } catch (error) {
@@ -398,7 +401,7 @@ export default function PlayerDashboard() {
     };
   
     fetchChartData();
-  }, []);
+  }, [user]);
 
   // useEffect(() => {
   //   // Function to fetch data from the checkin table
