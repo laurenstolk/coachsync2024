@@ -251,48 +251,48 @@ function CompleteWorkout() {
   //     return updatedExercises;
   //   });
   // };
-  // const handleNotesChange = (index, value) => {
-  //   setCustomizedExercises((prevCustomizedExercises) => {
-  //     // Check if the exercise at the given index exists
-  //     if (prevCustomizedExercises[index]) {
-  //       const updatedExercises = [...prevCustomizedExercises];
-  //       updatedExercises[index].notes = value; // Update the notes for the corresponding exercise
-  //       return updatedExercises;
-  //     } else {
-  //       // Handle the case where the exercise at the given index does not exist
-  //       console.error(`Exercise at index ${index} does not exist`);
-  //       return prevCustomizedExercises;
-  //     }
-  //   });
-  // };
-  const handleNotesChange = (assignmentIndex, exerciseIndex, value) => {
-    setAssignment((prevAssignment) => {
-      // Make a shallow copy of the assignment array
-      const updatedAssignment = [...prevAssignment];
-      // Check if the assignment at the given index exists
-      if (updatedAssignment[assignmentIndex]) {
-        // Make a shallow copy of the customized exercises array
-        const updatedCustomizedExercises = [...updatedAssignment[assignmentIndex].customizedExercisesData];
-        // Check if the exercise at the given index exists
-        if (updatedCustomizedExercises[exerciseIndex]) {
-          // Update the notes for the corresponding exercise
-          updatedCustomizedExercises[exerciseIndex].notes = value;
-          // Update the customized exercises array within the assignment
-          updatedAssignment[assignmentIndex].customizedExercisesData = updatedCustomizedExercises;
-          // Update the state with the modified assignment array
-          return updatedAssignment;
-        } else {
-          // Handle the case where the exercise at the given index does not exist
-          console.error(`Exercise at index ${exerciseIndex} does not exist`);
-          return prevAssignment;
-        }
+  const handleNotesChange = (index, value) => {
+    setCustomizedExercises((prevCustomizedExercises) => {
+      // Check if the exercise at the given index exists
+      if (prevCustomizedExercises[index]) {
+        const updatedExercises = [...prevCustomizedExercises];
+        updatedExercises[index].notes = value; // Update the notes for the corresponding exercise
+        return updatedExercises;
       } else {
-        // Handle the case where the assignment at the given index does not exist
-        console.error(`Assignment at index ${assignmentIndex} does not exist`);
-        return prevAssignment;
+        // Handle the case where the exercise at the given index does not exist
+        console.error(`Exercise at index ${index} does not exist`);
+        return prevCustomizedExercises;
       }
     });
   };
+  // const handleNotesChange = (assignmentIndex, exerciseIndex, value) => {
+  //   setAssignment((prevAssignment) => {
+  //     // Make a shallow copy of the assignment array
+  //     const updatedAssignment = [...prevAssignment];
+  //     // Check if the assignment at the given index exists
+  //     if (updatedAssignment[assignmentIndex]) {
+  //       // Make a shallow copy of the customized exercises array
+  //       const updatedCustomizedExercises = [...updatedAssignment[assignmentIndex].customizedExercisesData];
+  //       // Check if the exercise at the given index exists
+  //       if (updatedCustomizedExercises[exerciseIndex]) {
+  //         // Update the notes for the corresponding exercise
+  //         updatedCustomizedExercises[exerciseIndex].notes = value;
+  //         // Update the customized exercises array within the assignment
+  //         updatedAssignment[assignmentIndex].customizedExercisesData = updatedCustomizedExercises;
+  //         // Update the state with the modified assignment array
+  //         return updatedAssignment;
+  //       } else {
+  //         // Handle the case where the exercise at the given index does not exist
+  //         console.error(`Exercise at index ${exerciseIndex} does not exist`);
+  //         return prevAssignment;
+  //       }
+  //     } else {
+  //       // Handle the case where the assignment at the given index does not exist
+  //       console.error(`Assignment at index ${assignmentIndex} does not exist`);
+  //       return prevAssignment;
+  //     }
+  //   });
+  // };
   // Function to handle form submission
   // const handleSubmit = async () => {
   //   try {
