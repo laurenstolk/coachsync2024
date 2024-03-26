@@ -41,6 +41,8 @@ async function getWorkoutName(workoutId) {
 
 function AssignmentNotCompleted() {
   const [players, setPlayers] = useState([]);
+  const [assignmentsToday, setAssignmentsToday] = useState(true);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,20 +92,30 @@ function AssignmentNotCompleted() {
         </MDTypography>
       </MDBox>
       <MDBox p={2}>
-        {players.map((player) => (
-          <Transaction
-            key={player.id}
-            color="secondary" // Use grey color for not completed
-            icon={player.completed ? "check_circle_outline" : "cancel"} // Change icon based on completion status
-            name={`${player.first_name} ${player.last_name}`}
-            description={
-              player.completed
-                ? `completed the workout on ${player.date}`
-                : `hasn't completed the ${player.workoutName} workout yet`
-            }
-            value={player.completed ? "Completed" : "Not Completed"} // Change value text based on completion status
-          />
-        ))}
+        {!assignmentsToday ? (
+          <MDTypography variant="body2" sx={{ fontStyle: "italic" }}>
+            No workout(s) assigned
+          </MDTypography>
+        ) : players.length === 0 ? (
+          <MDTypography variant="body2" sx={{ fontStyle: "italic" }}>
+            All workout(s) completed
+          </MDTypography>
+        ) : (
+          players.map((player) => (
+            <Transaction
+              key={player.id}
+              color="secondary" // Use grey color for not completed
+              icon={player.completed ? "check_circle_outline" : "cancel"} // Change icon based on completion status
+              name={`${player.first_name} ${player.last_name}`}
+              description={
+                player.completed
+                  ? `completed the workout on ${player.date}`
+                  : `hasn't completed the ${player.workoutName} workout yet`
+              }
+              value={player.completed ? "Completed" : "Not Completed"} // Change value text based on completion status
+            />
+          ))
+        )}
       </MDBox>
     </Card>
   );

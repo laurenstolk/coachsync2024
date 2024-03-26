@@ -124,6 +124,11 @@ function NotesLog() {
         </MDTypography>
       </MDBox>
       <MDBox p={2}>
+        {notesLog.length === 0 ? (
+          <MDTypography variant="body2" sx={{ fontStyle: "italic" }}>
+            No player notes logged
+          </MDTypography>
+        ) : (
         <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
           {notesLog.map((note, index) => {
             let playerName = "Unknown Player";
@@ -176,6 +181,7 @@ function NotesLog() {
             );
           })}
         </MDBox>
+        )}
       </MDBox>
     </Card>
   );
