@@ -1,29 +1,29 @@
 // scss-docs-start caret-mixins
 @mixin caret-down {
   border-top: $caret-width solid;
-  border-right: $caret-width solid transparent;
+  border-right: $caret-width solid 0;
   border-bottom: 0;
-  border-left: $caret-width solid transparent;
+  border-left: $caret-width solid 0;
 }
 
 @mixin caret-up {
   border-top: 0;
-  border-right: $caret-width solid transparent;
+  border-right: $caret-width solid 0;
   border-bottom: $caret-width solid;
-  border-left: $caret-width solid transparent;
+  border-left: $caret-width solid 0;
 }
 
 @mixin caret-end {
-  border-top: $caret-width solid transparent;
+  border-top: $caret-width solid 0;
   border-right: 0;
-  border-bottom: $caret-width solid transparent;
+  border-bottom: $caret-width solid 0;
   border-left: $caret-width solid;
 }
 
 @mixin caret-start {
-  border-top: $caret-width solid transparent;
+  border-top: $caret-width solid 0;
   border-right: $caret-width solid;
-  border-bottom: $caret-width solid transparent;
+  border-bottom: $caret-width solid 0;
 }
 
 @mixin caret($direction: down) {

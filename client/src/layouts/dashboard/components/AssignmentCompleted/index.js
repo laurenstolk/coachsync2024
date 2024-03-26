@@ -41,6 +41,8 @@ async function getWorkoutName(workoutId) {
 
 function AssignmentCompleted() {
   const [players, setPlayers] = useState([]);
+  const [assignmentsToday, setAssignmentsToday] = useState(true);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -90,16 +92,26 @@ function AssignmentCompleted() {
         </MDTypography>
       </MDBox>
       <MDBox p={2}>
-        {players.map((player) => (
-          <Transaction
-            key={player.id} // Assign a unique key using the player's id
-            color="success"
-            icon="check_circle_outline"
-            name={`${player.first_name} ${player.last_name}`}
-            description={`completed the ${player.workoutName} workout`}
-            value="Completed"
-          />
-        ))}
+        {!assignmentsToday ? (
+          <MDTypography variant="body2" sx={{ fontStyle: "italic" }}>
+            No workout(s) assigned
+          </MDTypography>
+        ) : players.length === 0 ? (
+          <MDTypography variant="body2" sx={{ fontStyle: "italic" }}>
+            No workout(s) completed
+          </MDTypography>
+        ) : (
+          players.map((player) => (
+            <Transaction
+              key={player.id} // Assign a unique key using the player's id
+              color="success"
+              icon="check_circle_outline"
+              name={`${player.first_name} ${player.last_name}`}
+              description={`completed the ${player.workoutName} workout`}
+              value="Completed"
+            />
+          ))
+        )}
       </MDBox>
     </Card>
   );

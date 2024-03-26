@@ -78,6 +78,13 @@ function WellnessFlags() {
         </MDTypography>
       </MDBox>
       <MDBox p={2}>
+        {concerningCheckins.length == 0 ? (
+          <MDTypography variant="body2" sx={{ fontStyle: "italic" }}>
+          No wellness reports flagged
+        </MDTypography>
+        ) :(
+        <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+
         {concerningCheckins.map((checkin) => {
           let transactionValue = "";
           let transactionColor = "warning"; // Default color is yellow
@@ -125,6 +132,8 @@ function WellnessFlags() {
           );
         })}
       </MDBox>
+       )}
+     </MDBox>
     </Card>
   );
 }

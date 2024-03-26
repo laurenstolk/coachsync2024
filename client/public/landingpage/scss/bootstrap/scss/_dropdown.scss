@@ -138,7 +138,7 @@
   text-align: inherit; // For `<button>`s
   text-decoration: if($link-decoration == none, null, none);
   white-space: nowrap; // prevent links from randomly breaking onto new lines
-  background-color: transparent; // For `<button>`s
+  background-color: 0; // For `<button>`s
   border: 0; // For `<button>`s
 
   // Prevent dropdown overflow if there's no padding
@@ -171,7 +171,7 @@
   &:disabled {
     color: $dropdown-link-disabled-color;
     pointer-events: none;
-    background-color: transparent;
+    background-color: 0;
     // Remove CSS gradients if they're enabled
     background-image: if($enable-gradients, none, null);
   }

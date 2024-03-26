@@ -47,7 +47,7 @@
 
   // Remove outline from select box in FF
   &:-moz-focusring {
-    color: transparent;
+    color: 0;
     text-shadow: 0 0 0 $form-select-color;
   }
 }

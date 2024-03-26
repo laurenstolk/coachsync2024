@@ -43,7 +43,7 @@
 
 .btn.btn-primary:hover {
     color: var(--primary);
-    background: transparent;
+    background: 0;
 }
 
 .btn-square {
