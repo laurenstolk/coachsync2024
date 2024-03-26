@@ -33,7 +33,7 @@ import { fetchUserProfile } from "../../fetchUserProfile";
 import PsychologyAlt from "@mui/icons-material/PsychologyAlt";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
-import { Line } from 'react-chartjs-2';
+import { Line } from "react-chartjs-2";
 
 export default function PlayerDashboard() {
   const today = new Date();
