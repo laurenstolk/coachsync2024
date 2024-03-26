@@ -186,8 +186,17 @@ export default function PlayerDashboard() {
         (a, b) => new Date(a.date) - new Date(b.date)
       );
 
+      console.log(sortedAssignments)
+
+      const getFormattedDate = (date) => {
+        const options = { month: '2-digit', day: '2-digit', year: 'numeric' };
+        return date.toLocaleDateString('en-US', options);
+      };
+
       // Get the date of the next assigned workout directly from sortedAssignments array
-      const nextWorkoutDate = sortedAssignments[0].date;
+      const nextWorkoutDate = sortedAssignments[0] ? getFormattedDate(new Date(new Date(sortedAssignments[0].date).getTime() + (24 * 60 * 60 * 1000))) : "None Assigned";
+
+      console.log(nextWorkoutDate)
 
       return nextWorkoutDate;
     } catch (error) {
