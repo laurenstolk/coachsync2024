@@ -128,8 +128,12 @@ export default function App() {
       const fetchData = async () => {
         try {
           const userdata = await fetchUserProfile();
-          setProfile(userdata);
-          setLoading(false); // Set loading to false after fetching profile data
+          if (userdata) {
+            setProfile(userdata);
+            setLoading(false); // Set loading to false after fetching profile data
+          } else {
+            setLoading(false); // No user data available
+          }
         } catch (error) {
           console.error("Error fetching user profile:", error.message);
           // Handle error, e.g., set loading to false or show an error message
@@ -141,6 +145,7 @@ export default function App() {
       setLoading(false); // No session, so set loading to false
     }
   }, [session]);
+  
 
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -338,10 +343,14 @@ export default function App() {
           )}
           {layout === "vr" && <Configurator />}
           <Routes>
-            <Route path="/" element={<RedirectToLandingPage />} />
+            {/* <Route path="/" element={<RedirectToLandingPage />} /> */}
             <Route path="/authentication/reset-password" element={<Cover />} />
             {getRoutes(routes)}
-            <Route path="*" element={<Navigate to="/dashboard" />} />
+            {hasFirstName ? (
+            <Route path="*" element={<Navigate to="/" />} />
+            ) : (
+              <Route path="*" element={<Navigate to="/loadingpageSignUp" />} />
+            )}          
           </Routes>
           <ToastContainer />
         </ThemeProvider>
@@ -365,10 +374,11 @@ export default function App() {
         )}
         {layout === "vr" && <Configurator />}
         <Routes>
-          <Route path="/" element={<RedirectToLandingPage />} />
+          {/* <Route path="/" element={<RedirectToLandingPage />} /> */}
+          <Route path="/authentication/reset-password" element={<Cover />} />
           {getRoutes(routes)}
           {hasFirstName ? (
-            <Route path="*" element={<Navigate to="/dashboard" />} />
+            <Route path="*" element={<Navigate to="/" />} />
           ) : (
             <Route path="*" element={<Navigate to="/loadingpageSignUp" />} />
           )}
