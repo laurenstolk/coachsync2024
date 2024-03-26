@@ -231,9 +231,9 @@ export default function App() {
       onClick={handleConfiguratorOpen}
     >
       {miniSidenav ? (
-        <Icon sx={{ fontSize: "2rem" }}>menu_open</Icon>
-      ) : (
         <Icon sx={{ fontSize: "2rem" }}>menu</Icon>
+      ) : (
+        <Icon sx={{ fontSize: "2rem" }}>menu_open</Icon>
       )}
       {/* <MenuIcon fontSize="small" color="inherit" /> */}
 
