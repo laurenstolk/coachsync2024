@@ -160,7 +160,7 @@ export default function PlayerDashboard() {
     setNextCheckinDay(nextCheckinDay);
 
     // ... (other code)
-  }, []); // removed this (user, today, checkinFrequency) from the array -- may have been constantly refreshing everything 
+  }, [user]); // removed this (user, today, checkinFrequency) from the array -- may have been constantly refreshing everything 
 
   // Determine if check-in is required for today
   const isCheckinRequired = () => {
@@ -548,7 +548,7 @@ export default function PlayerDashboard() {
                 title="Workout Complete?"
                 count={
                   (assignedWorkout !== null && assignedWorkout.length > 0 && workoutCompleted) ? (
-                    "Your workout is complete."
+                    "Today's workout is complete."
                   ) : (
                     assignedWorkout !== null && assignedWorkout.length > 0 ? (
                       <Button
