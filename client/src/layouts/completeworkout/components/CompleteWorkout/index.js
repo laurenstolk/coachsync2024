@@ -409,7 +409,7 @@ function CompleteWorkout() {
       </Card>
     );
   }
-  if (!assignment) {
+  if (!assignment || assignment.length == 0) {
     return (
       <Card id="delete-account">
         <MDBox pt={3} px={2}>
