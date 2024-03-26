@@ -253,8 +253,8 @@ function Overview() {
                 </MDTypography>
 
                 <Grid container justifyContent="center" mt={4}>
-                  <Grid item xs={12} md={6} lg={4}>
-                    <AppBar position="static">
+                  <Grid item xs={12} md={6} lg={10}>
+                    <Button position="static">
                       <Tabs
                         orientation={tabsOrientation}
                         value={tabValue}
@@ -282,7 +282,7 @@ function Overview() {
                           }
                         />
                       </Tabs>
-                    </AppBar>
+                    </Button>
                   </Grid>
                 </Grid>
               </Card>
@@ -339,7 +339,7 @@ function Overview() {
                     <Grid item>
                       <Grid container spacing={2}>
                         <Grid item xs={12}>
-                          <MDBox border={1} borderColor="lightgrey" p={2} borderRadius={4}>
+                          <MDBox border={1} borderColor="lightgrey" p={2}>
                             <MDTypography variant="h6" gutterBottom>
                               Check-ins
                             </MDTypography>
