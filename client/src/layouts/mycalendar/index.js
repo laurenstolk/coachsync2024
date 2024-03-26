@@ -241,7 +241,7 @@ function ViewCalendar() {
                 <MDTypography variant="h6" color="white">
                   Team Calendar
                 </MDTypography>
-                <MDButton
+                {/* <MDButton
                   variant="outlined"
                   component={Link}
                   to="/addassignment"
@@ -254,7 +254,7 @@ function ViewCalendar() {
                   }}
                 >
                   Add Assignment
-                </MDButton>
+                </MDButton> */}
               </MDBox>
               <MDBox pt={3} pl={2} pr={2} pb={2}>
                 {" "}

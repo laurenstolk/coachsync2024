@@ -79,22 +79,29 @@ function BirthdaysThisWeek() {
         </MDTypography>
       </MDBox>
       <MDBox p={2}>
-        {showConfetti && <Confetti width={450} />} {/* Render Confetti if there are birthdays */}
-        {birthdaysThisWeek.map((birthday, index) => (
-          <React.Fragment key={birthday.playerId}>
-            <MDTypography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
-              <CakeIcon sx={{ marginRight: "0.5rem" }} />
-              <span>{birthday.playerName}</span>
-              <br />
-              <span style={{ fontSize: "0.8rem", marginLeft: "2.5rem" }}>
-                {birthday.birthday.toLocaleString("en-US", { weekday: "long" })},{" "}
-                {birthday.birthday.toLocaleString("en-US", { month: "long", day: "numeric" })}
-              </span>
-            </MDTypography>
-            {index !== birthdaysThisWeek.length - 1 && <br />}{" "}
-            {/* Add a space if not the last player */}
-          </React.Fragment>
-        ))}
+        {showConfetti && <Confetti width={450} height={200} />}{" "}
+        {/* Render Confetti if there are birthdays */}
+        {birthdaysThisWeek.length === 0 ? ( // Check if there are no birthdays
+          <MDTypography variant="body2" sx={{ fontStyle: "italic" }}>
+            No birthdays this week
+          </MDTypography>
+        ) : (
+          birthdaysThisWeek.map((birthday, index) => (
+            <React.Fragment key={birthday.playerId}>
+              <MDTypography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
+                <CakeIcon sx={{ marginRight: "0.5rem" }} />
+                <span>{birthday.playerName}</span>
+                <br />
+                <span style={{ fontSize: "0.8rem", marginLeft: "2.5rem" }}>
+                  {birthday.birthday.toLocaleString("en-US", { weekday: "long" })},{" "}
+                  {birthday.birthday.toLocaleString("en-US", { month: "long", day: "numeric" })}
+                </span>
+              </MDTypography>
+              {index !== birthdaysThisWeek.length - 1 && <br />}{" "}
+              {/* Add a space if not the last player */}
+            </React.Fragment>
+          ))
+        )}
       </MDBox>
     </Card>
   );

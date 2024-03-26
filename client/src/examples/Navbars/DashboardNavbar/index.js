@@ -153,7 +153,7 @@ function DashboardNavbar({ absolute, light, isMini, pageTitle }) {
                 onClick={handleMiniSidenav}
               >
                 <Icon sx={iconsStyle} fontSize="large">
-                  {miniSidenav ? "menu_open" : "menu"}
+                  {miniSidenav ? "menu" : "menu_open"}
                 </Icon>
               </IconButton>
               <IconButton

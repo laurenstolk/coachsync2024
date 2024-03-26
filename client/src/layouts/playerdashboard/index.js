@@ -23,11 +23,8 @@ import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
-import MultipleLineChart from "examples/Charts/LineCharts/MultipleLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import Button from "@mui/material/Button"; // Import Button component
-
 
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -36,22 +33,19 @@ import { fetchUserProfile } from "../../fetchUserProfile";
 import PsychologyAlt from "@mui/icons-material/PsychologyAlt";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
-import { Line } from "react-chartjs-2"
 
 export default function PlayerDashboard() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const [wellnessData, setWellnessData] = useState([]); //for chart will remove once new chart is in
   const [workoutCompleted, setWorkoutCompleted] = useState(false);
   const [checkinCompleted, setCheckinCompleted] = useState(false);
   const [checkinFrequency, setCheckinFrequency] = useState("");
   const [nextCheckinDay, setNextCheckinDay] = useState("");
   const [assignedWorkout, setAssignedWorkout] = useState(null);
-  //const [assignedWorkouts, setAssignedWorkouts] = useState([]);
   const [currentDate, setCurrentDate] = useState("");
   const [user, setUser] = useState(null);
-  const [playerIds, setPlayerIds] = useState([]);
+
   const [nextWorkoutDay, setNextWorkoutDay] = useState(null);
 
   const getFormattedDate = (date) => {
@@ -83,9 +77,8 @@ export default function PlayerDashboard() {
         console.error("Error fetching next workout day:", error.message);
       }
     };
-  
+
     fetchNextWorkoutDay();
-  
 
     const fetchCheckinCompletion = async () => {
       try {
@@ -160,7 +153,7 @@ export default function PlayerDashboard() {
     setNextCheckinDay(nextCheckinDay);
 
     // ... (other code)
-  }, [user]); // removed this (user, today, checkinFrequency) from the array -- may have been constantly refreshing everything 
+  }, [user]); // removed this (user, today, checkinFrequency) from the array -- may have been constantly refreshing everything
 
   // Determine if check-in is required for today
   const isCheckinRequired = () => {
@@ -180,28 +173,30 @@ export default function PlayerDashboard() {
         .select("date")
         .eq("player_id", user.id)
         .gte("date", today.toISOString().split("T")[0]); // Get assignments with dates greater than or equal to today
-  
+
       if (assignmentError) {
         throw assignmentError;
       }
-  
+
       if (assignmentData.length === 0) {
         return "None Assigned";
       }
-  
+
       // Filter out past dates
-      const futureAssignments = assignmentData.filter(item => new Date(item.date) >= today);
-  
+      const futureAssignments = assignmentData.filter((item) => new Date(item.date) >= today);
+
       if (futureAssignments.length === 0) {
         return "None Assigned";
       }
-  
+
       // Sort future assignments by date in ascending order
-      const sortedAssignments = futureAssignments.sort((a, b) => new Date(a.date) - new Date(b.date));
-  
+      const sortedAssignments = futureAssignments.sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
+
       // Get the date of the next assigned workout directly from sortedAssignments array
       const nextWorkoutDate = sortedAssignments[0].date;
-  
+
       return nextWorkoutDate;
     } catch (error) {
       console.error("Error fetching next workout day:", error.message);
@@ -220,14 +215,10 @@ export default function PlayerDashboard() {
 
       if (completionError) throw completionError;
 
-
-
       if (completionData.length > 0) {
         setWorkoutCompleted(completionData[0].completed);
-
       } else {
         setWorkoutCompleted(false);
-
       }
     } catch (error) {
       console.error("Error fetching workout completion:", error.message);
@@ -287,11 +278,12 @@ export default function PlayerDashboard() {
     }
   } else {
     fontSize = 25; // Default font size if assignedWorkout is null or undefined
-  };
+  }
 
   // //working on the line chart
   // const currentDay = new Date(); // Get today's date
   // const labels = []; // Initialize an array to hold the labels
+
 
   // // Loop through the past 7 days and generate labels
   // for (let i = 6; i >= 0; i--) {
@@ -300,7 +292,8 @@ export default function PlayerDashboard() {
   //   labels.push(date.toLocaleDateString("en-US", { month: "short", day: "numeric" })); // Format the date and push it to the labels array
   // };
 
-  //checkin chart 
+
+  //checkin chart
 
   //const [checkinData, setCheckinData] = useState(null); // State variable for storing checkin data
 
@@ -345,6 +338,7 @@ export default function PlayerDashboard() {
           .eq("player_id", user.id)
           .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
           .order("date");
+
   
         if (error) throw error;
   
@@ -377,6 +371,7 @@ export default function PlayerDashboard() {
           ],
         };
   
+
         const currentDate = new Date();
         for (let i = 6; i >= 0; i--) {
           const date = new Date(currentDate);
@@ -561,7 +556,7 @@ export default function PlayerDashboard() {
   //   ],
   // };
 
-  // end test chart 
+  // end test chart
 
   return (
     <DashboardLayout>
@@ -584,27 +579,26 @@ export default function PlayerDashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                  icon={<AssignmentTurnedInIcon>Workout</AssignmentTurnedInIcon>}
-                  title="Assigned Workouts"
-                  count={
-                    assignedWorkout && assignedWorkout.length > 0 ? (
-                      assignedWorkout.map((workout, index) => (
-                          <div key={index} style={{ display: "inline-block" }}>
-                            <span style={{ fontSize: `${fontSize}px` }}>{workout}</span>
-                            {index !== assignedWorkout.length - 1 && (
-                              <span style={{ fontSize: `${fontSize}px` }}>, </span>
-                            )}
-                          </div>
-                        ))
-                      ) : ( "No assigned workout."
-                    )
-                  }
-                  percentage={{
-                    color: "success",
-                    amount: "",
-                    label: "Just updated",
-                  }}
-                />
+                icon={<AssignmentTurnedInIcon>Workout</AssignmentTurnedInIcon>}
+                title="Assigned Workouts"
+                count={
+                  assignedWorkout && assignedWorkout.length > 0
+                    ? assignedWorkout.map((workout, index) => (
+                        <div key={index} style={{ display: "inline-block" }}>
+                          <span style={{ fontSize: `${fontSize}px` }}>{workout}</span>
+                          {index !== assignedWorkout.length - 1 && (
+                            <span style={{ fontSize: `${fontSize}px` }}>, </span>
+                          )}
+                        </div>
+                      ))
+                    : "No assigned workout."
+                }
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: "Just updated",
+                }}
+              />
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
@@ -614,25 +608,25 @@ export default function PlayerDashboard() {
                 icon={<FitnessCenterIcon>Workout</FitnessCenterIcon>}
                 title="Workout Complete?"
                 count={
-                  (assignedWorkout !== null && assignedWorkout.length > 0 && workoutCompleted) ? (
+                  assignedWorkout !== null && assignedWorkout.length > 0 && workoutCompleted ? (
                     "Today's workout is complete."
+                  ) : assignedWorkout !== null && assignedWorkout.length > 0 ? (
+                    <Button
+                      style={{ border: "2px solid", color: "inherit" }}
+                      component={Link}
+                      to="/completeworkout"
+                    >
+                      No. Complete Workout?
+                    </Button>
                   ) : (
-                    assignedWorkout !== null && assignedWorkout.length > 0 ? (
-                      <Button
-                        style={{ border: "2px solid", color: "inherit" }}
-                        component={Link}
-                        to="/completeworkout"
-                      >
-                        No. Complete Workout?
-                      </Button>
-                    ) : (
-                        "No assigned workout."
-                    )
+                    "No assigned workout."
                   )
                 }
                 percentage={{
                   amount: "",
-                  label: nextWorkoutDay ? `Next Workout: ${nextWorkoutDay}` : "Fetching next workout day..."
+                  label: nextWorkoutDay
+                    ? `Next Workout: ${nextWorkoutDay}`
+                    : "Fetching next workout day...",
                 }}
               />
             </MDBox>
@@ -672,8 +666,8 @@ export default function PlayerDashboard() {
         <MDBox mt={4.5} mb={9}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={12} lg={12}>
-            <MDBox mb={3}>
-              {/* <MultipleLineChart
+              <MDBox mb={3}>
+                {/* <MultipleLineChart
                 color="success"
                 title="Check-in Results"
                 description="Days from the past week that you completed your check in."
@@ -686,7 +680,7 @@ export default function PlayerDashboard() {
                   }
                 }}
               /> */}
-            </MDBox>
+              </MDBox>
             </Grid>
           </Grid>
           <MDBox mt={4.5} mb={9}>

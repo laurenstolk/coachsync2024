@@ -124,58 +124,65 @@ function NotesLog() {
         </MDTypography>
       </MDBox>
       <MDBox p={2}>
-        <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-          {notesLog.map((note, index) => {
-            let playerName = "Unknown Player";
-            let activityName = "";
+        {notesLog.length === 0 ? (
+          <MDTypography variant="body2" sx={{ fontStyle: "italic" }}>
+            No player notes logged
+          </MDTypography>
+        ) : (
+          <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+            {notesLog.map((note, index) => {
+              let playerName = "Unknown Player";
+              let activityName = "";
 
-            if ("wellness_id" in note) {
-              playerName = playerProfiles[note.player_id]?.first_name || "Unknown Player";
-              switch (note.wellness_id) {
-                case 1:
-                  activityName = "Water Check-in";
-                  break;
-                case 2:
-                  activityName = "Sleep Check-in";
-                  break;
-                case 3:
-                  activityName = "Stress Check-in";
-                  break;
-                case 4:
-                  activityName = "Soreness Check-in";
-                  break;
-                case 5:
-                  activityName = "Energy Check-in";
-                  break;
-                default:
-                  activityName = "Wellness Check-in";
+              if ("wellness_id" in note) {
+                playerName = playerProfiles[note.player_id]?.first_name || "Unknown Player";
+                switch (note.wellness_id) {
+                  case 1:
+                    activityName = "Water Check-in";
+                    break;
+                  case 2:
+                    activityName = "Sleep Check-in";
+                    break;
+                  case 3:
+                    activityName = "Stress Check-in";
+                    break;
+                  case 4:
+                    activityName = "Soreness Check-in";
+                    break;
+                  case 5:
+                    activityName = "Energy Check-in";
+                    break;
+                  default:
+                    activityName = "Wellness Check-in";
+                }
+              } else {
+                playerName =
+                  playerProfiles[
+                    assignments.find((assignment) => assignment.id === note.assignment_id)
+                      ?.player_id
+                  ]?.first_name || "Unknown Player";
+                activityName = note.customized_exercise_id
+                  ? exercises.find((exercise) => exercise.id === note.customized_exercise_id)?.name
+                  : assignments.find((assignment) => assignment.id === note.assignment_id)
+                      ?.workout_id || "Unknown Exercise";
               }
-            } else {
-              playerName =
-                playerProfiles[
-                  assignments.find((assignment) => assignment.id === note.assignment_id)?.player_id
-                ]?.first_name || "Unknown Player";
-              activityName = note.customized_exercise_id
-                ? exercises.find((exercise) => exercise.id === note.customized_exercise_id)?.name
-                : assignments.find((assignment) => assignment.id === note.assignment_id)
-                    ?.workout_id || "Unknown Exercise";
-            }
 
-            const noteDate = new Date(note.date_completed || note.created_at).toLocaleDateString(
-              "en-US",
-              { month: "long", day: "numeric" }
-            );
+              const noteDate = new Date(note.date_completed || note.created_at).toLocaleDateString(
+                "en-US",
+                { month: "long", day: "numeric" }
+              );
 
-            return (
-              <Invoice
-                key={index}
-                date={`${playerName} - ${activityName}`}
-                price={noteDate}
-                id={note.notes || note.player_notes}
-              />
-            );
-          })}
-        </MDBox>
+              return (
+                <Invoice
+                  key={index}
+                  date={`${playerName} - ${activityName}`}
+                  price={noteDate}
+                  id={note.notes || note.player_notes}
+                />
+              );
+            })}
+          </MDBox>
+        )}
       </MDBox>
     </Card>
   );
