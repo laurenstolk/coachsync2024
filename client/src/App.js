@@ -38,6 +38,7 @@ import routes from "routes";
 import { useMaterialUIController, setMiniSidenav } from "context";
 
 import LoadingPage from "layouts/loadingpage.js";
+import RedirectTermsToLandingPage from "./RedirectToLandingPage";
 
 // Images
 import brandWhite from "assets/images/logo-ct.png";
@@ -346,7 +347,7 @@ export default function App() {
           )}
           {layout === "vr" && <Configurator />}
           <Routes>
-            {/* <Route path="/" element={<RedirectToLandingPage />} /> */}
+            <Route path="/" element={<RedirectToLandingPage />} />
             <Route path="/authentication/reset-password" element={<Cover />} />
             {getRoutes(routes)}
             {hasFirstName ? (
@@ -377,7 +378,7 @@ export default function App() {
         )}
         {layout === "vr" && <Configurator />}
         <Routes>
-          {/* <Route path="/" element={<RedirectToLandingPage />} /> */}
+          <Route path="/" element={<RedirectToLandingPage />} />
           <Route path="/authentication/reset-password" element={<Cover />} />
           {getRoutes(routes)}
           {hasFirstName ? (
