@@ -38,7 +38,6 @@ import routes from "routes";
 import { useMaterialUIController, setMiniSidenav } from "context";
 
 import LoadingPage from "layouts/loadingpage.js";
-import RedirectTermsToLandingPage from "./RedirectToLandingPage";
 
 // Images
 import brandWhite from "assets/images/logo-ct.png";
@@ -246,7 +245,11 @@ export default function App() {
   if (loading) {
     // Render loading UI
     return <LoadingPage />;
-  } else if (!session && location.pathname !== "/authentication/reset-password" && location.pathname !== "/") {
+  } else if (
+    !session &&
+    location.pathname !== "/authentication/reset-password" &&
+    location.pathname !== "/"
+  ) {
     return (
       <div>
         <div
