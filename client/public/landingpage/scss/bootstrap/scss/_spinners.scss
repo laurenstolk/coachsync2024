@@ -14,7 +14,7 @@
   height: $spinner-height;
   vertical-align: $spinner-vertical-align;
   border: $spinner-border-width solid currentColor;
-  border-right-color: transparent;
+  border-right-color: 0;
   // stylelint-disable-next-line property-disallowed-list
   border-radius: 50%;
   animation: $spinner-animation-speed linear infinite spinner-border;

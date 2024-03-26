@@ -184,8 +184,8 @@
     background-clip: padding-box;
     border: 0;
     // Use transparent borders to increase the hit area by 10px on top and bottom.
-    border-top: $carousel-indicator-hit-area-height solid transparent;
-    border-bottom: $carousel-indicator-hit-area-height solid transparent;
+    border-top: $carousel-indicator-hit-area-height solid 0;
+    border-bottom: $carousel-indicator-hit-area-height solid 0;
     opacity: $carousel-indicator-opacity;
     @include transition($carousel-indicator-transition);
   }
