@@ -265,7 +265,6 @@ export default function PlayerDashboard() {
         setAssignedWorkout([]);
       }
 
-
     } catch (error) {
       console.error("Error fetching assigned workout:", error.message);
     }
@@ -290,20 +289,20 @@ export default function PlayerDashboard() {
     fontSize = 25; // Default font size if assignedWorkout is null or undefined
   };
 
-  //working on the line chart
-  const currentDay = new Date(); // Get today's date
-  const labels = []; // Initialize an array to hold the labels
+  // //working on the line chart
+  // const currentDay = new Date(); // Get today's date
+  // const labels = []; // Initialize an array to hold the labels
 
-  // Loop through the past 7 days and generate labels
-  for (let i = 6; i >= 0; i--) {
-    const date = new Date(currentDay); // Create a new date object for each day
-    date.setDate(today.getDate() - i); // Subtract i days from today's date
-    labels.push(date.toLocaleDateString("en-US", { month: "short", day: "numeric" })); // Format the date and push it to the labels array
-  };
+  // // Loop through the past 7 days and generate labels
+  // for (let i = 6; i >= 0; i--) {
+  //   const date = new Date(currentDay); // Create a new date object for each day
+  //   date.setDate(today.getDate() - i); // Subtract i days from today's date
+  //   labels.push(date.toLocaleDateString("en-US", { month: "short", day: "numeric" })); // Format the date and push it to the labels array
+  // };
 
   //checkin chart 
 
-  const [checkinData, setCheckinData] = useState(null); // State variable for storing checkin data
+  //const [checkinData, setCheckinData] = useState(null); // State variable for storing checkin data
 
   // useEffect(() => {
   //   // Fetch checkin data
@@ -453,7 +452,7 @@ export default function PlayerDashboard() {
     };
 
     fetchChartData(); // Call the function to fetch checkin data
-  }, []);
+  }, [user]);
 
   //binary data for multiplelinechart
   // const checkinBinaryData = [];
@@ -622,6 +621,15 @@ export default function PlayerDashboard() {
             </MDBox>
             </Grid>
           </Grid>
+          <MDBox mt={4.5} mb={9}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={12} lg={12}>
+                <MDBox mb={3}>
+                  {chartData && <Line data={chartData} />} {/* Render the line chart when data is available */}
+                </MDBox>
+              </Grid>
+            </Grid>
+          </MDBox>
         </MDBox>
       </MDBox>
       <Footer />
