@@ -3,7 +3,7 @@ import Card from "@mui/material/Card";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import CakeIcon from "@mui/icons-material/Cake";
-import Confetti from 'react-confetti'; // Import Confetti
+import Confetti from "react-confetti"; // Import Confetti
 import { supabase } from "../../../../supabaseClient";
 import { fetchUserProfile } from "../../../../fetchUserProfile";
 
@@ -18,7 +18,6 @@ function BirthdaysThisWeek() {
     const fetchData = async () => {
       let playerIds;
       const profileData = await fetchUserProfile();
-      console.log("profileData: ", profileData);
 
       const startOfWeek = new Date(today);
       startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
@@ -57,8 +56,6 @@ function BirthdaysThisWeek() {
         })
         .filter((birthday) => birthday.birthday >= startOfWeek && birthday.birthday <= endOfWeek);
 
-      console.log("birthdaysThisWeek: ", birthdaysThisWeek);
-
       setBirthdaysThisWeek(birthdaysThisWeek);
 
       // Show Confetti if there are birthdays and hide after 7 seconds
@@ -85,7 +82,7 @@ function BirthdaysThisWeek() {
         {showConfetti && <Confetti width={450} />} {/* Render Confetti if there are birthdays */}
         {birthdaysThisWeek.map((birthday, index) => (
           <React.Fragment key={birthday.playerId}>
-            <MDTypography variant="body2" sx={{ display: 'flex', alignItems: 'center' }}>
+            <MDTypography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
               <CakeIcon sx={{ marginRight: "0.5rem" }} />
               <span>{birthday.playerName}</span>
               <br />
@@ -94,7 +91,8 @@ function BirthdaysThisWeek() {
                 {birthday.birthday.toLocaleString("en-US", { month: "long", day: "numeric" })}
               </span>
             </MDTypography>
-            {index !== birthdaysThisWeek.length - 1 && <br />} {/* Add a space if not the last player */}
+            {index !== birthdaysThisWeek.length - 1 && <br />}{" "}
+            {/* Add a space if not the last player */}
           </React.Fragment>
         ))}
       </MDBox>

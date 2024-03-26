@@ -5,8 +5,9 @@ import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
 import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/bg-reset-cover.jpeg";
-import { useState } from 'react';
+import { useState } from "react";
 import { supabase } from "../../../../supabaseClient";
+import { Link } from "react-router-dom";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,9 +15,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 
 function Cover() {
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [resetFeedback, setResetFeedback] = useState('');
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [resetFeedback, setResetFeedback] = useState("");
 
   const navigate = useNavigate();
 
@@ -25,35 +26,35 @@ function Cover() {
 
     try {
       if (newPassword.length < 6) {
-        setResetFeedback('Password must be at least 6 characters long.');
+        setResetFeedback("Password must be at least 6 characters long.");
         return;
       }
 
       if (newPassword !== confirmPassword) {
-        setResetFeedback('Passwords do not match. Please re-enter.');
+        setResetFeedback("Passwords do not match. Please re-enter.");
         return;
       }
 
       const user = supabase.auth.updateUser();
       if (!user) {
-        setResetFeedback('User not authenticated.');
+        setResetFeedback("User not authenticated.");
         return;
       }
-  
+
       const { error } = await supabase.auth.updateUser({
         email: user.email,
-        password: newPassword
+        password: newPassword,
       });
-  
+
       if (error) {
-        console.error('Error resetting password:', error.message);
-        if (error.message === 'New password should be different from the old password.') {
-          setResetFeedback('New password should be different from the old password.');
+        console.error("Error resetting password:", error.message);
+        if (error.message === "New password should be different from the old password.") {
+          setResetFeedback("New password should be different from the old password.");
         } else {
-          setResetFeedback('Failed to reset password. Please try again.');
+          setResetFeedback("Failed to reset password. Please try again.");
         }
       } else {
-        setResetFeedback('Password reset successfully.');
+        setResetFeedback("Password reset successfully.");
         toast.success("Redirecting to home page...", {
           autoClose: 2000,
           onClose: () => {
@@ -62,11 +63,10 @@ function Cover() {
         });
       }
     } catch (error) {
-      console.error('Error resetting password:', error.message);
-      setResetFeedback('An error occurred. Please try again later.');
+      console.error("Error resetting password:", error.message);
+      setResetFeedback("An error occurred. Please try again later.");
     }
   };
-   
 
   return (
     <CoverLayout coverHeight="50vh" image={bgImage}>
@@ -87,7 +87,9 @@ function Cover() {
           </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
-          <form onSubmit={handleResetPassword}> {/* Wrap form around inputs */}
+          <form onSubmit={handleResetPassword}>
+            {" "}
+            {/* Wrap form around inputs */}
             <MDBox mb={4}>
               <MDInput
                 type="password"
@@ -107,7 +109,11 @@ function Cover() {
               />
             </MDBox>
             {resetFeedback && (
-              <MDTypography variant="body2" color={resetFeedback.includes('error') ? 'error' : 'success'} mb={2}>
+              <MDTypography
+                variant="body2"
+                color={resetFeedback.includes("error") ? "error" : "success"}
+                mb={2}
+              >
                 {resetFeedback}
               </MDTypography>
             )}
@@ -117,6 +123,19 @@ function Cover() {
               </MDButton>
             </MDBox>
           </form>
+        </MDBox>
+        <MDBox textAlign="center" mb={2}>
+          <MDTypography
+            display="inline"
+            variant="button"
+            color="inherit"
+            fontSize="12px"
+            fontWeight="bold"
+            component={Link}
+            to="/dashboard"
+          >
+            <span>&#8592;</span> Return home without resetting password
+          </MDTypography>
         </MDBox>
       </Card>
     </CoverLayout>

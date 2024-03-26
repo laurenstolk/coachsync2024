@@ -49,12 +49,14 @@ import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
 import CoachOrPlayer from "layouts/authentication/coachorplayer";
+import AssistantorNew from "layouts/authentication/assistantornew";
 import CoachInfo from "layouts/authentication/coachinfo";
 import CoachEdit from "layouts/authentication/coachedit";
 import PlayerEdit from "layouts/authentication/playeredit";
 import PlayerInfo from "layouts/authentication/playerinfo";
 import TeamInfo from "layouts/authentication/teaminfo";
 import PlayerTeam from "layouts/authentication/playerteam";
+import ExistingTeam from "layouts/authentication/existingteam";
 import Cover from "layouts/authentication/reset-password/cover";
 import WellnessSetup from "layouts/authentication/wellness-setup";
 import WellnessSetupEdit from "layouts/authentication/wellness-setup-edit";
@@ -332,6 +334,14 @@ const routes = [
   },
   {
     // type: "collapse",
+    // name: "Coach or Player",
+    key: "assistantornew",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/authentication/assistantornew",
+    component: <AssistantorNew />,
+  },
+  {
+    // type: "collapse",
     // name: "Coach Info",
     key: "coachinfo",
     icon: <Icon fontSize="small"></Icon>,
@@ -377,6 +387,14 @@ const routes = [
     icon: <Icon fontSize="small"></Icon>,
     route: "/authentication/playerteam",
     component: <PlayerTeam />,
+  },
+  {
+    // type: "collapse",
+    // name: "Player Team",
+    key: "existingteam",
+    icon: <Icon fontSize="small"></Icon>,
+    route: "/authentication/existingteam",
+    component: <ExistingTeam />,
   },
   {
     // type: "collapse",

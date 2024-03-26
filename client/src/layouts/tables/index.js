@@ -30,6 +30,8 @@ import DataTable from "examples/Tables/DataTable";
 //for group component
 import {
   Box,
+  Button,
+  Icon,
   Typography,
   Table,
   TableBody,
@@ -44,11 +46,13 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Link } from "react-router-dom";
 import { fetchUserProfile } from "../../fetchUserProfile";
+import { supabase } from "../../supabaseClient";
 
 // Data
 import playersTableData from "layouts/tables/data/playersTableData";
 import groupsTableData from "layouts/grouptable/data/groupsTableData";
 import { fetchTeamInfo } from "../../fetchTeamInfo";
+import { toast } from "react-toastify";
 
 function Tables() {
   const { columns, rows } = playersTableData();
@@ -56,6 +60,29 @@ function Tables() {
   const [teamName, setTeamName] = useState(""); // State to hold the team name
   const [user, setUser] = useState(null);
   const [isUserAPlayer, setIsUserAPlayer] = useState(false);
+  const [groups, setGroups] = useState([]);
+
+  const handleDeleteGroup = async (groupId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this group?");
+    if (confirmDelete) {
+      try {
+        const { error } = await supabase.from("team_group").delete().eq("id", groupId);
+        if (error) {
+          throw error;
+        }
+
+        setGroups((prevGroups) => prevGroups.filter((group) => group.id !== groupId));
+        toast.success("Group deleted successfully!", {
+          onClose: () => {
+            window.location.reload();
+          },
+        });
+      } catch (error) {
+        console.error("Error deleting group:", error.message);
+        toast.error("Error deleting group");
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,7 +115,6 @@ function Tables() {
     }
   }, [user]); // Run whenever the user object changes
 
-  //STOP UNDO
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle={teamName || "Team"} />
@@ -204,10 +230,11 @@ function Tables() {
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
-                sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                sx={{ display: "flex", alignItems: "center" }}
               >
                 <Typography
                   sx={{
+                    flexGrow: 1,
                     display: "flex",
                     alignItems: "center",
                     fontWeight: "bold",
@@ -216,16 +243,25 @@ function Tables() {
                 >
                   {row.name}
                 </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                  <Button
+                    color="error"
+                    onClick={() => handleDeleteGroup(row.id.props.children)}
+                    style={{ marginRight: 15, padding: 0 }}
+                  >
+                    <Icon style={{ color: "red" }}>delete</Icon> Delete
+                  </Button>
+                </Box>
               </AccordionSummary>
               <AccordionDetails>
                 <TableContainer component={Paper}>
                   <Table>
                     <TableBody>
-                      <TableRow>
+                      {/* <TableRow>
                         <TableCell align="left" style={{ fontWeight: "bold" }}>
                           Players In This Group:
                         </TableCell>
-                      </TableRow>
+                      </TableRow> */}
                       <TableRow>
                         <TableCell align="left">{row.players}</TableCell>
                       </TableRow>

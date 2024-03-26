@@ -29,6 +29,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { fetchUserProfile } from "../../../../fetchUserProfile";
 import { fetchTeamInfo } from "../../../../fetchTeamInfo";
 import { DatePicker } from "@mui/x-date-pickers";
+import TextField from "@mui/material/TextField";
 import dayjs from "dayjs";
 
 function AddWellness() {
@@ -37,11 +38,11 @@ function AddWellness() {
   const [startDate, setStartDate] = useState(dayjs());
   const [checkinFrequency, setCheckinFrequency] = useState("");
   const [wellnessData, setWellnessData] = useState({
-    water: { id: 1, value: 3 }, //make sure to update to percent
-    sleep: { id: 2, value: 3 },
-    stress: { id: 3, value: 3 },
-    soreness: { id: 4, value: 3 },
-    energy: { id: 5, value: 3 },
+    water: { id: 1, value: 3, notes: null },
+    sleep: { id: 2, value: 3, notes: null },
+    stress: { id: 3, value: 3, notes: null },
+    soreness: { id: 4, value: 3, notes: null },
+    energy: { id: 5, value: 3, notes: null },
   });
 
   const [teamData, setTeamData] = useState({
@@ -119,7 +120,15 @@ function AddWellness() {
   const handleSliderChange = (type, value) => {
     setWellnessData((prevData) => ({
       ...prevData,
-      [type]: { id: prevData[type].id, value: value },
+      [type]: { id: prevData[type].id, value: value, notes: prevData[type].notes },
+    }));
+  };
+
+  const handleNotesChange = (type, event) => {
+    const notes = event.target.value;
+    setWellnessData((prevData) => ({
+      ...prevData,
+      [type]: { id: prevData[type].id, value: prevData[type].value, notes: notes },
     }));
   };
 
@@ -127,7 +136,7 @@ function AddWellness() {
     if (!isWellnessRequired()) {
       return;
     }
-    
+
     console.log("startDate", startDate);
     const selectedDate = dayjs(startDate).format("YYYY-MM-DD");
 
@@ -161,17 +170,14 @@ function AddWellness() {
       date: selectedDate, //get date that is selected...limiting to current date? allowing users to go back and select a date missed?
       created_at: new Date().toISOString(),
       value: wellnessData[type].value,
+      notes: wellnessData[type].notes,
     }));
 
-    console.log("dataToSubmit:", dataToSubmit);
-
     try {
-      // Use supabase client's api.post method to add data
       const { data, error } = await supabase.from("checkin").insert(dataToSubmit).select();
 
       if (error) {
         console.error("Error adding wellness:", error);
-        // Handle the error here
       } else {
         console.log("Wellness added successfully!");
 
@@ -237,6 +243,14 @@ function AddWellness() {
                   onChange={(event, value) => handleSliderChange("water", value)}
                   style={{ marginRight: "16px" }} // Adjust the margin as needed
                 />
+                <TextField
+                  label="Add Optional Note"
+                  variant="outlined"
+                  fullWidth
+                  value={wellnessData.water.notes}
+                  onChange={(event) => handleNotesChange("water", event)}
+                  style={{ marginTop: "8px" }}
+                />
               </MDBox>
             </MDBox>
           )}
@@ -267,6 +281,14 @@ function AddWellness() {
                   value={wellnessData.sleep.value}
                   onChange={(event, value) => handleSliderChange("sleep", value)}
                 />
+                <TextField
+                  label="Add Optional Note"
+                  variant="outlined"
+                  fullWidth
+                  value={wellnessData.sleep.notes}
+                  onChange={(event) => handleNotesChange("sleep", event)}
+                  style={{ marginTop: "8px" }}
+                />
               </MDBox>
             </MDBox>
           )}
@@ -293,6 +315,14 @@ function AddWellness() {
                   max={5}
                   value={wellnessData.energy.value}
                   onChange={(event, value) => handleSliderChange("energy", value)}
+                />
+                <TextField
+                  label="Add Optional Note"
+                  variant="outlined"
+                  fullWidth
+                  value={wellnessData.energy.notes}
+                  onChange={(event) => handleNotesChange("energy", event)}
+                  style={{ marginTop: "8px" }}
                 />
               </MDBox>
             </MDBox>
@@ -322,6 +352,14 @@ function AddWellness() {
                   value={wellnessData.stress.value}
                   onChange={(event, value) => handleSliderChange("stress", value)}
                 />
+                <TextField
+                  label="Add Optional Note"
+                  variant="outlined"
+                  fullWidth
+                  value={wellnessData.stress.notes}
+                  onChange={(event) => handleNotesChange("stress", event)}
+                  style={{ marginTop: "8px" }}
+                />
               </MDBox>
             </MDBox>
           )}
@@ -348,6 +386,14 @@ function AddWellness() {
                   max={5}
                   value={wellnessData.soreness.value}
                   onChange={(event, value) => handleSliderChange("soreness", value)}
+                />
+                <TextField
+                  label="Add Optional Note"
+                  variant="outlined"
+                  fullWidth
+                  value={wellnessData.soreness.notes}
+                  onChange={(event) => handleNotesChange("soreness", event)}
+                  style={{ marginTop: "8px" }}
                 />
               </MDBox>
             </MDBox>

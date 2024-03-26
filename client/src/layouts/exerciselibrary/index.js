@@ -98,7 +98,7 @@ function Tables() {
             sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", pl: 2 }}
           >
             <Typography variant="subtitle2" fontWeight="bold" color="#fff" sx={{ mr: 1 }}>
-              Filter:
+              Category:
             </Typography>
             <Select
               value={selectedCategory === "Training" ? sportName : selectedCategory}

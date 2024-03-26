@@ -80,6 +80,8 @@ function AddWorkout() {
           categoryMap[category.category_id] = category.category_name;
         });
 
+        exerciseData.sort((a, b) => a.name.localeCompare(b.name));
+
         const exercisesGroupedByCategory = {};
         exerciseData.forEach((exercise) => {
           const categoryName = categoryMap[exercise.category];
@@ -88,6 +90,9 @@ function AddWorkout() {
           }
           exercisesGroupedByCategory[categoryName].push(exercise);
         });
+
+        console.log("here: ", exercisesGroupedByCategory);
+
         setExercises(exerciseData);
         setExercisesByCategory(exercisesGroupedByCategory);
       }
