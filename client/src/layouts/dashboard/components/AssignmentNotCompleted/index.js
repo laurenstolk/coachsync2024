@@ -43,7 +43,6 @@ function AssignmentNotCompleted() {
   const [players, setPlayers] = useState([]);
   const [assignmentsToday, setAssignmentsToday] = useState(true);
 
-
   useEffect(() => {
     const fetchData = async () => {
       let playerIds;

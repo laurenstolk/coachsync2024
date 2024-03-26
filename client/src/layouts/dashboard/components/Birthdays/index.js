@@ -79,7 +79,8 @@ function BirthdaysThisWeek() {
         </MDTypography>
       </MDBox>
       <MDBox p={2}>
-        {showConfetti && <Confetti width={450} height={200} />} {/* Render Confetti if there are birthdays */}
+        {showConfetti && <Confetti width={450} height={200} />}{" "}
+        {/* Render Confetti if there are birthdays */}
         {birthdaysThisWeek.length === 0 ? ( // Check if there are no birthdays
           <MDTypography variant="body2" sx={{ fontStyle: "italic" }}>
             No birthdays this week

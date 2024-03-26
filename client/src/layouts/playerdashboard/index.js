@@ -23,11 +23,8 @@ import MDBox from "components/MDBox";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
-import MultipleLineChart from "examples/Charts/LineCharts/MultipleLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 import Button from "@mui/material/Button"; // Import Button component
-
 
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -36,25 +33,20 @@ import { fetchUserProfile } from "../../fetchUserProfile";
 import PsychologyAlt from "@mui/icons-material/PsychologyAlt";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
-import { Line } from "react-chartjs-2"
 
 export default function PlayerDashboard() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const [wellnessData, setWellnessData] = useState([]); //for chart will remove once new chart is in
   const [workoutCompleted, setWorkoutCompleted] = useState(false);
   const [checkinCompleted, setCheckinCompleted] = useState(false);
   const [checkinFrequency, setCheckinFrequency] = useState("");
   const [nextCheckinDay, setNextCheckinDay] = useState("");
   const [assignedWorkout, setAssignedWorkout] = useState(null);
-  //const [assignedWorkouts, setAssignedWorkouts] = useState([]);
   const [currentDate, setCurrentDate] = useState("");
   const [user, setUser] = useState(null);
 
-  const [playerIds, setPlayerIds] = useState([]);
   const [nextWorkoutDay, setNextWorkoutDay] = useState(null);
-
 
   const getFormattedDate = (date) => {
     const options = { weekday: "long", month: "long", day: "numeric" };
@@ -85,9 +77,8 @@ export default function PlayerDashboard() {
         console.error("Error fetching next workout day:", error.message);
       }
     };
-  
+
     fetchNextWorkoutDay();
-  
 
     const fetchCheckinCompletion = async () => {
       try {
@@ -162,7 +153,7 @@ export default function PlayerDashboard() {
     setNextCheckinDay(nextCheckinDay);
 
     // ... (other code)
-  }, [user]); // removed this (user, today, checkinFrequency) from the array -- may have been constantly refreshing everything 
+  }, [user]); // removed this (user, today, checkinFrequency) from the array -- may have been constantly refreshing everything
 
   // Determine if check-in is required for today
   const isCheckinRequired = () => {
@@ -182,28 +173,30 @@ export default function PlayerDashboard() {
         .select("date")
         .eq("player_id", user.id)
         .gte("date", today.toISOString().split("T")[0]); // Get assignments with dates greater than or equal to today
-  
+
       if (assignmentError) {
         throw assignmentError;
       }
-  
+
       if (assignmentData.length === 0) {
         return "None Assigned";
       }
-  
+
       // Filter out past dates
-      const futureAssignments = assignmentData.filter(item => new Date(item.date) >= today);
-  
+      const futureAssignments = assignmentData.filter((item) => new Date(item.date) >= today);
+
       if (futureAssignments.length === 0) {
         return "None Assigned";
       }
-  
+
       // Sort future assignments by date in ascending order
-      const sortedAssignments = futureAssignments.sort((a, b) => new Date(a.date) - new Date(b.date));
-  
+      const sortedAssignments = futureAssignments.sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
+
       // Get the date of the next assigned workout directly from sortedAssignments array
       const nextWorkoutDate = sortedAssignments[0].date;
-  
+
       return nextWorkoutDate;
     } catch (error) {
       console.error("Error fetching next workout day:", error.message);
@@ -224,7 +217,6 @@ export default function PlayerDashboard() {
 
       if (completionData.length > 0) {
         setWorkoutCompleted(completionData[0].completed);
-
       } else {
         setWorkoutCompleted(false);
       }
@@ -263,8 +255,6 @@ export default function PlayerDashboard() {
       } else {
         setAssignedWorkout([]);
       }
-
-
     } catch (error) {
       console.error("Error fetching assigned workout:", error.message);
     }
@@ -287,8 +277,7 @@ export default function PlayerDashboard() {
     }
   } else {
     fontSize = 25; // Default font size if assignedWorkout is null or undefined
-
-  };
+  }
 
   //working on the line chart
   const currentDay = new Date(); // Get today's date
@@ -299,9 +288,9 @@ export default function PlayerDashboard() {
     const date = new Date(currentDay); // Create a new date object for each day
     date.setDate(today.getDate() - i); // Subtract i days from today's date
     labels.push(date.toLocaleDateString("en-US", { month: "short", day: "numeric" })); // Format the date and push it to the labels array
-  };
+  }
 
-  //checkin chart 
+  //checkin chart
 
   const [checkinData, setCheckinData] = useState(null); // State variable for storing checkin data
 
@@ -353,74 +342,82 @@ export default function PlayerDashboard() {
           .select("date, value")
           .eq("wellness_id", 2)
           .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
-          .order("date");  
+          .order("date");
 
         const { data: wellness3Data, error: wellness3Error } = await supabase
           .from("checkin")
           .select("date, value")
           .eq("wellness_id", 3)
           .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
-          .order("date");   
-        
+          .order("date");
+
         const { data: wellness4Data, error: wellness4Error } = await supabase
           .from("checkin")
           .select("date, value")
           .eq("wellness_id", 4)
           .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
-          .order("date");   
+          .order("date");
 
         const { data: wellness5Data, error: wellness5Error } = await supabase
           .from("checkin")
           .select("date, value")
           .eq("wellness_id", 5)
           .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
-          .order("date");     
+          .order("date");
 
-        if (wellness1Error || wellness2Error || wellness3Error || wellness4Error || wellness5Error) {
-          throw wellness1Error || wellness2Error || wellness3Error || wellness4Error || wellness5Error;
+        if (
+          wellness1Error ||
+          wellness2Error ||
+          wellness3Error ||
+          wellness4Error ||
+          wellness5Error
+        ) {
+          throw (
+            wellness1Error || wellness2Error || wellness3Error || wellness4Error || wellness5Error
+          );
         }
 
         // Format the fetched data for the chart
-          const formattedData = {
-            labels: [],
-            datasets: [
-              {
-                label: "Wellness Data 1 - Water",
-                data: [],
-                fill: false,
-                borderColor: "rgb(75, 192, 192)",
-                tension: 0.1,
-              },
-              {
-                label: "Wellness Data 2 - Sleep",
-                data: [],
-                fill: false,
-                borderColor: "rgb(255, 99, 132)",
-                tension: 0.1,
-              },
-              {
-                label: "Wellness Data 3 - Stress",
-                data: [],
-                fill: false,
-                borderColor: "rgb(54, 162, 235)",
-                tension: 0.1,
-              },
-              {
-                label: "Wellness Data 4 - Soreness",
-                data: [],
-                fill: false,
-                borderColor: "rgb(255, 205, 86)",
-                tension: 0.1,
-              },
-              {
-                label: "Wellness Data 5 - Energy",
-                data: [],
-                fill: false,
-                borderColor: "rgb(153, 102, 255)",
-                tension: 0.1,
-              },
-            ],
-          };
+        const formattedData = {
+          labels: [],
+          datasets: [
+            {
+              label: "Wellness Data 1 - Water",
+              data: [],
+              fill: false,
+              borderColor: "rgb(75, 192, 192)",
+              tension: 0.1,
+            },
+            {
+              label: "Wellness Data 2 - Sleep",
+              data: [],
+              fill: false,
+              borderColor: "rgb(255, 99, 132)",
+              tension: 0.1,
+            },
+            {
+              label: "Wellness Data 3 - Stress",
+              data: [],
+              fill: false,
+              borderColor: "rgb(54, 162, 235)",
+              tension: 0.1,
+            },
+            {
+              label: "Wellness Data 4 - Soreness",
+              data: [],
+              fill: false,
+              borderColor: "rgb(255, 205, 86)",
+              tension: 0.1,
+            },
+            {
+              label: "Wellness Data 5 - Energy",
+              data: [],
+              fill: false,
+              borderColor: "rgb(153, 102, 255)",
+              tension: 0.1,
+            },
+          ],
+        };
 
         // Generate labels for the last 7 days
         const currentDate = new Date();
@@ -494,7 +491,7 @@ export default function PlayerDashboard() {
   //   ],
   // };
 
-  // end test chart 
+  // end test chart
 
   return (
     <DashboardLayout>
@@ -517,27 +514,26 @@ export default function PlayerDashboard() {
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                  icon={<AssignmentTurnedInIcon>Workout</AssignmentTurnedInIcon>}
-                  title="Assigned Workouts"
-                  count={
-                    assignedWorkout && assignedWorkout.length > 0 ? (
-                      assignedWorkout.map((workout, index) => (
-                          <div key={index} style={{ display: "inline-block" }}>
-                            <span style={{ fontSize: `${fontSize}px` }}>{workout}</span>
-                            {index !== assignedWorkout.length - 1 && (
-                              <span style={{ fontSize: `${fontSize}px` }}>, </span>
-                            )}
-                          </div>
-                        ))
-                      ) : ( "No assigned workout."
-                    )
-                  }
-                  percentage={{
-                    color: "success",
-                    amount: "",
-                    label: "Just updated",
-                  }}
-                />
+                icon={<AssignmentTurnedInIcon>Workout</AssignmentTurnedInIcon>}
+                title="Assigned Workouts"
+                count={
+                  assignedWorkout && assignedWorkout.length > 0
+                    ? assignedWorkout.map((workout, index) => (
+                        <div key={index} style={{ display: "inline-block" }}>
+                          <span style={{ fontSize: `${fontSize}px` }}>{workout}</span>
+                          {index !== assignedWorkout.length - 1 && (
+                            <span style={{ fontSize: `${fontSize}px` }}>, </span>
+                          )}
+                        </div>
+                      ))
+                    : "No assigned workout."
+                }
+                percentage={{
+                  color: "success",
+                  amount: "",
+                  label: "Just updated",
+                }}
+              />
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={3}>
@@ -547,25 +543,25 @@ export default function PlayerDashboard() {
                 icon={<FitnessCenterIcon>Workout</FitnessCenterIcon>}
                 title="Workout Complete?"
                 count={
-                  (assignedWorkout !== null && assignedWorkout.length > 0 && workoutCompleted) ? (
+                  assignedWorkout !== null && assignedWorkout.length > 0 && workoutCompleted ? (
                     "Today's workout is complete."
+                  ) : assignedWorkout !== null && assignedWorkout.length > 0 ? (
+                    <Button
+                      style={{ border: "2px solid", color: "inherit" }}
+                      component={Link}
+                      to="/completeworkout"
+                    >
+                      No. Complete Workout?
+                    </Button>
                   ) : (
-                    assignedWorkout !== null && assignedWorkout.length > 0 ? (
-                      <Button
-                        style={{ border: "2px solid", color: "inherit" }}
-                        component={Link}
-                        to="/completeworkout"
-                      >
-                        No. Complete Workout?
-                      </Button>
-                    ) : (
-                        "No assigned workout."
-                    )
+                    "No assigned workout."
                   )
                 }
                 percentage={{
                   amount: "",
-                  label: nextWorkoutDay ? `Next Workout: ${nextWorkoutDay}` : "Fetching next workout day..."
+                  label: nextWorkoutDay
+                    ? `Next Workout: ${nextWorkoutDay}`
+                    : "Fetching next workout day...",
                 }}
               />
             </MDBox>
@@ -605,8 +601,8 @@ export default function PlayerDashboard() {
         <MDBox mt={4.5} mb={9}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={12} lg={12}>
-            <MDBox mb={3}>
-              {/* <MultipleLineChart
+              <MDBox mb={3}>
+                {/* <MultipleLineChart
                 color="success"
                 title="Check-in Results"
                 description="Days from the past week that you completed your check in."
@@ -619,7 +615,7 @@ export default function PlayerDashboard() {
                   }
                 }}
               /> */}
-            </MDBox>
+              </MDBox>
             </Grid>
           </Grid>
         </MDBox>

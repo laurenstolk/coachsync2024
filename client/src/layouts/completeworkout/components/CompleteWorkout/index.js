@@ -72,8 +72,6 @@ async function getWorkout(assignmentData) {
 function CompleteWorkout() {
   const navigate = useNavigate();
   const [assignment, setAssignment] = useState([]);
-  // const [workout, setWorkout] = useState(null);
-  // const [customizedExercises, setCustomizedExercises] = useState([]);
   const [customizedExercisesData, setCustomizedExercises] = useState([]);
   const [completedExercises, setCompletedExercises] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

@@ -80,60 +80,59 @@ function WellnessFlags() {
       <MDBox p={2}>
         {concerningCheckins.length == 0 ? (
           <MDTypography variant="body2" sx={{ fontStyle: "italic" }}>
-          No wellness reports flagged
-        </MDTypography>
-        ) :(
-        <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+            No wellness reports flagged
+          </MDTypography>
+        ) : (
+          <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+            {concerningCheckins.map((checkin) => {
+              let transactionValue = "";
+              let transactionColor = "warning"; // Default color is yellow
 
-        {concerningCheckins.map((checkin) => {
-          let transactionValue = "";
-          let transactionColor = "warning"; // Default color is yellow
+              // Check if the criteria for extreme wellness check-ins are met, then set color to red
+              if (
+                (checkin.wellness_id === 1 && checkin.value === 1) ||
+                (checkin.wellness_id === 2 && checkin.value === 1) ||
+                (checkin.wellness_id === 3 && checkin.value === 5) ||
+                (checkin.wellness_id === 4 && checkin.value === 5) ||
+                (checkin.wellness_id === 5 && checkin.value === 1)
+              ) {
+                transactionColor = "error"; // Set color to red for extreme check-ins
+              }
 
-          // Check if the criteria for extreme wellness check-ins are met, then set color to red
-          if (
-            (checkin.wellness_id === 1 && checkin.value === 1) ||
-            (checkin.wellness_id === 2 && checkin.value === 1) ||
-            (checkin.wellness_id === 3 && checkin.value === 5) ||
-            (checkin.wellness_id === 4 && checkin.value === 5) ||
-            (checkin.wellness_id === 5 && checkin.value === 1)
-          ) {
-            transactionColor = "error"; // Set color to red for extreme check-ins
-          }
-
-          switch (checkin.wellness_id) {
-            case 1:
-              transactionValue = "DEHYDRATED";
-              break;
-            case 2:
-              transactionValue = "TIRED";
-              break;
-            case 3:
-              transactionValue = "STRESSED";
-              break;
-            case 4:
-              transactionValue = "SORE";
-              break;
-            case 5:
-              transactionValue = "LOW ENERGY";
-              break;
-            default:
-              transactionValue = "Unknown";
-          }
-          const notesDescription = checkin.notes ? `Notes: "${checkin.notes}"` : "Notes: N/A"; // Conditional check for null notes
-          return (
-            <Transaction
-              key={checkin.id}
-              color={transactionColor}
-              icon="warning"
-              name={`${checkin.profile.first_name} ${checkin.profile.last_name}`}
-              description={notesDescription}
-              value={`${transactionValue} (${checkin.value})`}
-            />
-          );
-        })}
+              switch (checkin.wellness_id) {
+                case 1:
+                  transactionValue = "DEHYDRATED";
+                  break;
+                case 2:
+                  transactionValue = "TIRED";
+                  break;
+                case 3:
+                  transactionValue = "STRESSED";
+                  break;
+                case 4:
+                  transactionValue = "SORE";
+                  break;
+                case 5:
+                  transactionValue = "LOW ENERGY";
+                  break;
+                default:
+                  transactionValue = "Unknown";
+              }
+              const notesDescription = checkin.notes ? `Notes: "${checkin.notes}"` : "Notes: N/A"; // Conditional check for null notes
+              return (
+                <Transaction
+                  key={checkin.id}
+                  color={transactionColor}
+                  icon="warning"
+                  name={`${checkin.profile.first_name} ${checkin.profile.last_name}`}
+                  description={notesDescription}
+                  value={`${transactionValue} (${checkin.value})`}
+                />
+              );
+            })}
+          </MDBox>
+        )}
       </MDBox>
-       )}
-     </MDBox>
     </Card>
   );
 }
