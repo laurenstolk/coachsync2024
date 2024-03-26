@@ -51,8 +51,10 @@ export default function PlayerDashboard() {
   //const [assignedWorkouts, setAssignedWorkouts] = useState([]);
   const [currentDate, setCurrentDate] = useState("");
   const [user, setUser] = useState(null);
+
   const [playerIds, setPlayerIds] = useState([]);
   const [nextWorkoutDay, setNextWorkoutDay] = useState(null);
+
 
   const getFormattedDate = (date) => {
     const options = { weekday: "long", month: "long", day: "numeric" };
@@ -220,14 +222,11 @@ export default function PlayerDashboard() {
 
       if (completionError) throw completionError;
 
-
-
       if (completionData.length > 0) {
         setWorkoutCompleted(completionData[0].completed);
 
       } else {
         setWorkoutCompleted(false);
-
       }
     } catch (error) {
       console.error("Error fetching workout completion:", error.message);
@@ -288,6 +287,7 @@ export default function PlayerDashboard() {
     }
   } else {
     fontSize = 25; // Default font size if assignedWorkout is null or undefined
+
   };
 
   //working on the line chart
