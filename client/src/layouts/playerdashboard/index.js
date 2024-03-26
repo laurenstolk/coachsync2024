@@ -336,123 +336,188 @@ export default function PlayerDashboard() {
   const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
-    // Function to fetch data from the checkin table
+    const fetchWellnessData = async (wellnessId) => {
+      try {
+        const { data, error } = await supabase
+          .from("checkin")
+          .select("date, value")
+          .eq("wellness_id", wellnessId)
+          .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+          .order("date");
+  
+        if (error) throw error;
+  
+        return data;
+      } catch (error) {
+        console.error(`Error fetching wellness data for ID ${wellnessId}:`, error.message);
+        return [];
+      }
+    };
+  
     const fetchChartData = async () => {
       try {
-        // Fetch the past week of data for wellness_id 1
-        const { data: wellness1Data, error: wellness1Error } = await supabase
-          .from("checkin")
-          .select("date, value")
-          .eq("wellness_id", 1)
-          .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
-          .order("date");
-
-        const { data: wellness2Data, error: wellness2Error } = await supabase
-          .from("checkin")
-          .select("date, value")
-          .eq("wellness_id", 2)
-          .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
-          .order("date");  
-
-        const { data: wellness3Data, error: wellness3Error } = await supabase
-          .from("checkin")
-          .select("date, value")
-          .eq("wellness_id", 3)
-          .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
-          .order("date");   
-        
-        const { data: wellness4Data, error: wellness4Error } = await supabase
-          .from("checkin")
-          .select("date, value")
-          .eq("wellness_id", 4)
-          .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
-          .order("date");   
-
-        const { data: wellness5Data, error: wellness5Error } = await supabase
-          .from("checkin")
-          .select("date, value")
-          .eq("wellness_id", 5)
-          .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
-          .order("date");     
-
-        if (wellness1Error || wellness2Error || wellness3Error || wellness4Error || wellness5Error) {
-          throw wellness1Error || wellness2Error || wellness3Error || wellness4Error || wellness5Error;
-        }
-
-        // Format the fetched data for the chart
-          const formattedData = {
-            labels: [],
-            datasets: [
-              {
-                label: "Wellness Data 1 - Water",
-                data: [],
-                fill: false,
-                borderColor: "rgb(75, 192, 192)",
-                tension: 0.1,
-              },
-              {
-                label: "Wellness Data 2 - Sleep",
-                data: [],
-                fill: false,
-                borderColor: "rgb(255, 99, 132)",
-                tension: 0.1,
-              },
-              {
-                label: "Wellness Data 3 - Stress",
-                data: [],
-                fill: false,
-                borderColor: "rgb(54, 162, 235)",
-                tension: 0.1,
-              },
-              {
-                label: "Wellness Data 4 - Soreness",
-                data: [],
-                fill: false,
-                borderColor: "rgb(255, 205, 86)",
-                tension: 0.1,
-              },
-              {
-                label: "Wellness Data 5 - Energy",
-                data: [],
-                fill: false,
-                borderColor: "rgb(153, 102, 255)",
-                tension: 0.1,
-              },
-            ],
-          };
-
-        // Generate labels for the last 7 days
+        const [wellness1Data, wellness2Data, wellness3Data, wellness4Data, wellness5Data] =
+          await Promise.all([
+            fetchWellnessData(1),
+            fetchWellnessData(2),
+            fetchWellnessData(3),
+            fetchWellnessData(4),
+            fetchWellnessData(5),
+          ]);
+  
+        const formattedData = {
+          labels: [],
+          datasets: [
+            { label: "Wellness Data 1 - Water", data: [], fill: false, borderColor: "rgb(75, 192, 192)", tension: 0.1 },
+            { label: "Wellness Data 2 - Sleep", data: [], fill: false, borderColor: "rgb(255, 99, 132)", tension: 0.1 },
+            { label: "Wellness Data 3 - Stress", data: [], fill: false, borderColor: "rgb(54, 162, 235)", tension: 0.1 },
+            { label: "Wellness Data 4 - Soreness", data: [], fill: false, borderColor: "rgb(255, 205, 86)", tension: 0.1 },
+            { label: "Wellness Data 5 - Energy", data: [], fill: false, borderColor: "rgb(153, 102, 255)", tension: 0.1 },
+          ],
+        };
+  
         const currentDate = new Date();
         for (let i = 6; i >= 0; i--) {
           const date = new Date(currentDate);
           date.setDate(currentDate.getDate() - i);
-          formattedData.labels.push(date.toISOString().split("T")[0]); // Add date to labels array
+          formattedData.labels.push(date.toISOString().split("T")[0]);
         }
-
-        // Populate the data array
-        for (let i = 0; i < 7; i++) {
-          const currentDate = formattedData.labels[i];
-          const wellness1Entry = wellness1Data.find((entry) => entry.date === currentDate);
-          const wellness2Entry = wellness2Data.find((entry) => entry.date === currentDate);
-          const wellness3Entry = wellness3Data.find((entry) => entry.date === currentDate);
-          const wellness4Entry = wellness4Data.find((entry) => entry.date === currentDate);
-          const wellness5Entry = wellness5Data.find((entry) => entry.date === currentDate);
-          formattedData.datasets[0].data.push(wellness1Entry ? wellness1Entry.value : null);
-          formattedData.datasets[1].data.push(wellness2Entry ? wellness2Entry.value : null);
-          formattedData.datasets[2].data.push(wellness3Entry ? wellness3Entry.value : null);
-          formattedData.datasets[3].data.push(wellness4Entry ? wellness4Entry.value : null);
-          formattedData.datasets[4].data.push(wellness5Entry ? wellness5Entry.value : null);
-        }
-
-        // Set the formatted data to the state
+  
+        [wellness1Data, wellness2Data, wellness3Data, wellness4Data, wellness5Data].forEach((wellnessData, index) => {
+          for (let i = 0; i < 7; i++) {
+            const currentDate = formattedData.labels[i];
+            const entry = wellnessData.find((entry) => entry.date === currentDate);
+            formattedData.datasets[index].data.push(entry ? entry.value : null);
+          }
+        });
+  
         setChartData(formattedData);
       } catch (error) {
         console.error("Error fetching checkin data:", error.message);
       }
     };
+  
+    fetchChartData();
+  }, []);
 
-    fetchChartData(); // Call the function to fetch checkin data
-  }, [user]);
+  // useEffect(() => {
+  //   // Function to fetch data from the checkin table
+  //   const fetchChartData = async () => {
+  //     try {
+  //       // Fetch the past week of data for wellness_id 1
+  //       const { data: wellness1Data, error: wellness1Error } = await supabase
+  //         .from("checkin")
+  //         .select("date, value")
+  //         .eq("wellness_id", 1)
+  //         .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
+  //         .order("date");
+
+  //       const { data: wellness2Data, error: wellness2Error } = await supabase
+  //         .from("checkin")
+  //         .select("date, value")
+  //         .eq("wellness_id", 2)
+  //         .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
+  //         .order("date");  
+
+  //       const { data: wellness3Data, error: wellness3Error } = await supabase
+  //         .from("checkin")
+  //         .select("date, value")
+  //         .eq("wellness_id", 3)
+  //         .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
+  //         .order("date");   
+        
+  //       const { data: wellness4Data, error: wellness4Error } = await supabase
+  //         .from("checkin")
+  //         .select("date, value")
+  //         .eq("wellness_id", 4)
+  //         .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
+  //         .order("date");   
+
+  //       const { data: wellness5Data, error: wellness5Error } = await supabase
+  //         .from("checkin")
+  //         .select("date, value")
+  //         .eq("wellness_id", 5)
+  //         .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()) // Get data for the past week
+  //         .order("date");     
+
+  //       if (wellness1Error || wellness2Error || wellness3Error || wellness4Error || wellness5Error) {
+  //         throw wellness1Error || wellness2Error || wellness3Error || wellness4Error || wellness5Error;
+  //       }
+
+  //       // Format the fetched data for the chart
+  //         const formattedData = {
+  //           labels: [],
+  //           datasets: [
+  //             {
+  //               label: "Wellness Data 1 - Water",
+  //               data: [],
+  //               fill: false,
+  //               borderColor: "rgb(75, 192, 192)",
+  //               tension: 0.1,
+  //             },
+  //             {
+  //               label: "Wellness Data 2 - Sleep",
+  //               data: [],
+  //               fill: false,
+  //               borderColor: "rgb(255, 99, 132)",
+  //               tension: 0.1,
+  //             },
+  //             {
+  //               label: "Wellness Data 3 - Stress",
+  //               data: [],
+  //               fill: false,
+  //               borderColor: "rgb(54, 162, 235)",
+  //               tension: 0.1,
+  //             },
+  //             {
+  //               label: "Wellness Data 4 - Soreness",
+  //               data: [],
+  //               fill: false,
+  //               borderColor: "rgb(255, 205, 86)",
+  //               tension: 0.1,
+  //             },
+  //             {
+  //               label: "Wellness Data 5 - Energy",
+  //               data: [],
+  //               fill: false,
+  //               borderColor: "rgb(153, 102, 255)",
+  //               tension: 0.1,
+  //             },
+  //           ],
+  //         };
+
+  //       // Generate labels for the last 7 days
+  //       const currentDate = new Date();
+  //       for (let i = 6; i >= 0; i--) {
+  //         const date = new Date(currentDate);
+  //         date.setDate(currentDate.getDate() - i);
+  //         formattedData.labels.push(date.toISOString().split("T")[0]); // Add date to labels array
+  //       }
+
+  //       // Populate the data array
+  //       for (let i = 0; i < 7; i++) {
+  //         const currentDate = formattedData.labels[i];
+  //         const wellness1Entry = wellness1Data.find((entry) => entry.date === currentDate);
+  //         const wellness2Entry = wellness2Data.find((entry) => entry.date === currentDate);
+  //         const wellness3Entry = wellness3Data.find((entry) => entry.date === currentDate);
+  //         const wellness4Entry = wellness4Data.find((entry) => entry.date === currentDate);
+  //         const wellness5Entry = wellness5Data.find((entry) => entry.date === currentDate);
+  //         formattedData.datasets[0].data.push(wellness1Entry ? wellness1Entry.value : null);
+  //         formattedData.datasets[1].data.push(wellness2Entry ? wellness2Entry.value : null);
+  //         formattedData.datasets[2].data.push(wellness3Entry ? wellness3Entry.value : null);
+  //         formattedData.datasets[3].data.push(wellness4Entry ? wellness4Entry.value : null);
+  //         formattedData.datasets[4].data.push(wellness5Entry ? wellness5Entry.value : null);
+  //       }
+
+  //       // Set the formatted data to the state
+  //       setChartData(formattedData);
+  //     } catch (error) {
+  //       console.error("Error fetching checkin data:", error.message);
+  //     }
+  //   };
+
+  //   fetchChartData(); // Call the function to fetch checkin data
+  // }, []);
 
   //binary data for multiplelinechart
   // const checkinBinaryData = [];
@@ -623,11 +688,11 @@ export default function PlayerDashboard() {
           </Grid>
           <MDBox mt={4.5} mb={9}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={12} lg={12}>
-                <MDBox mb={3}>
-                  {chartData && <Line data={chartData} />} {/* Render the line chart when data is available */}
-                </MDBox>
-              </Grid>
+            <Grid item xs={12} md={12} lg={12}>
+              <MDBox mb={3} style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px' }}>
+                {chartData && <Line data={chartData} />} {/* Render the line chart when data is available */}
+              </MDBox>
+            </Grid>
             </Grid>
           </MDBox>
         </MDBox>
