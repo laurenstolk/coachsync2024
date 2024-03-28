@@ -189,14 +189,13 @@ function CompleteWorkout() {
       return updatedCompletedExercisesMap;
     });
   };
-
   const handleSubmit = async (assignmentItem) => {
     try {
       const { assignment, customizedExercisesData } = assignmentItem;
       const assignmentId = assignment.id;
       const completedExercises = completedExercisesMap[assignmentId];
 
-      // Check if all exercises are completed
+      // Check if all exercises for this assignment are completed
       const allExercisesCompleted = customizedExercisesData.length === completedExercises.length;
 
       if (allExercisesCompleted) {
@@ -211,33 +210,36 @@ function CompleteWorkout() {
         } else {
           console.log("Assignment marked as completed successfully!");
         }
-      }
 
-      const completionRecords = completedExercises.map((exercise) => ({
-        date_completed: new Date().toISOString().split("T")[0],
-        player_notes: exercise.notes,
-        customized_exercise_id: exercise.customized_exercise_id,
-        assignment_id: assignmentId, // Use assignmentId instead of assignment.id
-      }));
+        const completionRecords = completedExercises.map((exercise) => ({
+          date_completed: new Date().toISOString().split("T")[0],
+          player_notes: exercise.notes,
+          customized_exercise_id: exercise.customized_exercise_id,
+          assignment_id: assignmentId, // Use assignmentId instead of assignment.id
+        }));
 
-      const { data: completionResult, error: completionError } = await supabase
-        .from("exercise_completion")
-        .upsert(completionRecords)
-        .select();
+        const { data: completionResult, error: completionError } = await supabase
+          .from("exercise_completion")
+          .upsert(completionRecords)
+          .select();
 
-      if (completionError) {
-        console.error("Error adding completion records:", completionError);
+        if (completionError) {
+          console.error("Error adding completion records:", completionError);
+        } else {
+          console.log("Completion records added successfully!");
+        }
+
+        // Your submission logic
+        toast.success("Workout completed and notes added successfully!", {
+          autoClose: 1500,
+          onClose: () => {
+            navigate("/playerdashboard");
+          },
+        });
       } else {
-        console.log("Completion records added successfully!");
+        // Notify the user to complete all exercises before submitting
+        toast.error("Please complete all exercises before submitting.");
       }
-
-      // Your submission logic
-      toast.success("Workout completed and notes added successfully!", {
-        autoClose: 2000,
-        onClose: () => {
-          navigate("/playerdashboard");
-        },
-      });
     } catch (error) {
       console.error("Error:", error);
       // Handle error
