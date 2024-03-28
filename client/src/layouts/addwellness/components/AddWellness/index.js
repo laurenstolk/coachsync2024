@@ -137,7 +137,6 @@ function AddWellness() {
       return;
     }
 
-
     const selectedDate = dayjs(startDate).format("YYYY-MM-DD");
 
     const { data: existingEntries, error: existingEntriesError } = await supabase
@@ -162,46 +161,46 @@ function AddWellness() {
       return;
     }
 
-  // Filter out wellness data based on team settings
-  const dataToSubmit = Object.keys(teamData).reduce((acc, key) => {
-    if (teamData[key]) {
-      const type = key === "water" ? "water" : key; // handle special case for water
-      acc.push({
-        player_id: profile.id, //update to get current user id
-        wellness_id: wellnessData[type].id,
-        date: selectedDate,
-        created_at: new Date().toISOString(),
-        value: wellnessData[type].value,
-        notes: wellnessData[type].notes,
-      });
-    }
-    return acc;
-  }, []);
-
-  try {
-    if (dataToSubmit.length > 0) {
-      const { data, error } = await supabase.from("checkin").insert(dataToSubmit).select();
-
-      if (error) {
-        console.error("Error adding wellness:", error);
-      } else {
-        console.log("Wellness added successfully!");
-
-        toast.success("Wellness added successfully!", {
-          autoClose: 2000,
-          onClose: () => {
-            navigate("/playerdashboard");
-          },
+    // Filter out wellness data based on team settings
+    const dataToSubmit = Object.keys(teamData).reduce((acc, key) => {
+      if (teamData[key]) {
+        const type = key === "water" ? "water" : key; // handle special case for water
+        acc.push({
+          player_id: profile.id, //update to get current user id
+          wellness_id: wellnessData[type].id,
+          date: selectedDate,
+          created_at: new Date().toISOString(),
+          value: wellnessData[type].value,
+          notes: wellnessData[type].notes,
         });
       }
-    } else {
-      console.log("No wellness data to submit based on team settings.");
+      return acc;
+    }, []);
+
+    try {
+      if (dataToSubmit.length > 0) {
+        const { data, error } = await supabase.from("checkin").insert(dataToSubmit).select();
+
+        if (error) {
+          console.error("Error adding wellness:", error);
+        } else {
+          console.log("Wellness added successfully!");
+
+          toast.success("Wellness added successfully!", {
+            autoClose: 2000,
+            onClose: () => {
+              navigate("/playerdashboard");
+            },
+          });
+        }
+      } else {
+        console.log("No wellness data to submit based on team settings.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      // Handle the error here
     }
-  } catch (error) {
-    console.error("Error:", error);
-    // Handle the error here
-  }
-};
+  };
 
   return (
     <Card id="add-wellness" style={{ width: "auto" }}>
