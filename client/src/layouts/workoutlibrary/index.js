@@ -55,6 +55,10 @@ function Tables() {
         const { data: workoutsData, error: workoutsError } = await supabase
           .from("workout")
           .select("*");
+
+        // Sort workouts by workout name
+        workoutsData.sort((a, b) => a.workout_name.localeCompare(b.workout_name));
+
         const { data: customizedexerciseData, error: customizedExercisesError } = await supabase
           .from("customized_exercise")
           .select("*");
@@ -276,7 +280,7 @@ function Tables() {
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Workout Library" />
-      <Box mb={3}>
+      <Box mt={4} mb={1}>
         <Card
           variant="outlined"
           sx={{

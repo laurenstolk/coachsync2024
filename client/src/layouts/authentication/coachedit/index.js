@@ -49,13 +49,13 @@ function CoachEdit() {
     fetchData();
   }, []);
 
-  const handleInputChange = () => {
-    const firstName = document.getElementById("first-name").value;
-    const lastName = document.getElementById("last-name").value;
-    const phoneNumber = document.getElementById("phone-number").value;
-    const birthDate = document.getElementById("birth-date").value;
-    const coachRole = document.getElementById("coach-role").value;
-  };
+  // const handleInputChange = () => {
+  //   const firstName = document.getElementById("first-name").value;
+  //   const lastName = document.getElementById("last-name").value;
+  //   const phoneNumber = document.getElementById("phone-number").value;
+  //   const birthDate = document.getElementById("birth-date").value;
+  //   const coachRole = document.getElementById("coach-role").value;
+  // };
 
   const handleSubmit = async () => {
     // Check if profile and profile.id are available
@@ -146,73 +146,93 @@ function CoachEdit() {
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
-          <MDBox mb={2}>
             <MDBox mb={2}>
-              <MDInput
-                type="text"
-                id="first-name"
-                label="First Name"
-                variant="outlined"
-                fullWidth
-                required
-                value={profile ? profile.first_name : ''}
-                onChange={e => setProfile(prevState => ({ ...prevState, first_name: e.target.value }))}
-              />
-            </MDBox>
-            <MDBox mb={2}>
-              <MDInput
-                type="text"
-                id="last-name"
-                label="Last Name"
-                variant="outlined"
-                fullWidth
-                required
-                value={profile ? profile.last_name : ''}
-                onChange={e => setProfile(prevState => ({ ...prevState, last_name: e.target.value }))}
-              />
-            </MDBox>
-            <MDBox mb={3}>
-              <MDInput
-                type="tel"
-                id="phone-number"
-                label="Phone Number"
-                variant="outlined"
-                fullWidth
-                required
-                value={profile ? profile.phone_number : ''}
-                onChange={e => setProfile(prevState => ({ ...prevState, phone_number: e.target.value }))}
-              />
-            </MDBox>
-            <MDBox mb={3}>
+              <MDBox mb={2}>
+                <MDInput
+                  type="text"
+                  id="first-name"
+                  label="First Name"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  value={profile ? profile.first_name : ""}
+                  onChange={(e) =>
+                    setProfile((prevState) => ({ ...prevState, first_name: e.target.value }))
+                  }
+                />
+              </MDBox>
+              <MDBox mb={2}>
+                <MDInput
+                  type="text"
+                  id="last-name"
+                  label="Last Name"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  value={profile ? profile.last_name : ""}
+                  onChange={(e) =>
+                    setProfile((prevState) => ({ ...prevState, last_name: e.target.value }))
+                  }
+                />
+              </MDBox>
+              <MDBox mb={3}>
+                <MDInput
+                  type="tel"
+                  id="phone-number"
+                  label="Phone Number"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  value={profile ? profile.phone_number : ""}
+                  onChange={(e) =>
+                    setProfile((prevState) => ({ ...prevState, phone_number: e.target.value }))
+                  }
+                />
+              </MDBox>
+              <MDBox mb={3}>
+                <MDTypography display="block" variant="button" color="text" my={1}>
+                  Birthdate
+                </MDTypography>
+                <MDInput
+                  type="date"
+                  id="birth-date"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  value={profile ? profile.birth_date : ""}
+                  onChange={(e) =>
+                    setProfile((prevState) => ({ ...prevState, birth_date: e.target.value }))
+                  }
+                />
+              </MDBox>
               <MDTypography display="block" variant="button" color="text" my={1}>
-                Birthdate
+                What type of coach are you? (Head, Assistant, etc...)
               </MDTypography>
-              <MDInput
-                type="date"
-                id="birth-date"
-                variant="outlined"
-                fullWidth
-                required
-                value={profile ? profile.birth_date : ''}
-                onChange={e => setProfile(prevState => ({ ...prevState, birth_date: e.target.value }))}
-              />
+              <MDBox mb={5}>
+                <MDInput
+                  type="text"
+                  id="coach-role"
+                  label="Coach Role"
+                  variant="outlined"
+                  fullWidth
+                  required
+                  value={profile ? profile.coach_role : ""}
+                  onChange={(e) =>
+                    setProfile((prevState) => ({ ...prevState, coach_role: e.target.value }))
+                  }
+                />
+              </MDBox>
             </MDBox>
-            <MDTypography display="block" variant="button" color="text" my={1}>
-              What type of coach are you? (Head, Assistant, etc...)
+            <MDTypography
+              display="block"
+              variant="button"
+              color="info"
+              my={1}
+              component={Link}
+              to="/authentication/reset-password"
+            >
+              Change your password
             </MDTypography>
-            <MDBox mb={5}>
-              <MDInput
-                type="text"
-                id="coach-role"
-                label="Coach Role"
-                variant="outlined"
-                fullWidth
-                required
-                value={profile ? profile.coach_role : ''}
-                onChange={e => setProfile(prevState => ({ ...prevState, coach_role: e.target.value }))}
-              />
-            </MDBox>
-          </MDBox>
 
             <MDBox mb={2} {...getRootProps()} style={{ cursor: "pointer" }}>
               <input {...getInputProps()} />

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Box from "@mui/material/Box";
@@ -12,16 +12,54 @@ import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import ExercisesTableData from "layouts/tables/data/exercisesTableData.js";
 import { Select, MenuItem } from "@mui/material";
+import { fetchUserProfile } from "../../fetchUserProfile";
+import { supabase } from "../../supabaseClient";
 
 function Tables() {
   const { columns, rows, handleCategoryFilter, categories, selectedCategory } =
     ExercisesTableData();
 
+  // State to store the sport name
+  const [sportName, setSportName] = useState("");
+
+  // Function to fetch the sport name based on team's sport_id
+  const fetchSportName = async () => {
+    try {
+      const profileData = await fetchUserProfile();
+
+      let { data: teamData, error } = await supabase
+        .from("team")
+        .select("*")
+        .eq("id", profileData.team_id)
+        .single();
+
+      let { data: sportData, erorr } = await supabase
+        .from("sport")
+        .select("*")
+        .eq("id", teamData.sport_id)
+        .single();
+
+      setSportName(sportData.name);
+    } catch (error) {
+      console.error("Error fetching sport name: ", error);
+    }
+  };
+
+  // Fetch sport name on component mount or when profile/team_id changes
+  useEffect(() => {
+    fetchSportName();
+  }, []); // Update when profile/team_id changes
+
+  // Update rows to replace "Training" with sportName
+  const updatedRows = rows.map((row) => ({
+    ...row,
+    category: row.category === "Training" ? sportName : row.category,
+  }));
+
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Exercise Library" />
-
-      <Box mb={3}>
+      <Box mt={4} >
         <Card
           variant="outlined"
           sx={{
@@ -32,6 +70,7 @@ function Tables() {
         >
           <Box
             p={2}
+            mt={4} 
             sx={{
               borderRadius: 2,
               display: "flex",
@@ -60,11 +99,15 @@ function Tables() {
             sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", pl: 2 }}
           >
             <Typography variant="subtitle2" fontWeight="bold" color="#fff" sx={{ mr: 1 }}>
-              Filter:
+              Category:
             </Typography>
             <Select
-              value={selectedCategory}
-              onChange={(event) => handleCategoryFilter(event.target.value)}
+              value={selectedCategory === "Training" ? sportName : selectedCategory}
+              onChange={(event) =>
+                handleCategoryFilter(
+                  event.target.value === sportName ? "Training" : event.target.value
+                )
+              }
               variant="outlined"
               color="light"
               sx={{ minWidth: 120, color: "white" }}
@@ -73,14 +116,20 @@ function Tables() {
                   <ArrowDropDownIcon style={{ color: "white" }} />
                 </span>
               )}
-              renderValue={(value) => <span style={{ color: "white" }}>{value}</span>}
+              renderValue={(value) => (
+                <span style={{ color: "white" }}>{value === sportName ? sportName : value}</span>
+              )}
             >
               <MenuItem value="All" sx={{ color: "white" }}>
                 Show All
               </MenuItem>
               {categories.map((category, index) => (
-                <MenuItem key={index} value={category} sx={{ color: "white" }}>
-                  {category}
+                <MenuItem
+                  key={index}
+                  value={category === "Training" ? sportName : category}
+                  sx={{ color: "white" }}
+                >
+                  {category === "Training" ? sportName : category}
                 </MenuItem>
               ))}
             </Select>

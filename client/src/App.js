@@ -1,10 +1,10 @@
 import { ToastContainer } from "react-toastify";
 
-import { useState, useEffect, useMemo, Component, Suspense } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 // react-router components
-import { Routes, useLocation } from "react-router-dom";
-import { Route, Navigate } from "react-router-dom";
+
+import { Routes, useLocation, useNavigate, Route, Navigate } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -38,6 +38,7 @@ import routes from "routes";
 import { useMaterialUIController, setMiniSidenav } from "context";
 
 import LoadingPage from "layouts/loadingpage.js";
+import RedirectTermsToLandingPage from "./RedirectToLandingPage";
 
 // Images
 import brandWhite from "assets/images/logo-ct.png";
@@ -47,6 +48,8 @@ import { supabase } from "./supabaseClient";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { fetchUserProfile } from "./fetchUserProfile";
+import Cover from "layouts/authentication/reset-password/cover";
+import RedirectToLandingPage from "./RedirectToLandingPage";
 
 const WelcomeBox = () => (
   <div
@@ -63,7 +66,7 @@ const WelcomeBox = () => (
       justifyContent: "center",
     }}
   >
-    <h2 style={{ marginBottom: "10px" }}>Welcome to CoachSync</h2>
+    <h2 style={{ marginBottom: "10px", fontFamily: "Arial, sans-serif" }}>Welcome to CoachSync</h2>
     <img
       src="/static/media/logo-ct.39c110530c00e2b0debf.png"
       alt="CoachSync Logo"
@@ -72,12 +75,38 @@ const WelcomeBox = () => (
   </div>
 );
 
+const sendResetPasswordEmail = async (email) => {
+  try {
+    const { error } = await supabase.auth.api.resetPasswordForEmail(email, {
+      redirectTo: "/authentication/reset-password",
+    });
+    if (error) {
+      throw error;
+    }
+  } catch (error) {
+    // Handle error (optional)
+    console.error("Error sending reset password email:", error.message);
+  }
+};
+
 export default function App() {
   const [session, setSession] = useState(null);
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true); // Introduce a loading state
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const hasFirstName = profile && profile.first_name !== null;
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get("token");
+    const redirectTo = queryParams.get("redirect_to");
+
+    if (token && redirectTo) {
+      navigate(`/authentication/reset-password?token=${token}&redirect_to=${redirectTo}`);
+    }
+  }, [location.search, navigate]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -99,8 +128,12 @@ export default function App() {
       const fetchData = async () => {
         try {
           const userdata = await fetchUserProfile();
-          setProfile(userdata);
-          setLoading(false); // Set loading to false after fetching profile data
+          if (userdata) {
+            setProfile(userdata);
+            setLoading(false); // Set loading to false after fetching profile data
+          } else {
+            setLoading(false); // No user data available
+          }
         } catch (error) {
           console.error("Error fetching user profile:", error.message);
           // Handle error, e.g., set loading to false or show an error message
@@ -202,9 +235,9 @@ export default function App() {
       onClick={handleConfiguratorOpen}
     >
       {miniSidenav ? (
-        <Icon sx={{ fontSize: "2rem" }}>menu_open</Icon>
-      ) : (
         <Icon sx={{ fontSize: "2rem" }}>menu</Icon>
+      ) : (
+        <Icon sx={{ fontSize: "2rem" }}>menu_open</Icon>
       )}
       {/* <MenuIcon fontSize="small" color="inherit" /> */}
 
@@ -217,7 +250,11 @@ export default function App() {
   if (loading) {
     // Render loading UI
     return <LoadingPage />;
-  } else if (!session) {
+  } else if (
+    !session &&
+    location.pathname !== "/authentication/reset-password" &&
+    location.pathname !== "/"
+  ) {
     return (
       <div>
         <div
@@ -279,7 +316,9 @@ export default function App() {
                 },
               }}
               providers={["google"]}
+              redirectTo="https://coachsync.pro/authentication/reset-password"
               theme="default"
+              onResetPassword={sendResetPasswordEmail}
             />
           </div>
         </div>
@@ -307,8 +346,14 @@ export default function App() {
           )}
           {layout === "vr" && <Configurator />}
           <Routes>
+            <Route path="/" element={<RedirectToLandingPage />} />
+            <Route path="/authentication/reset-password" element={<Cover />} />
             {getRoutes(routes)}
-            <Route path="*" element={<Navigate to="/dashboard" />} />
+            {hasFirstName ? (
+              <Route path="*" element={<Navigate to="/" />} />
+            ) : (
+              <Route path="*" element={<Navigate to="/loadingpageSignUp" />} />
+            )}
           </Routes>
           <ToastContainer />
         </ThemeProvider>
@@ -332,9 +377,11 @@ export default function App() {
         )}
         {layout === "vr" && <Configurator />}
         <Routes>
+          <Route path="/" element={<RedirectToLandingPage />} />
+          <Route path="/authentication/reset-password" element={<Cover />} />
           {getRoutes(routes)}
           {hasFirstName ? (
-            <Route path="*" element={<Navigate to="/dashboard" />} />
+            <Route path="*" element={<Navigate to="/" />} />
           ) : (
             <Route path="*" element={<Navigate to="/loadingpageSignUp" />} />
           )}

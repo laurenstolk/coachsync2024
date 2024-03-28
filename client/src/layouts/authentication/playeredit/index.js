@@ -49,14 +49,14 @@ function PlayerEdit() {
     fetchData();
   }, []);
 
-  const handleInputChange = () => {
-    const firstName = document.getElementById("first-name").value;
-    const lastName = document.getElementById("last-name").value;
-    const phoneNumber = document.getElementById("phone-number").value;
-    const birthDate = document.getElementById("birth-date").value;
-    const position = document.getElementById("player-position").value;
-    const jerseyNum = document.getElementById("jersey-number").value;
-  };
+  // const handleInputChange = () => {
+  //   const firstName = document.getElementById("first-name").value;
+  //   const lastName = document.getElementById("last-name").value;
+  //   const phoneNumber = document.getElementById("phone-number").value;
+  //   const birthDate = document.getElementById("birth-date").value;
+  //   const position = document.getElementById("player-position").value;
+  //   const jerseyNum = document.getElementById("jersey-number").value;
+  // };
 
   const handleSubmit = async () => {
     // Check if profile and profile.id are available
@@ -157,8 +157,11 @@ function PlayerEdit() {
                   variant="outlined"
                   fullWidth
                   required
-                  value={profile ? profile.first_name : ''}
-                  onChange={e => setProfile(prevState => ({ ...prevState, first_name: e.target.value }))}                />
+                  value={profile ? profile.first_name : ""}
+                  onChange={(e) =>
+                    setProfile((prevState) => ({ ...prevState, first_name: e.target.value }))
+                  }
+                />
               </MDBox>
               <MDBox mb={2}>
                 <MDInput
@@ -168,9 +171,11 @@ function PlayerEdit() {
                   variant="outlined"
                   fullWidth
                   required
-                  value={profile ? profile.last_name : ''}
-                  onChange={e => setProfile(prevState => ({ ...prevState, last_name: e.target.value }))}
-                  />
+                  value={profile ? profile.last_name : ""}
+                  onChange={(e) =>
+                    setProfile((prevState) => ({ ...prevState, last_name: e.target.value }))
+                  }
+                />
               </MDBox>
               <MDBox mb={3}>
                 <MDInput
@@ -180,9 +185,11 @@ function PlayerEdit() {
                   variant="outlined"
                   fullWidth
                   required
-                  value={profile ? profile.phone_number : ''}
-                  onChange={e => setProfile(prevState => ({ ...prevState, phone_number: e.target.value }))}
-                  />
+                  value={profile ? profile.phone_number : ""}
+                  onChange={(e) =>
+                    setProfile((prevState) => ({ ...prevState, phone_number: e.target.value }))
+                  }
+                />
               </MDBox>
               <MDBox mb={3}>
                 <MDTypography display="block" variant="button" color="text" my={1}>
@@ -194,9 +201,11 @@ function PlayerEdit() {
                   variant="outlined"
                   fullWidth
                   required
-                  value={profile ? profile.birth_date : ''}
-                  onChange={e => setProfile(prevState => ({ ...prevState, birth_date: e.target.value }))}
-                  />
+                  value={profile ? profile.birth_date : ""}
+                  onChange={(e) =>
+                    setProfile((prevState) => ({ ...prevState, birth_date: e.target.value }))
+                  }
+                />
               </MDBox>
               <MDTypography display="block" variant="button" color="text" my={1}>
                 What is your position in your sport? (Quarterback, Goalie, 1st Doubles, etc...)
@@ -209,9 +218,11 @@ function PlayerEdit() {
                   variant="outlined"
                   fullWidth
                   required
-                  value={profile ? profile.position : ''}
-                  onChange={e => setProfile(prevState => ({ ...prevState, position: e.target.value }))}
-                  />
+                  value={profile ? profile.position : ""}
+                  onChange={(e) =>
+                    setProfile((prevState) => ({ ...prevState, position: e.target.value }))
+                  }
+                />
               </MDBox>
               <MDTypography display="block" variant="button" color="text" my={1}>
                 If applicable, what is your jersey number?
@@ -223,10 +234,23 @@ function PlayerEdit() {
                   label="Jersey Number"
                   variant="outlined"
                   fullWidth
-                  value={profile ? profile.jersey_number : ''}
-                  onChange={e => setProfile(prevState => ({ ...prevState, jersey_number: e.target.value }))}
+                  value={profile ? profile.jersey_number : ""}
+                  onChange={(e) =>
+                    setProfile((prevState) => ({ ...prevState, jersey_number: e.target.value }))
+                  }
                 />
               </MDBox>
+              {/* Add the line below */}
+              <MDTypography
+                display="block"
+                variant="button"
+                color="info"
+                my={1}
+                component={Link}
+                to="/authentication/reset-password"
+              >
+                Change your password
+              </MDTypography>
             </MDBox>
             <MDBox mb={2} {...getRootProps()} style={{ cursor: "pointer" }}>
               <input {...getInputProps()} />

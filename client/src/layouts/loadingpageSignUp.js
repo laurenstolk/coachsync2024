@@ -32,8 +32,13 @@ const LoadingPageSignUp = () => {
           }
 
           if (data && data.first_name) {
-            // User has a first name, redirect to homepage
-            window.location.href = "/dashboard";
+            if (data && data.player === true) {
+              // User is a player, redirect to playerdashboard
+              window.location.href = "/playerdashboard";
+            } else {
+              // User is not a player, redirect to dashboard
+              window.location.href = "/dashboard";
+            }
           } else {
             // User doesn't have a first name, redirect to authentication page
             window.location.href = "/authentication/coachorplayer/";

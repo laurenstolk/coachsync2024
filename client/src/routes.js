@@ -40,25 +40,24 @@ import Dashboard from "layouts/dashboard";
 import PlayerDashboard from "layouts/playerdashboard";
 import Tables from "layouts/tables";
 import ExerciseLibrary from "layouts/exerciselibrary";
-import GroupTable from "layouts/grouptable";
 import AddExercise from "layouts/addexercise";
-import Billing from "layouts/billing";
-import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import SignOut from "layouts/authentication/sign-out";
 import CoachOrPlayer from "layouts/authentication/coachorplayer";
+import AssistantorNew from "layouts/authentication/assistantornew";
 import CoachInfo from "layouts/authentication/coachinfo";
 import CoachEdit from "layouts/authentication/coachedit";
 import PlayerEdit from "layouts/authentication/playeredit";
 import PlayerInfo from "layouts/authentication/playerinfo";
 import TeamInfo from "layouts/authentication/teaminfo";
 import PlayerTeam from "layouts/authentication/playerteam";
+import ExistingTeam from "layouts/authentication/existingteam";
+import Cover from "layouts/authentication/reset-password/cover";
 import WellnessSetup from "layouts/authentication/wellness-setup";
+import WellnessSetupEdit from "layouts/authentication/wellness-setup-edit";
 import WorkoutLibrary from "layouts/workoutlibrary";
-// import WorkoutLibraryTest from "layouts/workoutlibrarytest";
-import ViewWorkout from "layouts/viewworkout";
 import AddGroup from "layouts/addgroup";
 import LoadingPageSignUp from "layouts/loadingpageSignUp";
 import PsychologyAltIcon from "@mui/icons-material/PsychologyAlt";
@@ -84,8 +83,6 @@ import EditGroup from "./layouts/editgroup";
 import ViewAssignment from "./layouts/viewassignment";
 import ViewCalendar from "./layouts/viewcalendar";
 import MyCalendar from "./layouts/mycalendar";
-import { useEffect, useState } from "react";
-import { Route } from "react-router-dom"; // Add this import statement
 
 const routes = [
   //COACH
@@ -217,7 +214,7 @@ const routes = [
     type: "collapse",
     name: "Complete Workout",
     key: "completeworkout",
-    icon: <Icon fontSize="small">person</Icon>,
+    icon: <FitnessCenterIcon fontSize="small">workout</FitnessCenterIcon>,
     route: "/completeworkout",
     component: <CompleteWorkout />,
     player: true,
@@ -228,11 +225,18 @@ const routes = [
     name: "Assign Workout",
     key: "addassignment",
     icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
-    route: "/addassignment/:workoutId?",
+    route: "/addassignment",
     component: <AddAssignment />,
     coach: true,
   },
-  //BOTH
+  //COACH
+  {
+    key: "addassignment",
+    icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
+    route: "/addassignment/:workoutId?",
+    component: <AddAssignment />,
+  },
+  //COACH
   {
     type: "collapse",
     name: "View Assigned Workouts",
@@ -240,7 +244,9 @@ const routes = [
     icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
     route: "/viewassignment",
     component: <ViewAssignment />,
+    coach: true,
   },
+
   //COACH
   {
     type: "divider",
@@ -327,6 +333,14 @@ const routes = [
   },
   {
     // type: "collapse",
+    // name: "Coach or Player",
+    key: "assistantornew",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/authentication/assistantornew",
+    component: <AssistantorNew />,
+  },
+  {
+    // type: "collapse",
     // name: "Coach Info",
     key: "coachinfo",
     icon: <Icon fontSize="small"></Icon>,
@@ -375,11 +389,27 @@ const routes = [
   },
   {
     // type: "collapse",
+    // name: "Player Team",
+    key: "existingteam",
+    icon: <Icon fontSize="small"></Icon>,
+    route: "/authentication/existingteam",
+    component: <ExistingTeam />,
+  },
+  {
+    // type: "collapse",
     // name: "Wellness Setup",
     key: "wellness-setup",
     icon: <Icon fontSize="small"></Icon>,
     route: "/authentication/wellness-setup",
     component: <WellnessSetup />,
+  },
+  {
+    // type: "collapse",
+    // name: "Wellness Setup",
+    key: "wellness-setup-edit",
+    icon: <Icon fontSize="small"></Icon>,
+    route: "/authentication/wellness-setup-edit",
+    component: <WellnessSetupEdit />,
   },
   {
     // type: "collapse",
@@ -393,6 +423,11 @@ const routes = [
     key: "loadingpageSignUp",
     route: "/loadingpageSignUp",
     component: <LoadingPageSignUp />,
+  },
+  {
+    key: "reset-password",
+    route: "/authentication/reset-password",
+    component: <Cover />,
   },
 ];
 
