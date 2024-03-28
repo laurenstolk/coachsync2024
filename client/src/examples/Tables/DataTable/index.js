@@ -147,7 +147,7 @@ function DataTable({
 
   return (
     <TableContainer sx={{ boxShadow: "none" }}>
-      {entriesPerPage || canSearch ? (
+      {/* {entriesPerPage || canSearch ? (
         <MDBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
           {entriesPerPage && (
             <MDBox display="flex" alignItems="center">
@@ -182,7 +182,7 @@ function DataTable({
             </MDBox>
           )}
         </MDBox>
-      ) : null}
+      ) : null} */}
       <Table {...getTableProps()}>
         <MDBox component="thead">
           {headerGroups.map((headerGroup, key) => (

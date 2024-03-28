@@ -280,7 +280,7 @@ function Tables() {
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Workout Library" />
-      <Box mb={3}>
+      <Box mt={4} mb={1}>
         <Card
           variant="outlined"
           sx={{

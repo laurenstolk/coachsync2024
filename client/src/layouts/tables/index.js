@@ -118,7 +118,7 @@ function Tables() {
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle={teamName || "Team"} />
-      <Box mb={3}>
+      <Box mt={4}>
         <Card
           variant="outlined"
           sx={{
@@ -148,14 +148,14 @@ function Tables() {
           <DataTable
             table={{ columns, rows }}
             isSorted={true}
-            entriesPerPage={true}
-            showTotalEntries={true}
+            // entriesPerPage={true}
+            //showTotalEntries={true}
             noEndBorder
           />
         </Grid>
       </Grid>
 
-      <Box mb={3} sx={{ marginTop: 6 }}>
+      <Box  sx={{ marginTop: 6 }}>
         <Card
           variant="outlined"
           sx={{

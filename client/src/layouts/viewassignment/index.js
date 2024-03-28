@@ -64,7 +64,7 @@ function Tables() {
       <DashboardNavbar pageTitle="Assigned Workouts Library" />
 
       {/* Assigned Today Table */}
-      <Box mb={3}>
+      <Box mt={4} >
         <Card
           variant="outlined"
           sx={{
@@ -160,7 +160,7 @@ function Tables() {
       </Grid>
 
       {/* Upcoming Assignments Table */}
-      <Box mb={3}>
+      <Box>
         <Card
           variant="outlined"
           sx={{
@@ -258,7 +258,7 @@ function Tables() {
       </Grid>
 
       {/* Past Assignments Table */}
-      <Box mb={3}>
+      <Box >
         <Card
           variant="outlined"
           sx={{

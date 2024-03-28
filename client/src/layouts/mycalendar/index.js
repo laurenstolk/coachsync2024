@@ -223,14 +223,14 @@ function ViewCalendar() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar pageTitle="Team Calendar" />
-      <MDBox pt={6} pb={3}>
+      <DashboardNavbar pageTitle="My Calendar" />
+      <MDBox mt={4} pt={6} pb={3}>
         <Grid container spacing={6}>
           <Grid item xs={12}>
             <Card>
               <MDBox
                 mx={2}
-                mt={-3}
+                mt={-6}
                 py={3}
                 px={2}
                 variant="gradient"
@@ -239,7 +239,7 @@ function ViewCalendar() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Team Calendar
+                  My Calendar
                 </MDTypography>
                 {/* <MDButton
                   variant="outlined"

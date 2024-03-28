@@ -10,7 +10,7 @@ function AddingWorkout() {
     <DashboardLayout>
       <DashboardNavbar pageTitle="Add Workout" />
       <MDBox>
-        <MDBox mb={3}>
+        <MDBox mt={4} mb={3}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={12}>
               <AddWorkout />
