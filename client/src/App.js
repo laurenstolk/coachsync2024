@@ -145,7 +145,6 @@ export default function App() {
       setLoading(false); // No session, so set loading to false
     }
   }, [session]);
-  
 
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -351,10 +350,10 @@ export default function App() {
             <Route path="/authentication/reset-password" element={<Cover />} />
             {getRoutes(routes)}
             {hasFirstName ? (
-            <Route path="*" element={<Navigate to="/" />} />
+              <Route path="*" element={<Navigate to="/" />} />
             ) : (
               <Route path="*" element={<Navigate to="/loadingpageSignUp" />} />
-            )}          
+            )}
           </Routes>
           <ToastContainer />
         </ThemeProvider>

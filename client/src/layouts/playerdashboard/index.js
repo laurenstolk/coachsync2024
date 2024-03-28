@@ -140,10 +140,10 @@ export default function PlayerDashboard() {
       "Friday",
       "Saturday",
     ];
-  
+
     // Extract individual digits from the checkin_frequency
     const frequencyDigits = checkinFrequency.split("").map(Number);
-  
+
     // Find the next available check-in day
     for (let i = 1; i <= 7; i++) {
       const nextDayIndex = (currentDayOfWeek + i) % 7;
@@ -153,7 +153,7 @@ export default function PlayerDashboard() {
     }
     return null; // Return null if no scheduled check-in days found
   };
-  
+
   const nextCheckinDay = getNextCheckinDay();
 
   //function to display next workout day
@@ -186,17 +186,21 @@ export default function PlayerDashboard() {
         (a, b) => new Date(a.date) - new Date(b.date)
       );
 
-      console.log(sortedAssignments)
+      console.log(sortedAssignments);
 
       const getFormattedDate = (date) => {
-        const options = { month: '2-digit', day: '2-digit', year: 'numeric' };
-        return date.toLocaleDateString('en-US', options);
+        const options = { month: "2-digit", day: "2-digit", year: "numeric" };
+        return date.toLocaleDateString("en-US", options);
       };
 
       // Get the date of the next assigned workout directly from sortedAssignments array
-      const nextWorkoutDate = sortedAssignments[0] ? getFormattedDate(new Date(new Date(sortedAssignments[0].date).getTime() + (24 * 60 * 60 * 1000))) : "None Assigned";
+      const nextWorkoutDate = sortedAssignments[0]
+        ? getFormattedDate(
+            new Date(new Date(sortedAssignments[0].date).getTime() + 24 * 60 * 60 * 1000)
+          )
+        : "None Assigned";
 
-      console.log(nextWorkoutDate)
+      console.log(nextWorkoutDate);
 
       return nextWorkoutDate;
     } catch (error) {
@@ -256,7 +260,6 @@ export default function PlayerDashboard() {
       } else {
         setAssignedWorkout([]);
       }
-
     } catch (error) {
       console.error("Error fetching assigned workout:", error.message);
     }
@@ -294,16 +297,15 @@ export default function PlayerDashboard() {
           .gte("date", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
           .order("date");
 
-  
         if (error) throw error;
-  
+
         return data;
       } catch (error) {
         console.error(`Error fetching wellness data for ID ${wellnessId}:`, error.message);
         return [];
       }
     };
-  
+
     const fetchChartData = async () => {
       try {
         const [wellness1Data, wellness2Data, wellness3Data, wellness4Data, wellness5Data] =
@@ -314,18 +316,47 @@ export default function PlayerDashboard() {
             fetchWellnessData(4),
             fetchWellnessData(5),
           ]);
-  
+
         const formattedData = {
           labels: [],
           datasets: [
-            { label: "Water", data: [], fill: false, borderColor: "rgb(75, 192, 192)", tension: 0.1 },
-            { label: "Sleep", data: [], fill: false, borderColor: "rgb(255, 99, 132)", tension: 0.1 },
-            { label: "Stress", data: [], fill: false, borderColor: "rgb(54, 162, 235)", tension: 0.1 },
-            { label: "Soreness", data: [], fill: false, borderColor: "rgb(255, 205, 86)", tension: 0.1 },
-            { label: "Energy", data: [], fill: false, borderColor: "rgb(153, 102, 255)", tension: 0.1 },
+            {
+              label: "Water",
+              data: [],
+              fill: false,
+              borderColor: "rgb(75, 192, 192)",
+              tension: 0.1,
+            },
+            {
+              label: "Sleep",
+              data: [],
+              fill: false,
+              borderColor: "rgb(255, 99, 132)",
+              tension: 0.1,
+            },
+            {
+              label: "Stress",
+              data: [],
+              fill: false,
+              borderColor: "rgb(54, 162, 235)",
+              tension: 0.1,
+            },
+            {
+              label: "Soreness",
+              data: [],
+              fill: false,
+              borderColor: "rgb(255, 205, 86)",
+              tension: 0.1,
+            },
+            {
+              label: "Energy",
+              data: [],
+              fill: false,
+              borderColor: "rgb(153, 102, 255)",
+              tension: 0.1,
+            },
           ],
         };
-  
 
         const currentDate = new Date();
         for (let i = 6; i >= 0; i--) {
@@ -333,21 +364,23 @@ export default function PlayerDashboard() {
           date.setDate(currentDate.getDate() - i);
           formattedData.labels.push(date.toISOString().split("T")[0]);
         }
-  
-        [wellness1Data, wellness2Data, wellness3Data, wellness4Data, wellness5Data].forEach((wellnessData, index) => {
-          for (let i = 0; i < 7; i++) {
-            const currentDate = formattedData.labels[i];
-            const entry = wellnessData.find((entry) => entry.date === currentDate);
-            formattedData.datasets[index].data.push(entry ? entry.value : 0);
+
+        [wellness1Data, wellness2Data, wellness3Data, wellness4Data, wellness5Data].forEach(
+          (wellnessData, index) => {
+            for (let i = 0; i < 7; i++) {
+              const currentDate = formattedData.labels[i];
+              const entry = wellnessData.find((entry) => entry.date === currentDate);
+              formattedData.datasets[index].data.push(entry ? entry.value : 0);
+            }
           }
-        });
-  
+        );
+
         setChartData(formattedData);
       } catch (error) {
         console.error("Error fetching checkin data:", error.message);
       }
     };
-  
+
     fetchChartData();
   }, [user]);
 
@@ -460,17 +493,21 @@ export default function PlayerDashboard() {
           <Grid container spacing={3}>
             <Grid item xs={12} md={12} lg={12}>
               <MDBox>
-              <h3>Check-in data from the past week:</h3>
+                <h3>Check-in data from the past week:</h3>
               </MDBox>
             </Grid>
           </Grid>
           <MDBox mt={4.5} mb={9}>
             <Grid container spacing={3}>
-            <Grid item xs={12} md={12} lg={12}>
-              <MDBox mb={3} style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px' }}>
-                {chartData && <Line data={chartData} />} {/* Render the line chart when data is available */}
-              </MDBox>
-            </Grid>
+              <Grid item xs={12} md={12} lg={12}>
+                <MDBox
+                  mb={3}
+                  style={{ backgroundColor: "white", padding: "20px", borderRadius: "10px" }}
+                >
+                  {chartData && <Line data={chartData} />}{" "}
+                  {/* Render the line chart when data is available */}
+                </MDBox>
+              </Grid>
             </Grid>
           </MDBox>
         </MDBox>

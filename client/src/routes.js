@@ -40,10 +40,7 @@ import Dashboard from "layouts/dashboard";
 import PlayerDashboard from "layouts/playerdashboard";
 import Tables from "layouts/tables";
 import ExerciseLibrary from "layouts/exerciselibrary";
-import GroupTable from "layouts/grouptable";
 import AddExercise from "layouts/addexercise";
-import Billing from "layouts/billing";
-import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
@@ -61,8 +58,6 @@ import Cover from "layouts/authentication/reset-password/cover";
 import WellnessSetup from "layouts/authentication/wellness-setup";
 import WellnessSetupEdit from "layouts/authentication/wellness-setup-edit";
 import WorkoutLibrary from "layouts/workoutlibrary";
-// import WorkoutLibraryTest from "layouts/workoutlibrarytest";
-import ViewWorkout from "layouts/viewworkout";
 import AddGroup from "layouts/addgroup";
 import LoadingPageSignUp from "layouts/loadingpageSignUp";
 import PsychologyAltIcon from "@mui/icons-material/PsychologyAlt";
@@ -88,9 +83,6 @@ import EditGroup from "./layouts/editgroup";
 import ViewAssignment from "./layouts/viewassignment";
 import ViewCalendar from "./layouts/viewcalendar";
 import MyCalendar from "./layouts/mycalendar";
-import { useEffect, useState } from "react";
-import { Route } from "react-router-dom"; // Add this import statement
-import { layouts } from "chart.js";
 
 const routes = [
   //COACH
@@ -233,9 +225,16 @@ const routes = [
     name: "Assign Workout",
     key: "addassignment",
     icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
-    route: "/addassignment/:workoutId?",
+    route: "/addassignment",
     component: <AddAssignment />,
     coach: true,
+  },
+  //COACH
+  {
+    key: "addassignment",
+    icon: <AssignmentIcon fontSize="small">add_assignment</AssignmentIcon>,
+    route: "/addassignment/:workoutId?",
+    component: <AddAssignment />,
   },
   //COACH
   {

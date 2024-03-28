@@ -1,5 +1,4 @@
 import { supabase } from "./supabaseClient";
-import { getProfilePicURL } from "./getProfilePicUrl";
 
 export async function fetchUserProfile() {
   try {
@@ -20,6 +19,6 @@ export async function fetchUserProfile() {
     return data;
   } catch (error) {
     console.error("Error fetching user:", error.message);
-    return null
+    return null;
   }
 }
