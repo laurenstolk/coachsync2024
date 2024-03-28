@@ -155,7 +155,7 @@ function Tables() {
         </Grid>
       </Grid>
 
-      <Box  sx={{ marginTop: 6 }}>
+      <Box sx={{ marginTop: 6 }}>
         <Card
           variant="outlined"
           sx={{

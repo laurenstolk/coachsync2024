@@ -139,11 +139,11 @@ export default function data() {
   return {
     columns: [
       { Header: "Picture", accessor: "image", align: "left" },
-      { Header: "First Name", accessor: "first", width: "15%",  align: "left" },
-      { Header: "Last Name", accessor: "last",  align: "left" },
-      { Header: "Position", accessor: "position",  align: "left" },
+      { Header: "First Name", accessor: "first", width: "15%", align: "left" },
+      { Header: "Last Name", accessor: "last", align: "left" },
+      { Header: "Position", accessor: "position", align: "left" },
       { Header: "Jersey Number", accessor: "jersey", align: "left" },
-      { Header: "Phone Number", accessor: "phone",  align: "left" },
+      { Header: "Phone Number", accessor: "phone", align: "left" },
       { Header: "Email Address", accessor: "email", align: "left" },
     ],
 
