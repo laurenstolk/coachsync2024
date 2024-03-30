@@ -202,7 +202,7 @@ function TeamInfoUpdate() {
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel>Sport</InputLabel>
+                <InputLabel>Select Sport</InputLabel>
                 <Select
                   id="team-sport"
                   label="Sport"
