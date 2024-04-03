@@ -3,8 +3,12 @@ import Card from "@mui/material/Card";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
+import { supabase } from "../../supabaseClient";
+import React, { useEffect, useState } from "react";
 import {
   Box,
+  Button, 
+  Icon,
   Typography,
   Paper,
   TableContainer,
@@ -18,6 +22,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Data from "layouts/viewassignment/data/viewAssignmentData";
+import { toast } from "react-toastify";
 // import { Link } from "react-router-dom";
 // import Button from "@mui/material/Button"; // Import Button component
 // import { useState, useEffect } from "react";
@@ -33,6 +38,7 @@ function formatDate(dateString) {
 
 function Tables() {
   const { columns, rows } = Data();
+  const [assignments, setAssignments] = useState([]);
   console.log("Rows data:", rows);
   // Map over the rows and convert the date to a string if it's a React element
   const formattedRows = rows.map((row) => {
@@ -58,6 +64,33 @@ function Tables() {
   const assignedToday = formattedRows.filter((row) => row.date === todayString);
   const upcomingAssignments = formattedRows.filter((row) => row.date > todayString);
   const pastAssignments = formattedRows.filter((row) => row.date < todayString);
+
+  const handleDeleteAssignment = async (assignmentId) => {
+    if (!assignmentId) {
+      console.error("Invalid assignmentId:", assignmentId);
+      return;
+    }
+    console.log("assignment id:", assignmentId)
+    const confirmDelete = window.confirm("Are you sure you want to delete this assignment?");
+    if (confirmDelete) {
+      try {
+        const { error } = await supabase.from("assignment").delete().eq("id", assignmentId);
+        if (error) {
+          throw error;
+        }
+        setAssignments((prevAssignments) => prevAssignments.filter((assignment) => assignment.id !== assignmentId));
+        toast.success("Assignment deleted successfully!", {
+          autoClose: 2000,
+          onClose: () => {
+            window.location.reload();
+          },
+        });
+      } catch (error) {
+        console.error("Error deleting workout:", error.message);
+        toast.error("Error deleting workout");
+      }
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -132,7 +165,10 @@ function Tables() {
                 >
                   {formatDate(row.date)} -{" "}
                 </Typography>
-                <Typography sx={{ marginLeft: "10px" }}>{row.workout_name}</Typography>
+                <Typography sx={{ flexGrow: 1 }}>{row.workout_name}</Typography>
+                <Button color="error" onClick={() => handleDeleteAssignment(row.id.props.children)}>
+                  <Icon>delete</Icon>
+                </Button>
               </AccordionSummary>
               <AccordionDetails>
                 <TableContainer component={Paper}>
@@ -228,9 +264,12 @@ function Tables() {
                 >
                   {formatDate(upcomingAssignment.date)} -
                 </Typography>
-                <Typography sx={{ marginLeft: "10px" }}>
+                <Typography sx={{ flexGrow: 1 }}>
                   {upcomingAssignment.workout_name}
                 </Typography>
+                <Button color="error" onClick={() => handleDeleteAssignment(upcomingAssignment.id.props.children)}>
+                  <Icon>delete</Icon>
+                </Button>
               </AccordionSummary>
               <AccordionDetails>
                 <TableContainer component={Paper}>
@@ -323,7 +362,7 @@ function Tables() {
                 >
                   {formatDate(pastAssignment.date)} -
                 </Typography>
-                <Typography sx={{ marginLeft: "10px" }}>{pastAssignment.workout_name}</Typography>
+                <Typography sx={{ flexGrow: 1 }}>{pastAssignment.workout_name}</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 <TableContainer component={Paper}>

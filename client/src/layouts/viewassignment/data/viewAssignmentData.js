@@ -120,8 +120,9 @@ export default function ViewAssignedWorkouts() {
     columns: [
       { Header: "Workout Name", accessor: "workout_name", width: "20%", align: "left" },
       { Header: "Assigned Date", accessor: "date", width: "20%", align: "left" },
-      { Header: "Assigned to", accessor: "player_ids", width: "30%", align: "left", wrap: true },
-      { Header: "Notes", accessor: "notes", width: "30%", align: "left" },
+      { Header: "Assigned to", accessor: "player_ids", width: "25%", align: "left", wrap: true },
+      { Header: "Notes", accessor: "notes", width: "25%", align: "left" },
+      { Header: "Id", accessor: "id", width: "10%", align: "left" },
     ],
     rows: assignments.map((assignment, index) => ({
       workout_name: (
@@ -142,6 +143,11 @@ export default function ViewAssignedWorkouts() {
       notes: (
         <MDBox display="flex" py={1}>
           {assignment.notes}
+        </MDBox>
+      ),
+      id: (
+        <MDBox display="flex" py={1}>
+          {assignment.id}
         </MDBox>
       ),
       view: (
