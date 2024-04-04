@@ -244,6 +244,7 @@ function Tables() {
                   {row.name}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                {!isUserAPlayer && (
                   <Button
                     color="error"
                     onClick={() => handleDeleteGroup(row.id.props.children)}
@@ -251,6 +252,7 @@ function Tables() {
                   >
                     <Icon style={{ color: "red" }}>delete</Icon> Delete
                   </Button>
+                 )}
                 </Box>
               </AccordionSummary>
               <AccordionDetails>
