@@ -99,11 +99,9 @@ function PlayerTeamUpdate() {
 
             // Perform further actions with the retrieved team data
           } else {
-            console.log("No sport found with the provided sport ID.");
             // Handle case where no sport is found with the provided sport ID
           }
         } else {
-          console.log("No team found with the provided signup code.");
           // Handle case where no team is found with the provided signup code
           document.getElementById("team-name").innerText = "";
           document.getElementById("team-sport").innerText = "No team found with this code";
@@ -149,7 +147,6 @@ function PlayerTeamUpdate() {
             console.error("Error updating player team info:", updateError);
             // Handle the error here
           } else {
-            console.log("Player Team updated successfully!");
           }
         } else {
           console.error("No team found with the provided signup code.");

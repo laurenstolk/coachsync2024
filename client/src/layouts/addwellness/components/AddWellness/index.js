@@ -184,7 +184,6 @@ function AddWellness() {
         if (error) {
           console.error("Error adding wellness:", error);
         } else {
-          console.log("Wellness added successfully!");
 
           toast.success("Wellness added successfully!", {
             autoClose: 2000,
@@ -194,7 +193,6 @@ function AddWellness() {
           });
         }
       } else {
-        console.log("No wellness data to submit based on team settings.");
       }
     } catch (error) {
       console.error("Error:", error);

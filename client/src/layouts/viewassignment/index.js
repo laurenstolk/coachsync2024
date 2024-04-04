@@ -39,7 +39,6 @@ function formatDate(dateString) {
 function Tables() {
   const { columns, rows } = Data();
   const [assignments, setAssignments] = useState([]);
-  console.log("Rows data:", rows);
   // Map over the rows and convert the date to a string if it's a React element
   const formattedRows = rows.map((row) => {
     // If the date is a React element, extract its content
@@ -49,18 +48,11 @@ function Tables() {
     // Return the row with the formatted date
     return { ...row, date: formattedDate };
   });
-
-  console.log("Formatted rows:", formattedRows);
-
   const today = new Date();
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, "0");
   const day = String(today.getDate()).padStart(2, "0");
   const todayString = `${year}-${month}-${day}`;
-
-  console.log(today);
-  console.log(todayString);
-
   const assignedToday = formattedRows.filter((row) => row.date === todayString);
   const upcomingAssignments = formattedRows.filter((row) => row.date > todayString);
   const pastAssignments = formattedRows.filter((row) => row.date < todayString);
@@ -70,7 +62,6 @@ function Tables() {
       console.error("Invalid assignmentId:", assignmentId);
       return;
     }
-    console.log("assignment id:", assignmentId);
     const confirmDelete = window.confirm("Are you sure you want to delete this assignment?");
     if (confirmDelete) {
       try {

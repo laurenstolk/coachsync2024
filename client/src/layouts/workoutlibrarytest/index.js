@@ -91,14 +91,6 @@ function Tables() {
                             {/* this is the row text that is showing on the table */}
                             <TableCell style={{ paddingRight: 700 }}>{row.workout}</TableCell>
                             <TableCell align="right">
-                              {/* <Button
-                                color="dark"
-                                component={Link}
-                                to={`/addworkout/${row.id}`}
-                                onClick={() => console.log("ID:", row.groupID)}
-                              >
-                                <Icon>edit</Icon>&nbsp;edit
-                              </Button> */}
                             </TableCell>
                             <TableCell align="right">
                               <Button color="error" onClick={() => handleDelete(row)}>

@@ -101,12 +101,6 @@ function Tables() {
                             </TableCell>
 
                             <TableCell>{row.actions}</TableCell>
-
-                            {/* <TableCell align="right">
-                                  <Button color="dark" component={Link} to={`/addgroup/${row.id}`} onClick={() => console.log("ID:", row.groupID)}>
-                                    <Icon>edit</Icon>&nbsp;edit
-                                  </Button>
-                                </TableCell> */}
                           </AccordionSummary>
                           <AccordionDetails>
                             <TableHead>

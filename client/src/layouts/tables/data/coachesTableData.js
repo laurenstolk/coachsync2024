@@ -33,7 +33,6 @@ export default function data() {
   useEffect(() => {
     const fetchData = async () => {
       const userProfile = await fetchUserProfile();
-      console.log(userProfile);
       setUser(userProfile);
     };
     fetchData();

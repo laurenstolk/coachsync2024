@@ -38,7 +38,6 @@ function AddGroup() {
   useEffect(() => {
     if (user) {
       getGroups(); // Call getProfiles when user changes
-      console.log("user info: ", user);
     }
   }, [user]); // Add user as a dependency
 
@@ -158,8 +157,6 @@ function AddGroup() {
         return;
       }
 
-      console.log("Group added successfully:", newGroup);
-
       // Insert membership records for each selected player
       const membershipData = selectedPlayers.map((playerId) => ({
         player_user_id: playerId,
@@ -176,7 +173,6 @@ function AddGroup() {
         return;
       }
 
-      console.log("Group successfully added!");
       toast.success("Group successfully added!", {
         autoClose: 2000,
         onClose: () => {
