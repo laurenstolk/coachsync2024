@@ -59,7 +59,9 @@ export default function data() {
         .select("*")
         .eq("team_id", user.team_id)
         .eq("player", true)
+        .not("first_name", "is", null)
         .order("first_name", { ascending: true });
+      console.log("profiles: ", data);
 
       if (error) throw error;
       if (data != null) {
