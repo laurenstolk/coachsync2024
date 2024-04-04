@@ -56,7 +56,6 @@ export default function data() {
   useEffect(() => {
     if (user) {
       getGroups(); // Call getProfiles when user changes
-      console.log("user info: ", user);
     }
   }, [user]); // Add user as a dependency
 
@@ -160,7 +159,6 @@ export default function data() {
       ),
       actions: (
         <MDBox display="flex">
-          {/* <Link to={`/editgroup/${group.id}`} onClick={() => console.log("Group ID:", group.id)}>  */}
           <MDButton variant="text" color="dark" onClick={() => navigate(`/editgroup/${group.id}`)}>
             <Icon>edit</Icon>&nbsp;edit
           </MDButton>

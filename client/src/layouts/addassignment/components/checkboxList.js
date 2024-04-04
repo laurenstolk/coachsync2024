@@ -23,7 +23,6 @@ export default function IndeterminateCheckbox({ onSelectPlayers }) {
   useEffect(() => {
     if (user) {
       getGroups();
-      console.log("user info: ", user);
     }
   }, [user]); // Add user as a dependency
 

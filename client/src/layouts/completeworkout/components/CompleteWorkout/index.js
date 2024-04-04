@@ -208,7 +208,6 @@ function CompleteWorkout() {
         if (updateError) {
           console.error("Error updating assignment:", updateError);
         } else {
-          console.log("Assignment marked as completed successfully!");
         }
 
         const completionRecords = completedExercises.map((exercise) => ({
@@ -226,7 +225,6 @@ function CompleteWorkout() {
         if (completionError) {
           console.error("Error adding completion records:", completionError);
         } else {
-          console.log("Completion records added successfully!");
         }
 
         // Your submission logic

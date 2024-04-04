@@ -85,7 +85,6 @@ const sendResetPasswordEmail = async (email) => {
     }
   } catch (error) {
     // Handle error (optional)
-    console.error("Error sending reset password email:", error.message);
   }
 };
 
@@ -135,7 +134,6 @@ export default function App() {
             setLoading(false); // No user data available
           }
         } catch (error) {
-          console.error("Error fetching user profile:", error.message);
           // Handle error, e.g., set loading to false or show an error message
           setLoading(false);
         }

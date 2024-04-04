@@ -16,7 +16,6 @@ async function getPlayersThatCompleted(playerIds) {
       .eq("completed", true)
       .in("player_id", playerIds)
       .eq("date", today.toISOString().split("T")[0]);
-    console.log("today's completed assignment data: ", completedAssignmentData);
 
     return completedAssignmentData;
   } catch (completedAssignmentError) {

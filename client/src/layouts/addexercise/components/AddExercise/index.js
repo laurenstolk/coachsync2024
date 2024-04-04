@@ -31,15 +31,12 @@ function AddExercise() {
 
   const handleSubmit = async () => {
     const profileData = await fetchUserProfile();
-    console.log("my profile data: ", profileData);
 
     const { data: teamData, error } = await supabase
       .from("team")
       .select("*")
       .eq("id", profileData.team_id)
       .single();
-    console.log("team data: ", teamData);
-    console.log("my sport id: ", teamData.sport_id);
 
     const exerciseData = {
       name: document.getElementById("exercise-name").value,
@@ -47,7 +44,6 @@ function AddExercise() {
       description: document.getElementById("exercise-description").value,
       sport: selectedCategory === "14" ? teamData.sport_id : null, // Set sport_id based on the category
     };
-    console.log("here's what I'm sending up: ", exerciseData);
 
     try {
       // Use supabase client's api.post method to add data
@@ -57,7 +53,6 @@ function AddExercise() {
         console.error("Error adding exercise:", error);
         // Handle the error here
       } else {
-        console.log("Exercise added successfully!");
         // Optionally, you can redirect or show a success message here
         toast.success("Exercise added successfully!", {
           autoClose: 2000,

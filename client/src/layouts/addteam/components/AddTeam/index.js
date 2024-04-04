@@ -61,8 +61,6 @@ function AddTeam() {
         ? prevSelectedDays.filter((d) => d !== day)
         : [...prevSelectedDays, day];
 
-      console.log("selecteddays: ", newSelectedDays);
-
       return newSelectedDays;
     });
   };
@@ -82,7 +80,6 @@ function AddTeam() {
         console.error("Error adding team:", error);
         // Handle the error here
       } else {
-        console.log("Team added successfully!");
 
         toast.success("Team added successfully!", {
           autoClose: 2000,

@@ -153,8 +153,6 @@ function WellnessSetup() {
         ? prevSelectedDays.filter((d) => d !== day)
         : [...prevSelectedDays, day];
 
-      console.log("selecteddays: ", newSelectedDays);
-
       return newSelectedDays;
     });
   };
@@ -167,7 +165,6 @@ function WellnessSetup() {
         return [...prevSelected, option];
       }
     });
-    console.log("Selected wellness options:", selectedWellnessOptions);
   };
 
   const waterCheckinValue = selectedWellnessOptions.includes("Water");
@@ -177,7 +174,6 @@ function WellnessSetup() {
   const energyCheckinValue = selectedWellnessOptions.includes("Stress");
 
   const handleSubmit = async () => {
-    console.log("Selected wellness options:", selectedWellnessOptions);
     const teamWellnessData = {
       checkin_frequency: selectedDays.sort((a, b) => a - b).join(""),
       water_checkin: waterCheckinValue,
@@ -186,8 +182,6 @@ function WellnessSetup() {
       soreness_checkin: sorenessCheckinValue,
       energy_checkin: energyCheckinValue,
     };
-
-    console.log(teamWellnessData);
 
     try {
       // Fetch profile data to get user's team ID
@@ -213,8 +207,6 @@ function WellnessSetup() {
         if (updateError) {
           throw updateError;
         }
-
-        console.log("Team added successfully!");
 
         toast.success("Perfect! Headed to your profile...", {
           autoClose: 2000,

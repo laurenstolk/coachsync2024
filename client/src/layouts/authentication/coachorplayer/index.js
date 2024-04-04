@@ -75,7 +75,6 @@ function PlayerorCoach() {
             console.error("Error updating profile:", error);
             // Handle the error here
           } else {
-            console.log("Profile updated successfully!");
           }
         } catch (error) {
           console.error("Error:", error);

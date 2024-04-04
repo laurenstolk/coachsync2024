@@ -54,7 +54,6 @@ function AddAssignment() {
   useEffect(() => {
     if (user) {
       getGroups();
-      console.log("user info: ", user);
     }
   }, [user]); // Add user as a dependency
 
@@ -96,7 +95,6 @@ function AddAssignment() {
       currentDate.setDate(currentDate.getDate() - 1);
       if (!selectedDate || selectedDate >= currentDate) {
         setShowPastDateError(false);
-        console.log("Selected Date:", selectedDate);
       } else {
         setShowPastDateError(true);
         setSelectedDate(null);
@@ -137,7 +135,6 @@ function AddAssignment() {
       return; // Prevent submission if no exercise is selected
     }
 
-    console.log("Selected Players Length:", selectedPlayers.length); // Log selected players length for debugging
     if (selectedPlayers.length === 0) {
       setError("Please select at least one player");
       return; // Prevent submission if no player is selected
@@ -175,28 +172,9 @@ function AddAssignment() {
     const selectedWorkoutId = event.target.value;
     const selectedWorkout = workouts.find((workout) => workout.id === selectedWorkoutId);
     setSelectedWorkout(selectedWorkout);
-    console.log("Selected Workout:", selectedWorkout);
   };
-  //  Function to handle date selection
-  // const handleDateChange = (newValue) => {
-  //   setSelectedDate(newValue);
-  //   console.log("Selected Date:", newValue);
-  // };
-  //  Function to handle date selection
-  //  const handleDateChange = (newValue) => {
-  //   if (newValue < new Date()) {
-  //     // If selected date is in the past, show error message
-  //     setShowPastDateError(true);
-  //     setSelectedDate(null); // Reset selected date
-  //   } else {
-  //     setShowPastDateError(false); // Hide error message if date is valid
-  //     setSelectedDate(newValue);
-  //     console.log("Selected Date:", newValue);
-  //   }
-  // };
 
   const handleDateChange = (newValue) => {
-    console.log("New value:", newValue);
     const currentDate = new Date();
     currentDate.setDate(currentDate.getDate() - 1); // Set currentDate to today - 1 day
 
@@ -204,7 +182,6 @@ function AddAssignment() {
     if (!newValue || newValue >= currentDate) {
       setShowPastDateError(false);
       setSelectedDate(newValue);
-      console.log("Selected Date:", newValue);
     } else {
       setShowPastDateError(true);
       setSelectedDate(null); // Reset selected date
@@ -215,7 +192,6 @@ function AddAssignment() {
     // Extract the IDs of selected players
     const selectedPlayerIds = values.map((player) => player.id);
     setSelectedPlayers(selectedPlayerIds); // Update the selectedPlayers state
-    console.log("Selected Players info!:", selectedPlayerIds); // Log selected players for debugging
   };
   const handleMemberChange = (event, groupIndex, memberIndex) => {
     const newGroups = [...groups];
@@ -355,9 +331,7 @@ function AddAssignment() {
               </MDTypography>
               <IndeterminateCheckbox
                 onSelectPlayers={(players) => {
-                  console.log("Selected Players:", players);
                   const selectedPlayerIds = players; // Assign the players array directly to selectedPlayerIds
-                  console.log("Selected Player IDs:", selectedPlayerIds);
                   setSelectedPlayers(selectedPlayerIds);
                 }}
                 onChange={(event) =>

@@ -111,7 +111,6 @@ function Tables() {
       // Check if the user is a player based on user data
       const isPlayer = user.player === true; // Adjust this condition based on your user data structure
       setIsUserAPlayer(isPlayer);
-      console.log("is a player", isPlayer);
     }
   }, [user]); // Run whenever the user object changes
 
