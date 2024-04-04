@@ -244,15 +244,15 @@ function Tables() {
                   {row.name}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-                {!isUserAPlayer && (
-                  <Button
-                    color="error"
-                    onClick={() => handleDeleteGroup(row.id.props.children)}
-                    style={{ marginRight: 15, padding: 0 }}
-                  >
-                    <Icon style={{ color: "red" }}>delete</Icon> Delete
-                  </Button>
-                 )}
+                  {!isUserAPlayer && (
+                    <Button
+                      color="error"
+                      onClick={() => handleDeleteGroup(row.id.props.children)}
+                      style={{ marginRight: 15, padding: 0 }}
+                    >
+                      <Icon style={{ color: "red" }}>delete</Icon> Delete
+                    </Button>
+                  )}
                 </Box>
               </AccordionSummary>
               <AccordionDetails>

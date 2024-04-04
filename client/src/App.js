@@ -286,17 +286,20 @@ export default function App() {
             }}
           >
             <div
-            style={{
-              background: "white",
-              padding: "0px",
-              borderRadius: "8px",
-              maxWidth: "400px",
-              width: "100%",
-              textAlign: "center",
-            }}
-          >
-            <p style={{ fontSize: "12px", fontFamily: "Arial, sans-serif" }}>*Signing in with Google will take you to a &quot;.supabase.co&quot; link, which will redirect to the CoachSync website. This is expected.</p>
-          </div>
+              style={{
+                background: "white",
+                padding: "0px",
+                borderRadius: "8px",
+                maxWidth: "400px",
+                width: "100%",
+                textAlign: "center",
+              }}
+            >
+              <p style={{ fontSize: "12px", fontFamily: "Arial, sans-serif" }}>
+                *Signing in with Google will take you to a &quot;.supabase.co&quot; link, which will
+                redirect to the CoachSync website. This is expected.
+              </p>
+            </div>
             <Auth
               supabaseClient={supabase}
               appearance={{

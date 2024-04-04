@@ -4,10 +4,10 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import { supabase } from "../../supabaseClient";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
-  Button, 
+  Button,
   Icon,
   Typography,
   Paper,
@@ -70,7 +70,7 @@ function Tables() {
       console.error("Invalid assignmentId:", assignmentId);
       return;
     }
-    console.log("assignment id:", assignmentId)
+    console.log("assignment id:", assignmentId);
     const confirmDelete = window.confirm("Are you sure you want to delete this assignment?");
     if (confirmDelete) {
       try {
@@ -78,7 +78,9 @@ function Tables() {
         if (error) {
           throw error;
         }
-        setAssignments((prevAssignments) => prevAssignments.filter((assignment) => assignment.id !== assignmentId));
+        setAssignments((prevAssignments) =>
+          prevAssignments.filter((assignment) => assignment.id !== assignmentId)
+        );
         toast.success("Assignment deleted successfully!", {
           autoClose: 2000,
           onClose: () => {
@@ -264,10 +266,11 @@ function Tables() {
                 >
                   {formatDate(upcomingAssignment.date)} -
                 </Typography>
-                <Typography sx={{ flexGrow: 1 }}>
-                  {upcomingAssignment.workout_name}
-                </Typography>
-                <Button color="error" onClick={() => handleDeleteAssignment(upcomingAssignment.id.props.children)}>
+                <Typography sx={{ flexGrow: 1 }}>{upcomingAssignment.workout_name}</Typography>
+                <Button
+                  color="error"
+                  onClick={() => handleDeleteAssignment(upcomingAssignment.id.props.children)}
+                >
                   <Icon>delete</Icon>
                 </Button>
               </AccordionSummary>

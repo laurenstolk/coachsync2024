@@ -2,31 +2,25 @@
 import Card from "@mui/material/Card";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
 
 // Material Dashboard 2 React components
 import MDBox from "../../../components/MDBox";
 import MDTypography from "../../../components/MDTypography";
-import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 
-import { FormControl, InputLabel, Select } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
+import { FormControl } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 
 import React, { useState, useEffect } from "react";
 import { supabase } from "../../../supabaseClient";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useParams } from "react-router-dom";
-// import { fetchUserProfile } from '../../../fetchUserProfile';
 import { fetchUserProfile } from "../../../fetchUserProfile";
 
 function AddGroup() {
   const [profiles, setProfiles] = useState([]);
-  const [memberships, setMemberships] = useState([]);
   const [groups, setGroups] = useState([]);
-  const [selectedGroup, setSelectedGroup] = useState(null);
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [groupName, setGroupName] = useState("");
   const { id } = useParams();
@@ -62,10 +56,6 @@ function AddGroup() {
       if (profilesData != null) {
         setProfiles(profilesData);
       }
-      // const { data: profilesData, error: profilesError } = await supabase
-      //   .from("profile")
-      //   .select("*");
-      // if (profilesError) throw profilesError;
 
       const { data: membershipData, error: membershipError } = await supabase
         .from("team_group_membership")
@@ -127,32 +117,33 @@ function AddGroup() {
         // Handle the error here (e.g., display a message to the user)
         return;
       }
-      // Query the profile table to find the coach's user ID
-      const { data: coachProfile, error: coachError } = await supabase
-        .from("profile")
-        .select("id")
-        .eq("team_id", user.team_id)
-        .eq("player", false)
-        .single();
 
-      if (coachError) {
-        console.error("Error retrieving coach information:", coachError);
-        // Handle the error here
-        return;
-      }
+      // // Query the profile table to find the coach's user ID
+      // const { data: coachProfile, error: coachError } = await supabase
+      //   .from("profile")
+      //   .select("id")
+      //   .eq("team_id", user.team_id)
+      //   .eq("player", false)
+      //   .single();
 
-      // Ensure that coachProfile is not null
-      if (!coachProfile) {
-        console.error("Coach information not found.");
-        // Handle the error here
-        return;
-      }
+      // if (coachError) {
+      //   console.error("Error retrieving coach information:", coachError);
+      //   // Handle the error here
+      //   return;
+      // }
+
+      // // Ensure that coachProfile is not null
+      // if (!coachProfile) {
+      //   console.error("Coach information not found.");
+      //   // Handle the error here
+      //   return;
+      // }
 
       // Construct group data with the coach's user ID
       const groupData = {
         name: groupName,
         team_id: user.team_id,
-        coach_user_id: coachProfile.id,
+        // coach_user_id: coachProfile.id,
       };
 
       // Insert group data into the team_group table

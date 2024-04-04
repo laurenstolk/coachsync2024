@@ -168,9 +168,8 @@ function NotesLog() {
               }
 
               const noteDate = new Date(
-                (note.date_completed || note.created_at) + ' UTC'
+                (note.date_completed || note.created_at) + " UTC"
               ).toLocaleDateString("en-US", { timeZone: "UTC", month: "long", day: "numeric" });
-              
 
               return (
                 <Invoice
