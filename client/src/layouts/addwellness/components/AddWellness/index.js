@@ -2,6 +2,7 @@
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
+import ClickAwayListener from '@mui/material/ClickAwayListener';
 import IconButton from "@mui/material/IconButton";
 import InfoIcon from "@mui/icons-material/Info";
 
@@ -52,6 +53,16 @@ function AddWellness() {
     soreness: true,
     energy: true,
   });
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleTooltipClose = () => {
+    setOpen(false);
+  };
+
+  const handleTooltipOpen = () => {
+    setOpen(true);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -224,15 +235,24 @@ function AddWellness() {
           {teamData.water && (
             <MDBox pt={1} pb={2} px={2}>
               <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-                <Tooltip
-                  title="Based on your goal, enter the percentage of water you consumed today."
-                  placement="top-start"
-                >
-                  Water
-                  <IconButton color="primary" size="small">
-                    <InfoIcon />
-                  </IconButton>
-                </Tooltip>
+                <ClickAwayListener onClickAway={handleTooltipClose}>
+                    <div>
+                      <Tooltip
+                        PopperProps={{
+                          disablePortal: true,
+                        }}
+                        onClose={handleTooltipClose}
+                        open={open}
+                        disableFocusListener
+                        disableHoverListener
+                        disableTouchListener
+                        title="Based on your goal, enter the percentage of water you consumed today."
+                        placement="top-start"
+                      >
+                        <Button onClick={handleTooltipOpen} style={{ fontWeight: 'bold', color: 'black', fontSize: 'medium' }}>Water</Button>
+                      </Tooltip>
+                    </div>
+                  </ClickAwayListener>
                 <Slider
                   valueLabelDisplay="off"
                   step={1}
