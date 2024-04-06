@@ -39,11 +39,11 @@ function AddWellness() {
   const [startDate, setStartDate] = useState(dayjs());
   const [checkinFrequency, setCheckinFrequency] = useState("");
   const [wellnessData, setWellnessData] = useState({
-    water: { id: 1, value: 0, notes: null },
-    sleep: { id: 2, value: 0, notes: null },
-    stress: { id: 3, value: 0, notes: null },
-    soreness: { id: 4, value: 0, notes: null },
-    energy: { id: 5, value: 0, notes: null },
+    water: { id: 1, value: 1, notes: null },
+    sleep: { id: 2, value: 1, notes: null },
+    stress: { id: 3, value: 1, notes: null },
+    soreness: { id: 4, value: 1, notes: null },
+    energy: { id: 5, value: 1, notes: null },
   });
 
   const [teamData, setTeamData] = useState({
@@ -148,6 +148,19 @@ function AddWellness() {
       return;
     }
 
+  // Check if any slider value is still at the initial value (0)
+  const isValidSubmission = Object.values(wellnessData).some(wellness => wellness.value !== 0);
+
+  if (!isValidSubmission) {
+    // Inform the user to adjust the sliders before submission
+    toast.error("Please adjust each slider before submitting.", {
+      style: {
+        color: "red",
+      },
+    });
+    return;
+  }    
+
     const selectedDate = dayjs(startDate).format("YYYY-MM-DD");
 
     const { data: existingEntries, error: existingEntriesError } = await supabase
@@ -235,24 +248,15 @@ function AddWellness() {
           {teamData.water && (
             <MDBox pt={1} pb={2} px={2}>
               <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
-                <ClickAwayListener onClickAway={handleTooltipClose}>
-                    <div>
-                      <Tooltip
-                        PopperProps={{
-                          disablePortal: true,
-                        }}
-                        onClose={handleTooltipClose}
-                        open={open}
-                        disableFocusListener
-                        disableHoverListener
-                        disableTouchListener
-                        title="Based on your goal, enter the percentage of water you consumed today."
-                        placement="top-start"
-                      >
-                        <Button onClick={handleTooltipOpen} style={{ fontWeight: 'bold', color: 'black', fontSize: 'medium' }}>Water</Button>
-                      </Tooltip>
-                    </div>
-                  </ClickAwayListener>
+                <Tooltip
+                    title="Based on your goal, enter the percentage of water you consumed today."
+                    placement="top-start"
+                  >
+                    Water
+                    <IconButton color="primary" size="small">
+                      <InfoIcon />
+                    </IconButton>
+                  </Tooltip>
                 <Slider
                   valueLabelDisplay="off"
                   step={1}
