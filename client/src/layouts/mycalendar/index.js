@@ -36,7 +36,6 @@ function ViewCalendar() {
   useEffect(() => {
     if (user) {
       getGroups(); // Call getProfiles when user changes
-      console.log("user info: ", user);
     }
   }, [user]); // Add user as a dependency
 
@@ -47,13 +46,11 @@ function ViewCalendar() {
   //wellness checkin stuff for the past 6 weeks and future 12 weeks
 
   async function getWellnessCheckins(teamCheckinFrequency) {
-    console.log("Team Checkin Frequency:", teamCheckinFrequency);
 
     const today = new Date();
     const currentDayOfWeek = today.getDay() === 0 ? 7 : today.getDay(); // Adjusting Sunday to be day 7
 
     const checkinDays = teamCheckinFrequency.split("").map(Number);
-    console.log("checkin dates split", checkinDays);
     const checkinDates = [];
 
     // Get check-in dates for the past 6 weeks (including last week)
@@ -91,8 +88,6 @@ function ViewCalendar() {
         checkinDates.push(date);
       });
     }
-
-    console.log("Check-in Dates:", checkinDates);
     return checkinDates;
   }
 
@@ -110,7 +105,6 @@ function ViewCalendar() {
         .not("first_name", "is", null) // Filter out entries where first_name is null
         .not("last_name", "is", null);
       if (profileError) throw profileError;
-      console.log("Profile Data:", profileData);
 
       // Fetch data from the team table
       const { data: teamData, error: teamError } = await supabase
@@ -119,18 +113,14 @@ function ViewCalendar() {
         .eq("id", user.team_id);
       if (teamError) throw teamError;
 
-      console.log("Team Data:", teamData); // Add this line to check teamData
-
       const team = teamData[0];
       const wellnessCheckinDates = await getWellnessCheckins(team.checkin_frequency);
-      console.log("Wellness Check-in Dates:", wellnessCheckinDates);
 
       // Create a map to store team data by team id for easy lookup
       const teamMap = {};
       teamData.forEach((team) => {
         teamMap[team.id] = team;
       });
-      console.log("team data:", teamMap);
 
       // Fetch data from the assignment table
       const { data: assignmentData, error: assignmentError } = await supabase
@@ -175,7 +165,6 @@ function ViewCalendar() {
       profileData.forEach((profile) => {
         profileMap[profile.id] = profile;
       });
-      console.log("Profile Map:", profileMap);
 
       // Join assignment data with workout data based on workout_id
       const assignmentsWithWorkouts = assignmentsWithGroupedPlayers.map((assignment) => ({
@@ -218,7 +207,6 @@ function ViewCalendar() {
   }
   const handleDateChange = (newValue) => {
     setSelectedDate(newValue);
-    console.log("Selected Date:", newValue);
   };
 
   return (

@@ -53,7 +53,6 @@ function Basic() {
     e.preventDefault();
 
     try {
-      console.log("Supabase Auth Object:", supabase.auth);
       const { user, error } = await supabase.auth.signIn({
         email,
         password,
@@ -62,7 +61,6 @@ function Basic() {
       if (error) {
         console.error("Authentication failed:", error.message);
       } else {
-        console.log("Authentication successful", user);
         // Optionally, you can redirect or update the UI after successful authentication
       }
     } catch (error) {

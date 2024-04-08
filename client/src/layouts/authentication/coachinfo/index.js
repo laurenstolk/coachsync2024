@@ -195,7 +195,6 @@ function CoachInfoUpdate() {
   const onDrop = useCallback((acceptedFiles) => {
     // Do something with the uploaded file (e.g., store it in state)
     setProfilePic(acceptedFiles[0]);
-    console.log("Profile picture uploaded:", acceptedFiles[0].name);
   }, []);
 
   const deleteProfilePic = () => {
@@ -286,7 +285,6 @@ function CoachInfoUpdate() {
         phone_number: document.getElementById("phone-number").value,
         birth_date: document.getElementById("birth-date").value,
       };
-      console.log("coach info on submit", coachRoleData);
 
       try {
         if (profilePic) {
@@ -313,7 +311,6 @@ function CoachInfoUpdate() {
           console.error("Error updating coach role:", error);
           // Handle the error here
         } else {
-          console.log("Coach Role updated successfully!");
         }
       } catch (error) {
         console.error("Error:", error);

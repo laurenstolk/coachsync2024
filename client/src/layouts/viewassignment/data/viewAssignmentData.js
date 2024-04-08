@@ -24,7 +24,6 @@ export default function ViewAssignedWorkouts() {
   useEffect(() => {
     if (user) {
       getGroups(); // Call getProfiles when user changes
-      console.log("user info: ", user);
     }
   }, [user]); // Add user as a dependency
 
@@ -42,14 +41,12 @@ export default function ViewAssignedWorkouts() {
         .not("first_name", "is", null) // Filter out entries where first_name is null
         .not("last_name", "is", null);
       if (profileError) throw profileError;
-      console.log("Profile Data:", profileData);
 
       // Create a map to store profile data by profile id for easy lookup
       const profileMap = {};
       profileData.forEach((profile) => {
         profileMap[profile.id] = profile;
       });
-      console.log("Profile Map:", profileMap);
 
       // Fetch data from the assignment table
       const { data: assignmentData, error: assignmentError } = await supabase
@@ -60,7 +57,6 @@ export default function ViewAssignedWorkouts() {
           profileData.map((profile) => profile.id)
         ); // Filter assignments by player IDs belonging to the user's team
       if (assignmentError) throw assignmentError;
-      console.log("player info: ", assignmentData);
 
       // Group assignments by date, notes, and workout_id
       const groupedAssignments = {};
@@ -104,7 +100,6 @@ export default function ViewAssignedWorkouts() {
       }));
       // Log each standardized date for debugging
       assignmentsWithWorkouts.forEach((assignment) => {
-        console.log("Standardized date from database:", assignment.date);
       });
 
       // Sort assignments by date (closest to farthest)
@@ -120,8 +115,9 @@ export default function ViewAssignedWorkouts() {
     columns: [
       { Header: "Workout Name", accessor: "workout_name", width: "20%", align: "left" },
       { Header: "Assigned Date", accessor: "date", width: "20%", align: "left" },
-      { Header: "Assigned to", accessor: "player_ids", width: "30%", align: "left", wrap: true },
-      { Header: "Notes", accessor: "notes", width: "30%", align: "left" },
+      { Header: "Assigned to", accessor: "player_ids", width: "25%", align: "left", wrap: true },
+      { Header: "Notes", accessor: "notes", width: "25%", align: "left" },
+      { Header: "Id", accessor: "id", width: "10%", align: "left" },
     ],
     rows: assignments.map((assignment, index) => ({
       workout_name: (
@@ -142,6 +138,11 @@ export default function ViewAssignedWorkouts() {
       notes: (
         <MDBox display="flex" py={1}>
           {assignment.notes}
+        </MDBox>
+      ),
+      id: (
+        <MDBox display="flex" py={1}>
+          {assignment.id}
         </MDBox>
       ),
       view: (

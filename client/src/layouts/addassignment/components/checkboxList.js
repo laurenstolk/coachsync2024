@@ -23,7 +23,6 @@ export default function IndeterminateCheckbox({ onSelectPlayers }) {
   useEffect(() => {
     if (user) {
       getGroups();
-      console.log("user info: ", user);
     }
   }, [user]); // Add user as a dependency
 
@@ -119,16 +118,16 @@ export default function IndeterminateCheckbox({ onSelectPlayers }) {
           />
           <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
             {group.members.map((member, memberIndex) => (
-              <FormControlLabel
-                key={member.id}
-                label={`${member.first_name} ${member.last_name}`}
-                control={
-                  <Checkbox
-                    checked={member.checked || false}
-                    onChange={(event) => handleMemberChange(event, groupIndex, memberIndex)}
-                  />
-                }
-              />
+                <FormControlLabel
+                    key={member.id}
+                    label={member.first_name ? `${member.first_name} ${member.last_name}` : member.last_name}
+                    control={
+                      <Checkbox
+                          checked={member.checked || false}
+                          onChange={(event) => handleMemberChange(event, groupIndex, memberIndex)}
+                      />
+                    }
+                />
             ))}
           </Box>
         </div>

@@ -112,7 +112,6 @@ function Tables() {
         // Update the workouts state after deletion
         setWorkouts((prevWorkouts) => prevWorkouts.filter((workout) => workout.id !== workoutId));
         toast.success("Workout deleted successfully!");
-        console.log("Workout deleted successfully!");
       } catch (error) {
         console.error("Error deleting workout:", error.message);
         toast.error("Error deleting workout");
@@ -133,7 +132,6 @@ function Tables() {
           prevExercises.filter((exercise) => exercise.id !== exerciseId)
         );
         toast.success("Custom exercise deleted successfully!");
-        console.log("Custom exercise deleted successfully!");
       } catch (error) {
         console.error("Error deleting custom exercise:", error.message);
         toast.error("Error deleting custom exercise");
@@ -183,8 +181,6 @@ function Tables() {
       if (error) {
         throw error;
       }
-
-      console.log("Exercise updated successfully:", data);
       setEditableExerciseId(null);
 
       setCustomizedExercises((prevState) =>
@@ -268,8 +264,6 @@ function Tables() {
       if (error) {
         throw error;
       }
-
-      console.log("Coach's notes updated successfully:", data);
       setOpenCoachNotesDialog(false);
     } catch (error) {
       console.error("Error updating coach's notes:", error.message);

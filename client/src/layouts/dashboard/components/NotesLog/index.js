@@ -167,10 +167,9 @@ function NotesLog() {
                       ?.workout_id || "Unknown Exercise";
               }
 
-              const noteDate = new Date(note.date_completed || note.created_at).toLocaleDateString(
-                "en-US",
-                { month: "long", day: "numeric" }
-              );
+              const noteDate = new Date(
+                (note.date_completed || note.created_at) + " UTC"
+              ).toLocaleDateString("en-US", { timeZone: "UTC", month: "long", day: "numeric" });
 
               return (
                 <Invoice

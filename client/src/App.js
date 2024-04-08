@@ -85,7 +85,6 @@ const sendResetPasswordEmail = async (email) => {
     }
   } catch (error) {
     // Handle error (optional)
-    console.error("Error sending reset password email:", error.message);
   }
 };
 
@@ -135,7 +134,6 @@ export default function App() {
             setLoading(false); // No user data available
           }
         } catch (error) {
-          console.error("Error fetching user profile:", error.message);
           // Handle error, e.g., set loading to false or show an error message
           setLoading(false);
         }
@@ -285,6 +283,21 @@ export default function App() {
               marginTop: "20px",
             }}
           >
+            <div
+              style={{
+                background: "white",
+                padding: "0px",
+                borderRadius: "8px",
+                maxWidth: "400px",
+                width: "100%",
+                textAlign: "center",
+              }}
+            >
+              <p style={{ fontSize: "12px", fontFamily: "Arial, sans-serif" }}>
+                *Signing in with Google will take you to a &quot;.supabase.co&quot; link, which will
+                redirect to the CoachSync website. This is expected.
+              </p>
+            </div>
             <Auth
               supabaseClient={supabase}
               appearance={{
@@ -316,7 +329,7 @@ export default function App() {
                 },
               }}
               providers={["google"]}
-              redirectTo="https://coachsync.pro/authentication/reset-password"
+              redirectTo="https://coachsync.pro/loadingpageSignUp"
               theme="default"
               onResetPassword={sendResetPasswordEmail}
             />

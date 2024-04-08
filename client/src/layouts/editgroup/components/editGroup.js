@@ -90,8 +90,6 @@ function EditGroup() {
 
   const handleCreateGroup = async () => {
     try {
-      console.log("Original Selected Players:", originalSelectedPlayers);
-      console.log("Updated Selected Players:", selectedPlayers);
 
       // Check if there are any changes made to the selected players
       if (arraysAreEqual(selectedPlayers, originalSelectedPlayers)) {

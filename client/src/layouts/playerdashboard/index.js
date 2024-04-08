@@ -186,8 +186,6 @@ export default function PlayerDashboard() {
         (a, b) => new Date(a.date) - new Date(b.date)
       );
 
-      console.log(sortedAssignments);
-
       const getFormattedDate = (date) => {
         const options = { month: "2-digit", day: "2-digit", year: "numeric" };
         return date.toLocaleDateString("en-US", options);
@@ -199,8 +197,6 @@ export default function PlayerDashboard() {
             new Date(new Date(sortedAssignments[0].date).getTime() + 24 * 60 * 60 * 1000)
           )
         : "None Assigned";
-
-      console.log(nextWorkoutDate);
 
       return nextWorkoutDate;
     } catch (error) {
@@ -289,6 +285,24 @@ export default function PlayerDashboard() {
   useEffect(() => {
     const fetchWellnessData = async (wellnessId) => {
       try {
+
+        const { data: teamData, error: teamError} = await supabase
+          .from("team")
+          .select("water_checkin", "sleep_checkin", "stress_checkin", "soreness_checkin", "energy_checkin")
+          .eq("id", user.team_id)
+          .single();
+
+          if (teamError) throw teamError;
+     
+          //Construct query to select only the true check-in columns
+          const columnsToSelect = [];
+          if (teamData.water_checkin) columnsToSelect.push("water");
+          if (teamData.sleep_checkin) columnsToSelect.push("sleep");
+          if (teamData.stress_checkin) columnsToSelect.push("stress");
+          if (teamData.soreness_checkin) columnsToSelect.push("soreness");
+          if (teamData.energy_checkin) columnsToSelect.push("energy");
+
+
         const { data, error } = await supabase
           .from("checkin")
           .select("date, value")

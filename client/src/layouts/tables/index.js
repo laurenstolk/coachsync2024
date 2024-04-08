@@ -111,7 +111,6 @@ function Tables() {
       // Check if the user is a player based on user data
       const isPlayer = user.player === true; // Adjust this condition based on your user data structure
       setIsUserAPlayer(isPlayer);
-      console.log("is a player", isPlayer);
     }
   }, [user]); // Run whenever the user object changes
 
@@ -155,7 +154,7 @@ function Tables() {
         </Grid>
       </Grid>
 
-      <Box  sx={{ marginTop: 6 }}>
+      <Box sx={{ marginTop: 6 }}>
         <Card
           variant="outlined"
           sx={{
@@ -244,13 +243,15 @@ function Tables() {
                   {row.name}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
-                  <Button
-                    color="error"
-                    onClick={() => handleDeleteGroup(row.id.props.children)}
-                    style={{ marginRight: 15, padding: 0 }}
-                  >
-                    <Icon style={{ color: "red" }}>delete</Icon> Delete
-                  </Button>
+                  {!isUserAPlayer && (
+                    <Button
+                      color="error"
+                      onClick={() => handleDeleteGroup(row.id.props.children)}
+                      style={{ marginRight: 15, padding: 0 }}
+                    >
+                      <Icon style={{ color: "red" }}>delete</Icon> Delete
+                    </Button>
+                  )}
                 </Box>
               </AccordionSummary>
               <AccordionDetails>

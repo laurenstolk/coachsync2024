@@ -25,8 +25,6 @@ const LoadingPageSignUp = () => {
             .eq("id", userId)
             .single();
 
-          console.log("User ID:", data.first_name);
-
           if (error) {
             throw error;
           }

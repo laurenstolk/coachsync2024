@@ -71,8 +71,6 @@ export default function data() {
         return correspondingExercise ? correspondingExercise : "hhh";
       });
 
-      console.log("mapped: ", mappedExercises);
-
       return {
         name: (
           <MDBox display="flex" py={1}>

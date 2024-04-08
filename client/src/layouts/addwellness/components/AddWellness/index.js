@@ -2,6 +2,7 @@
 import Card from "@mui/material/Card";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
+import ClickAwayListener from '@mui/material/ClickAwayListener';
 import IconButton from "@mui/material/IconButton";
 import InfoIcon from "@mui/icons-material/Info";
 
@@ -38,11 +39,11 @@ function AddWellness() {
   const [startDate, setStartDate] = useState(dayjs());
   const [checkinFrequency, setCheckinFrequency] = useState("");
   const [wellnessData, setWellnessData] = useState({
-    water: { id: 1, value: 0, notes: null },
-    sleep: { id: 2, value: 0, notes: null },
-    stress: { id: 3, value: 0, notes: null },
-    soreness: { id: 4, value: 0, notes: null },
-    energy: { id: 5, value: 0, notes: null },
+    water: { id: 1, value: 1, notes: null },
+    sleep: { id: 2, value: 1, notes: null },
+    stress: { id: 3, value: 1, notes: null },
+    soreness: { id: 4, value: 1, notes: null },
+    energy: { id: 5, value: 1, notes: null },
   });
 
   const [teamData, setTeamData] = useState({
@@ -52,6 +53,16 @@ function AddWellness() {
     soreness: true,
     energy: true,
   });
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleTooltipClose = () => {
+    setOpen(false);
+  };
+
+  const handleTooltipOpen = () => {
+    setOpen(true);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -137,6 +148,19 @@ function AddWellness() {
       return;
     }
 
+  // Check if any slider value is still at the initial value (0)
+  const isValidSubmission = Object.values(wellnessData).some(wellness => wellness.value !== 0);
+
+  if (!isValidSubmission) {
+    // Inform the user to adjust the sliders before submission
+    toast.error("Please adjust each slider before submitting.", {
+      style: {
+        color: "red",
+      },
+    });
+    return;
+  }    
+
     const selectedDate = dayjs(startDate).format("YYYY-MM-DD");
 
     const { data: existingEntries, error: existingEntriesError } = await supabase
@@ -184,7 +208,6 @@ function AddWellness() {
         if (error) {
           console.error("Error adding wellness:", error);
         } else {
-          console.log("Wellness added successfully!");
 
           toast.success("Wellness added successfully!", {
             autoClose: 2000,
@@ -194,7 +217,6 @@ function AddWellness() {
           });
         }
       } else {
-        console.log("No wellness data to submit based on team settings.");
       }
     } catch (error) {
       console.error("Error:", error);
@@ -227,14 +249,14 @@ function AddWellness() {
             <MDBox pt={1} pb={2} px={2}>
               <MDBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
                 <Tooltip
-                  title="Based on your goal, enter the percentage of water you consumed today."
-                  placement="top-start"
-                >
-                  Water
-                  <IconButton color="primary" size="small">
-                    <InfoIcon />
-                  </IconButton>
-                </Tooltip>
+                    title="Based on your goal, enter the percentage of water you consumed today."
+                    placement="top-start"
+                  >
+                    Water
+                    <IconButton color="primary" size="small">
+                      <InfoIcon />
+                    </IconButton>
+                  </Tooltip>
                 <Slider
                   valueLabelDisplay="off"
                   step={1}

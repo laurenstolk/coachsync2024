@@ -207,7 +207,7 @@ function Overview() {
       <DashboardNavbar pageTitle="Profile" />
       <Header></Header>
       <MDBox mb={2} />
-      <MDBox mt={1} mb={3} mx={5}>
+      <MDBox mt={1} mb={3} mx={0}>
         <Grid container spacing={4}>
           {/* Left half for ProfileInfoCard */}
           <Grid item xs={12} md={6} mt={-15}>

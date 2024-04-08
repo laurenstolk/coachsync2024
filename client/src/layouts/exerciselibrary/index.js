@@ -59,7 +59,7 @@ function Tables() {
   return (
     <DashboardLayout>
       <DashboardNavbar pageTitle="Exercise Library" />
-      <Box mt={4} >
+      <Box mt={4}>
         <Card
           variant="outlined"
           sx={{
@@ -70,7 +70,7 @@ function Tables() {
         >
           <Box
             p={2}
-            mt={4} 
+            mt={4}
             sx={{
               borderRadius: 2,
               display: "flex",

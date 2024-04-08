@@ -91,8 +91,6 @@ function AddWorkout() {
           exercisesGroupedByCategory[categoryName].push(exercise);
         });
 
-        console.log("here: ", exercisesGroupedByCategory);
-
         setExercises(exerciseData);
         setExercisesByCategory(exercisesGroupedByCategory);
       }
@@ -159,7 +157,6 @@ function AddWorkout() {
         console.error("Error adding workout:", workoutError);
         // Handle the error here
       } else {
-        console.log("Workout added successfully!");
         toast.success("Workout successfully created!", {
           autoClose: 2000,
           onClose: () => {
@@ -186,14 +183,11 @@ function AddWorkout() {
         console.error("Error adding exercise records:", exerciseError);
         // Handle the error here
       } else {
-        console.log("Exercise records added successfully!");
       }
     } catch (error) {
       console.error("Error:", error);
     }
     // Your form submission logic here
-    console.log("Workout Name:", workoutData);
-    console.log("Selected Exercises:", selectedExercises);
   };
 
   return (

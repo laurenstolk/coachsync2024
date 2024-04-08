@@ -40,7 +40,6 @@ function TeamInfoUpdate() {
   const onLogoDrop = useCallback((acceptedFiles) => {
     // Do something with the uploaded file (e.g., store it in state)
     setTeamLogo(acceptedFiles[0]);
-    console.log("Team logo uploaded:", acceptedFiles[0].name);
   }, []);
 
   const deleteTeamLogo = () => {
@@ -104,7 +103,6 @@ function TeamInfoUpdate() {
       logo_picture: logoPicture, // Assign the logo_picture value
       signup_code: `${teamNameWithoutSpaces}${randomNumber}`, // Construct signup code
     };
-    console.log(teamData);
 
     try {
       if (teamLogo) {
@@ -128,7 +126,6 @@ function TeamInfoUpdate() {
         console.error("Error adding team:", error);
         // Handle the error here
       } else {
-        console.log("Team added successfully!");
         // Extract the ID of the newly created team
         const teamId = data[0].id;
 
@@ -143,8 +140,6 @@ function TeamInfoUpdate() {
           // Handle the error here
           return;
         }
-        console.log("Team logo updated successfully");
-        console.log("Profile updated successfully with team ID:", teamId);
         toast.success(
           "Here's your team code! Save this, since your players will need it to join your team:" +
             "      " +
@@ -202,7 +197,7 @@ function TeamInfoUpdate() {
             </MDBox>
             <MDBox mb={2}>
               <FormControl fullWidth>
-                <InputLabel>Sport</InputLabel>
+                <InputLabel>Select Sport</InputLabel>
                 <Select
                   id="team-sport"
                   label="Sport"
